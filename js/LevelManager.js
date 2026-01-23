@@ -5,6 +5,8 @@ import Interactable from './Interactable.js';
 
 // size of a tile in screen pixels
 const TILE_SIZE = 32;
+//For some reason the player's Y coordinate is always (n block + 0.46875) * 32
+const Y_FIX = 0.46875;
 
 const tileColors = [
     "#000000",
@@ -39,6 +41,19 @@ const tileData2 = [
     [2, 2, 2, 2, 2, 2, 2, 2, 2]
 ];
 
+const tileData3 = [
+    [2, 2, 2, 2, 2, 2, 2, 2, 2],
+    [2, 0, 0, 0, 0, 0, 0, 0, 2],
+    [2, 0, 0, 0, 0, 0, 0, 0, 2],
+    [2, 0, 0, 0, 0, 0, 0, 0, 2],
+    [2, 0, 0, 0, 0, 0, 0, 0, 2],
+    [2, 0, 0, 0, 2, 2, 2, 2, 2],
+    [2, 0, 0, 2, 0, 0, 0, 0, 0],
+    [2, 0, 0, 0, 0, 0, 0, 0, 0],
+    [2, 0, 0, 0, 0, 0, 0, 0, 0],
+    [2, 2, 2, 2, 2, 2, 2, 2, 2]
+];
+
 var currentLevel = tileData1;
 
 
@@ -62,20 +77,39 @@ export default class LevelManager {
             }
         }
     }
-    //The elapsed time stuff won't be relevant when this is properly implemented.
+    //Handling level transitions and player movement
+    //As is I just manually go and grab the player entity from the entities list because I'm lazy and maybe because I forget how
+    //If the load order changes in main the player const will need to be updated to wherever the player is :)
     update(engine) {
-        this.elapsedTime += engine.getTickSpeed();
-        if (engine.input.up && this.elapsedTime > this.toggleCooldown) {
-                if (currentLevel == tileData1) {
-                    currentLevel = tileData2;
-                }
-                else {
-                    currentLevel = tileData1;
-                }
-                this.data = currentLevel;
-            console.log(currentLevel);
-            this.elapsedTime = 0;
-            }
+        const player = engine.entities[2];
+        if (player.x < -0.25 * TILE_SIZE && Math.floor(player.y) >= 7 * TILE_SIZE && Math.floor(player.y) < 8 * TILE_SIZE && currentLevel == tileData1) {
+            console.log("1 to 2")
+            currentLevel = tileData2;
+            this.data = currentLevel;
+            player.x = 8 * TILE_SIZE ;
+            player.y = (7 + Y_FIX) * TILE_SIZE - 1;
+        }
+        if (player.x > 8.25 * TILE_SIZE && Math.floor(player.y) >= 7 * TILE_SIZE && Math.floor(player.y) < 8 * TILE_SIZE && currentLevel == tileData2) {
+            console.log("2 to 1")
+            currentLevel = tileData1;
+            this.data = currentLevel;
+            player.x = 0 * TILE_SIZE;
+            player.y = (7 + Y_FIX) * TILE_SIZE - 1;
+        }
+        if (player.x < -0.25 * TILE_SIZE && Math.floor(player.y) >= 7 * TILE_SIZE && Math.floor(player.y) < 8 * TILE_SIZE && currentLevel == tileData2) {
+            console.log("2 to 3")
+            currentLevel = tileData3;
+            this.data = currentLevel;
+            player.x = 8 * TILE_SIZE;
+            player.y = (7 + Y_FIX) * TILE_SIZE - 1;
+        }
+        if (player.x > 8 * TILE_SIZE && Math.floor(player.y) >= 7 * TILE_SIZE && Math.floor(player.y) < 8 * TILE_SIZE && currentLevel == tileData3) {
+            console.log("3 to 2")
+            currentLevel = tileData2;
+            this.data = currentLevel;
+            player.x = 0 * TILE_SIZE;
+            player.y = (7 + Y_FIX) * TILE_SIZE - 1;
+        }
     }
 
     getTile(tileX, tileY) {
