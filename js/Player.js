@@ -17,7 +17,9 @@ export default class Player extends Entity {
         this.xVelocity = 0;
         this.yVelocity = 0;
         this.onGround = false;
-        this.BB = new BoundingBox()
+        this.BB = new BoundingBox(this.x, this.y, HITBOX_WIDTH, HITBOX_HEIGHT);
+        // this.BB = new BoundingBox(this.x, HI, this.x, this.y);
+        this.updateBB();
     }
 
     updateBB() {
@@ -53,6 +55,8 @@ export default class Player extends Entity {
         } else {
             this.yVelocity += 1;
         }
+        this.updateBB();
+
 
         // collision
         const level = engine.getLevel();
@@ -75,13 +79,18 @@ export default class Player extends Entity {
             this.yVelocity += 1;
         }
         this.y += this.yVelocity;
-        this.updateBB();
+        // this.updateBB();
     }
 
     handleIteraction(engine) {
+        const that = this;
         engine.entities.forEach(function (entity) {
             if (entity instanceof Interactable) {
-                entity.handleInteraction();
+                console.log("is entity")
+                if (entity.BB && that.BB.collide(entity.BB)) {
+                    entity.handleInteraction();
+                    console.log("collide")
+                }
             }
         })
     }
