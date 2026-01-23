@@ -1,26 +1,44 @@
+/** @import GameEngine from "/js/GameEngine.js" */
 import Entity from "/js/Entity.js";
-const floor = Math.floor;
 
-const HITBOX_WIDTH = 24;
-const HITBOX_HEIGHT = 48;
+const floor = Math.floor;
 
 const WALKING_SPEED = 6;
 
 export default class Player extends Entity {
-    constructor() {
+    constructor(x, y) {
         super();
-        this.x = 16;
-        this.y = 32;
+        this.x = x;
+        this.y = y;
+        this.width = 24;
+        this.height = 48;
 
         this.xVelocity = 0;
         this.yVelocity = 0;
         this.onGround = false;
+
+        // mapping from item name to # of that item the player has
+        this.inventory = {
+            "lettuce": 0,
+        };
     }
 
-    /**
-     * @param {import('/js/GameEngine.js').default} engine
-     */
+    /** @param {GameEngine} engine */
     update(engine) {
+        this.move(engine);
+
+        // harvesting crops, etc.
+        if (engine.input.interact) {
+            for (const entity of engine.entities) {
+                if (entity instanceof Entity && this.isCollidingWith(entity)) {
+                    entity.interact(this);
+                }
+            }
+        }
+    }
+
+    /** @param {GameEngine} engine */
+    move(engine) {
         // movement
         // TODO: adjust acceleration & drag to 'feel' better, these are placeholder values
         if (engine.input.left && this.xVelocity > -WALKING_SPEED) {
@@ -47,20 +65,20 @@ export default class Player extends Entity {
         const level = engine.getLevel();
 
         // attempt to move, reducing velocity until no collision occurs (to touch the wall exactly)
-        while (this.xVelocity > 0 && level.checkIfBoxCollides(this.x + this.xVelocity, this.y, HITBOX_WIDTH, HITBOX_HEIGHT)) {
+        while (this.xVelocity > 0 && level.checkIfBoxCollides(this.x + this.xVelocity, this.y, this.width, this.height)) {
             this.xVelocity -= 1;
         }
-        while (this.xVelocity < 0 && level.checkIfBoxCollides(this.x + this.xVelocity, this.y, HITBOX_WIDTH, HITBOX_HEIGHT)) {
+        while (this.xVelocity < 0 && level.checkIfBoxCollides(this.x + this.xVelocity, this.y, this.width, this.height)) {
             this.xVelocity += 1;
         }
         this.x += this.xVelocity;
 
         this.onGround = false;
-        while (this.yVelocity > 0 && level.checkIfBoxCollides(this.x, this.y + this.yVelocity, HITBOX_WIDTH, HITBOX_HEIGHT)) {
+        while (this.yVelocity > 0 && level.checkIfBoxCollides(this.x, this.y + this.yVelocity, this.width, this.height)) {
             this.yVelocity -= 1;
             this.onGround = true; // we collided with something while moving down
         }
-        while (this.yVelocity < 0 && level.checkIfBoxCollides(this.x, this.y + this.yVelocity, HITBOX_WIDTH, HITBOX_HEIGHT)) {
+        while (this.yVelocity < 0 && level.checkIfBoxCollides(this.x, this.y + this.yVelocity, this.width, this.height)) {
             this.yVelocity += 1;
         }
         this.y += this.yVelocity;
@@ -68,11 +86,11 @@ export default class Player extends Entity {
 
     /**
      * @param {CanvasRenderingContext2D} ctx
-     * @param {import('/js/GameEngine.js').default} engine
+     * @param {GameEngine} engine
      */
     draw(ctx, engine) {
         // temporary box graphics :)
         ctx.fillStyle = "#aa0000";
-        ctx.fillRect(floor(this.x), floor(this.y), HITBOX_WIDTH + 1, HITBOX_HEIGHT + 1);
+        ctx.fillRect(floor(this.x), floor(this.y), this.width, this.height);
     }
 }

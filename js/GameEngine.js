@@ -1,3 +1,6 @@
+/** @import Level from "/js/Level.js" */
+/** @import Entity from "/js/Entity.js" */
+
 const INPUT_MAP = {
     "KeyW": "up",
     "KeyA": "left",
@@ -24,6 +27,7 @@ export default class GameEngine {
         this.ctx = null;
 
         // Everything that will be updated and drawn each frame
+        /** @type {Entity[]} */
         this.entities = [];
 
         // Information on the input
@@ -105,7 +109,7 @@ export default class GameEngine {
     };
 
     // the Level is a special entity that many other entities will need to access directly
-    /** @param {import('/js/Level.js').default} level */
+    /** @param {Level} level */
     setLevel(level) {
         this.entities.push(level);
         this.level = level;
@@ -157,7 +161,7 @@ export default class GameEngine {
         }
 
         this.draw(deltaTime);
-        this.ctx.fillStyle = "black"
+        this.ctx.fillStyle = "black";
         this.ctx.fillText(`fps: ${(1 / deltaTime).toFixed(2)}`, 0, 12);
     }
 }

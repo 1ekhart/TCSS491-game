@@ -1,5 +1,4 @@
-// TODO: better map editing
-// TODO: ability to swap out different maps
+/** @import GameEngine from "/js/GameEngine.js" */
 
 // size of a tile in screen pixels
 const TILE_SIZE = 32;
@@ -26,14 +25,14 @@ export default class Level {
     checkIfBoxCollides(boxX, boxY, width, height) {
         // convert box position to tile coordinates (right shift by 5 is equivalent to floor divide by 32 (the TILE_SIZE))
         const left = boxX >> 5;
-        const right = (boxX + width) >> 5;
+        const right = (boxX + width - 1) >> 5; // - 1 is so width/height are actual width in pixels (not off by 1)
         const top = boxY >> 5;
-        const bottom = (boxY + height) >> 5;
+        const bottom = (boxY + height - 1) >> 5;
 
         // check all tiles that the box overlaps
-        for(let x = left; x <= right; x++) {
-            for(let y = top; y <= bottom; y++) {
-                if(this.getTile(x, y) !== 0) {
+        for (let x = left; x <= right; x++) {
+            for (let y = top; y <= bottom; y++) {
+                if (this.getTile(x, y) !== 0) {
                     return true;
                 }
             }
@@ -43,7 +42,7 @@ export default class Level {
 
     /**
      * @param {CanvasRenderingContext2D} ctx
-     * @param {import('/js/GameEngine.js').default} engine
+     * @param {GameEngine} engine
      */
     draw(ctx, engine) {
         const data = this.data;
