@@ -1,5 +1,5 @@
 /** @import Player from "/js/Player.js" */
-import WorldEntity from "./WorldEntity.js";
+import WorldEntity from "/js/AbstractClasses/WorldEntity.js";
 
 export default class CropEntity extends WorldEntity {
     constructor(x, y) {

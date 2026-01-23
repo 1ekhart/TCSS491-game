@@ -1,5 +1,5 @@
 /** @import GameEngine from "/js/GameEngine.js" */
-import WorldEntity from './WorldEntity.js';
+import WorldEntity from './AbstractClasses/WorldEntity.js';
 
 export default class CollisionTester extends WorldEntity {
     constructor() {

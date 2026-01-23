@@ -1,4 +1,4 @@
-import Entity from "/js/Entity.js";
+import Entity from "/js/AbstractClasses/Entity.js";
 
 /** an Entity that contains common useful behavior for physical entities in the world */
 export default class WorldEntity extends Entity {
@@ -11,7 +11,7 @@ export default class WorldEntity extends Entity {
     }
 
     /** returns `true` if this entity is colliding with `otherEntity`.
-     * @param {Entity} otherEntity */
+     * @param {WorldEntity} otherEntity */
     isCollidingWith(otherEntity) {
         return !( // - 1 is so width/height are actual width in pixels (not off by 1)
             (this.x + this.width - 1 < otherEntity.x) || (otherEntity.x + otherEntity.width - 1 < this.x) || // this LEFT of other OR this RIGHT of other OR

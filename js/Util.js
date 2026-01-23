@@ -1,3 +1,11 @@
+//Global Constants
+export const CONSTANTS = {
+    DEBUG: true,
+    SCALE: 2,
+    BITWIDTH: 16,
+    TICK_TIME: 1 / 60,  // the amount of time per engine tick
+};
+
 /**
  * @param {Number} n
  * @returns Random Integer Between 0 and n-1

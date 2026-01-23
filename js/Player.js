@@ -1,5 +1,7 @@
 /** @import GameEngine from "/js/GameEngine.js" */
-import WorldEntity from "./WorldEntity.js";
+import WorldEntity from "/js/AbstractClasses/WorldEntity.js";
+import Animator from "/js/GeneralUtils/Animator.js";
+import { CONSTANTS } from "/js/Util.js";
 
 const floor = Math.floor;
 
@@ -21,6 +23,28 @@ export default class Player extends WorldEntity {
         this.inventory = {
             "lettuce": 0,
         };
+
+        //stuff for animations
+        this.animations = [];
+        this.loadAnimations();
+        this.animationState = "Idle"
+        this.isRight = true;
+    }
+
+    loadAnimations() {
+        this.animations = [];
+        this.idle = new Animator(ASSET_MANAGER.getAsset("/Assets/Player/IdleRun-Sheet.png"), 0, 0, 32, 32, 2, 1, 0, false, true);
+        this.animations["Idle"] = this.idle;
+
+        this.run = new Animator(ASSET_MANAGER.getAsset("/Assets/Player/IdleRun-Sheet.png"), 0, 32, 32, 32, 6, .3, 0, false, true);
+        this.animations["Run"] = this.run;
+
+        this.idleAttack = new Animator(ASSET_MANAGER.getAsset("/Assets/Player/IdleRun-Sheet.png"), 0, 64, 32, 32, 6, .05, 0, false, false);
+        this.animations["IdleAttack"] = this.idleAttack;
+    }
+
+    setAnimationState(state) {
+        this.animationState = state;
     }
 
     /** @param {GameEngine} engine */
@@ -53,6 +77,17 @@ export default class Player extends WorldEntity {
         if (this.onGround && engine.input.jump) {
             this.yVelocity = -11; // jump strength
         }
+
+        if (engine.input.left) {
+            this.setAnimationState("Run");
+            this.isRight = false;
+        } else if (engine.input.right) {
+            this.setAnimationState("Run");
+            this.isRight = true;
+        } else {
+            this.setAnimationState("Idle");
+        }
+
 
         // gravity
         if (engine.input.jump) {
@@ -89,8 +124,10 @@ export default class Player extends WorldEntity {
      * @param {GameEngine} engine
      */
     draw(ctx, engine) {
-        // temporary box graphics :)
-        ctx.fillStyle = "#aa0000";
-        ctx.fillRect(floor(this.x), floor(this.y), this.width, this.height);
+        this.animations[this.animationState].drawFrame(CONSTANTS.TICK_TIME, ctx, this.x - 17, floor(this.y) - this.height + 32, !this.isRight)
+        if (CONSTANTS.DEBUG == true) {
+            ctx.strokeStyle = "#aa0000";
+            ctx.strokeRect(floor(this.x), floor(this.y), this.width, this.height);
+        }
     }
 }

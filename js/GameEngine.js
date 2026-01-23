@@ -1,6 +1,8 @@
 /** @import Level from "/js/Level.js" */
 /** @import Entity from "/js/Entity.js" */
 
+import { CONSTANTS } from "/js/Util.js";
+
 const INPUT_MAP = {
     "KeyW": "up",
     "KeyA": "left",
@@ -17,7 +19,7 @@ const INPUT_MAP = {
 };
 
 // the amount of time per engine tick
-const TICK_TIME = 1 / 60;
+const TICK_TIME = CONSTANTS.TICK_TIME;
 
 // This game shell was happily modified from Googler Seth Ladd's "Bad Aliens" game and his Google IO talk in 2011
 export default class GameEngine {
@@ -45,7 +47,6 @@ export default class GameEngine {
     /** @param {CanvasRenderingContext2D} ctx */
     init(ctx) {
         this.ctx = ctx;
-        ctx.font = "12px monospace";
         this.startInput();
         this.timeAccumulator = 0;
         this.lastTimestamp = 0;
