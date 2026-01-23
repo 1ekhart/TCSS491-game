@@ -4,6 +4,7 @@ import Level from "/js/Level.js";
 import Player from "/js/Player.js";
 import CollisionTester from "/js/CollisionTester.js";
 import InGameClock from "./InGameClock.js";
+import LevelManager from "./LevelManager.js";
 
 const gameEngine = new GameEngine();
 
@@ -29,7 +30,8 @@ ASSET_MANAGER.downloadAll(() => {
     gameEngine.init(ctx);
 
     // TODO: once the UI is implemented, the main menu or some manager class should be the first entity added
-    gameEngine.setLevel(new Level(tileData, gameEngine));
+    // gameEngine.setLevel(new Level(tileData, gameEngine));
+    gameEngine.setLevel(new LevelManager(gameEngine))
     gameEngine.addEntity(new Player());
     gameEngine.addEntity(new InGameClock());
     gameEngine.addEntity(new CollisionTester());

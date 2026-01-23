@@ -4,7 +4,7 @@ import BoundingBox from './GeneralUtils/BoundingBox.js';
 export default class Interactable extends EntityInteractable {
     constructor(x, y, width, height) {
         super();
-        Object.assign(this, {x, y, width, height})
+        Object.assign(this, { x, y, width, height })
         this.x = x;
         this.y = y;
         this.height = height;
@@ -20,9 +20,9 @@ export default class Interactable extends EntityInteractable {
         this.toggleState = false;
     }
 
-     /**
-     * @param {import('/js/GameEngine.js').default} engine
-     */
+    /**
+    * @param {import('/js/GameEngine.js').default} engine
+    */
     update(engine) {
         if (this.toggleable == false) {
             this.elapsedTime += engine.getTickSpeed();
@@ -68,6 +68,6 @@ export default class Interactable extends EntityInteractable {
     draw(ctx, engine) {
         // draw *something* if a subclass doesn't correctly draw anything
         ctx.fillStyle = this.color;
-        ctx.fillRect(this.x, this.y, this.width, this.height); 
+        ctx.fillRect(this.x, this.y, this.width, this.height);
     }
 }
