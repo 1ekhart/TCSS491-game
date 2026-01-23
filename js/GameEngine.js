@@ -156,7 +156,7 @@ export default class GameEngine {
             this.timeAccumulator -= TICK_TIME;
         }
         if (this.timeAccumulator > TICK_TIME * 5) {  // remove extra steps worth of time that could not be processed
-            console.warn(`update took too long! behind by ${Math.floor(this.timeAccumulator / TICK_TIME)}ms`);
+            // console.warn(`update took too long! behind by ${Math.floor(this.timeAccumulator / TICK_TIME)}ms`);
             this.timeAccumulator = this.timeAccumulator % TICK_TIME;
         }
 

@@ -1,11 +1,11 @@
 /** @import GameEngine from "/js/GameEngine.js" */
-import Entity from "/js/Entity.js";
+import WorldEntity from "./WorldEntity.js";
 
 const floor = Math.floor;
 
 const WALKING_SPEED = 6;
 
-export default class Player extends Entity {
+export default class Player extends WorldEntity {
     constructor(x, y) {
         super();
         this.x = x;
@@ -30,7 +30,7 @@ export default class Player extends Entity {
         // harvesting crops, etc.
         if (engine.input.interact) {
             for (const entity of engine.entities) {
-                if (entity instanceof Entity && this.isCollidingWith(entity)) {
+                if (entity instanceof WorldEntity && this.isCollidingWith(entity)) {
                     entity.interact(this);
                 }
             }

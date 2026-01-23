@@ -1,7 +1,7 @@
 /** @import Player from "/js/Player.js" */
-import Entity from "/js/Entity.js";
+import WorldEntity from "./WorldEntity.js";
 
-export default class CropEntity extends Entity {
+export default class CropEntity extends WorldEntity {
     constructor(x, y) {
         super();
         this.x = x;
