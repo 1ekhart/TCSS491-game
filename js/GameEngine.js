@@ -154,6 +154,12 @@ export default class GameEngine {
             }
         }
 
+        // backpack
+        if (this.click && this.inventoryUI) {
+            this.inventoryUI.handleBackpackClick(this.click);
+            this.click = null;
+        }
+
         for (let i = this.entities.length - 1; i >= 0; --i) {
             if (this.entities[i].removeFromWorld) {
                 this.entities.splice(i, 1);
