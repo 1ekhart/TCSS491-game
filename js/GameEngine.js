@@ -137,6 +137,10 @@ export default class GameEngine {
         for (const entity of this.entities) {
             entity.draw(this.ctx, this);
         }
+
+        if (this.inventoryUI) {
+            this.inventoryUI.draw();
+        }
     };
 
     update() {
