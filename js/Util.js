@@ -1,10 +1,40 @@
 //Global Constants
 export const CONSTANTS = {
     DEBUG: true,
-    SCALE: 2,
+    SCALE: 2.5,
     BITWIDTH: 16,
     TICK_TIME: 1 / 60,  // the amount of time per engine tick
+    EPSILON: 0.005
 };
+
+/**
+ * @param {Number} num1 The first value we want to compare
+ * @param {Number} num2 The second value we want  to compare
+ * @param {Number} epsilon The epsilon, if the difference is this number then it's functionally equal.
+ * @returns returns 0 if equal (with a margin of epsilon), 1 if num1 > num2, -1 if num1 < num2 
+ */
+export const compareFloat = (num1, num2, epsilon) => {
+    var difference = num1 - num2;
+    if (Math.abs(difference) < epsilon) {
+        return 0;
+    } else if (difference > 0) { // positive difference means num1 is greater than num2
+        return 1;
+    }
+    return -1;
+};
+
+/**
+ * 
+ * @param {Number} num1 number that will be rounded to 0 if within the epsilon.
+ * @param {Number} epsilon the epsilon.
+ * @returns returns 0 if within the margins of zero, otherwise returns the number normally
+ */
+export const roundIfCloseToZero = (num1, epsilon) => {
+    if (Math.abs(num1) < epsilon) {
+        return 0;
+    }
+    return num1;
+}
 
 /**
  * @param {Number} n

@@ -1,5 +1,6 @@
 /** @import Player from "/js/Player.js" */
 import WorldEntity from "/js/AbstractClasses/WorldEntity.js";
+import { CONSTANTS } from "/js/Util.js";
 
 export default class CropEntity extends WorldEntity {
     constructor(x, y) {
@@ -19,6 +20,6 @@ export default class CropEntity extends WorldEntity {
     /** @param {CanvasRenderingContext2D} ctx */
     draw(ctx) {
         ctx.fillStyle = "#aaff00"
-        ctx.fillRect(this.x, this.y, this.width, this.height);
+        ctx.fillRect(this.x * CONSTANTS.SCALE, this.y * CONSTANTS.SCALE, this.width * CONSTANTS.SCALE, this.height * CONSTANTS.SCALE);
     }
 }

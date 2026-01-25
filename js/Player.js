@@ -1,11 +1,14 @@
 /** @import GameEngine from "/js/GameEngine.js" */
 import WorldEntity from "/js/AbstractClasses/WorldEntity.js";
 import Animator from "/js/GeneralUtils/Animator.js";
-import { CONSTANTS } from "/js/Util.js";
+import { CONSTANTS, roundIfCloseToZero} from "/js/Util.js";
 
 const floor = Math.floor;
 
 const WALKING_SPEED = 6;
+const JUMPING_STRENGTH = -9.5;
+const GRAVITY = 0.75;
+const EPSILON = CONSTANTS.EPSILON;
 
 export default class Player extends WorldEntity {
     constructor(x, y) {
@@ -66,16 +69,16 @@ export default class Player extends WorldEntity {
         // movement
         // TODO: adjust acceleration & drag to 'feel' better, these are placeholder values
         if (engine.input.left && this.xVelocity > -WALKING_SPEED) {
-            this.xVelocity -= 1; // acceleration
+            this.xVelocity -= GRAVITY; // acceleration
         } else if (engine.input.right && this.xVelocity < WALKING_SPEED) {
-            this.xVelocity += 1;
-        } else if (this.xVelocity > 0) {
-            this.xVelocity -= 0.5; // drag
-        } else if (this.xVelocity < 0) {
-            this.xVelocity += 0.5;
+            this.xVelocity += GRAVITY;
+        } else if (roundIfCloseToZero(this.xVelocity, EPSILON) > 0) {
+            this.xVelocity -= (GRAVITY / 2); // drag
+        } else if (roundIfCloseToZero(this.xVelocity, EPSILON) < 0) {
+            this.xVelocity += (GRAVITY / 2);
         }
         if (this.onGround && engine.input.jump) {
-            this.yVelocity = -11; // jump strength
+            this.yVelocity = JUMPING_STRENGTH; // jump strength
         }
 
         if (engine.input.left) {
@@ -90,33 +93,35 @@ export default class Player extends WorldEntity {
 
 
         // gravity
-        if (engine.input.jump) {
-            this.yVelocity += 0.5;
+        if (engine.input.jump && this.yVelocity < 0) {
+            this.yVelocity += (GRAVITY / 2);
+        } else if (engine.input.down){
+            this.yVelocity += (GRAVITY * 1.5);
         } else {
-            this.yVelocity += 1;
+            this.yVelocity += GRAVITY;
         }
 
         // collision
         const level = engine.getLevel();
 
         // attempt to move, reducing velocity until no collision occurs (to touch the wall exactly)
-        while (this.xVelocity > 0 && level.checkIfBoxCollides(this.x + this.xVelocity, this.y, this.width, this.height)) {
-            this.xVelocity -= 1;
+        while (roundIfCloseToZero(this.xVelocity, EPSILON) > 0 && level.checkIfBoxCollides(this.x + this.xVelocity, this.y, this.width, this.height)) {
+            this.xVelocity -= GRAVITY;
         }
-        while (this.xVelocity < 0 && level.checkIfBoxCollides(this.x + this.xVelocity, this.y, this.width, this.height)) {
-            this.xVelocity += 1;
+        while (roundIfCloseToZero(this.xVelocity, EPSILON) < 0 && level.checkIfBoxCollides(this.x + this.xVelocity, this.y, this.width, this.height)) {
+            this.xVelocity += GRAVITY;
         }
-        this.x += this.xVelocity;
+        this.x += roundIfCloseToZero(this.xVelocity, EPSILON);
 
         this.onGround = false;
-        while (this.yVelocity > 0 && level.checkIfBoxCollides(this.x, this.y + this.yVelocity, this.width, this.height)) {
-            this.yVelocity -= 1;
+        while (roundIfCloseToZero(this.yVelocity, EPSILON) > 0 && level.checkIfBoxCollides(this.x, this.y + this.yVelocity, this.width, this.height)) {
+            this.yVelocity -= GRAVITY;
             this.onGround = true; // we collided with something while moving down
         }
-        while (this.yVelocity < 0 && level.checkIfBoxCollides(this.x, this.y + this.yVelocity, this.width, this.height)) {
-            this.yVelocity += 1;
+        while (roundIfCloseToZero(this.yVelocity, EPSILON) < 0 && level.checkIfBoxCollides(this.x, this.y + this.yVelocity, this.width, this.height)) {
+            this.yVelocity += GRAVITY;
         }
-        this.y += this.yVelocity;
+        this.y += roundIfCloseToZero(this.yVelocity, EPSILON);
 
         // this.y = 240;
     }
@@ -126,10 +131,12 @@ export default class Player extends WorldEntity {
      * @param {GameEngine} engine
      */
     draw(ctx, engine) {
-        this.animations[this.animationState].drawFrame(CONSTANTS.TICK_TIME, ctx, this.x - 17, floor(this.y) - this.height + 32, !this.isRight, CONSTANTS.SCALE)
+        this.animations[this.animationState].drawFrame(CONSTANTS.TICK_TIME, ctx, 
+            this.x * CONSTANTS.SCALE - (18 * CONSTANTS.SCALE), floor(this.y * CONSTANTS.SCALE) - (this.height * CONSTANTS.SCALE) + (32 * CONSTANTS.SCALE),
+             !this.isRight, 2 * CONSTANTS.SCALE)
         if (CONSTANTS.DEBUG == true) {
             ctx.strokeStyle = "#aa0000";
-            ctx.strokeRect(floor(this.x), floor(this.y), this.width, this.height);
+            ctx.strokeRect(floor(this.x * CONSTANTS.SCALE), floor(this.y * CONSTANTS.SCALE), this.width * CONSTANTS.SCALE, this.height * CONSTANTS.SCALE);
         }
     }
 }

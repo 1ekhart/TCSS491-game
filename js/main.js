@@ -28,8 +28,8 @@ ASSET_MANAGER.downloadAll(() => {
     gameEngine.addEntity(new CollisionTester());
     gameEngine.addEntity(new CropEntity(2 * 32, 8 * 32));
     gameEngine.addEntity(new CropEntity(5 * 32, 8 * 32));
-    gameEngine.addEntity(new Interactable(3 * 32, 2 * 32, 64, 64, gameEngine));
-    gameEngine.addEntity(new Interactable(1 * 32, 8 * 32, 64, 64, gameEngine));
+    gameEngine.addEntity(new Interactable(3 * 32 - 16, 2 * 32 - 16, 64, 64, gameEngine));
+    gameEngine.addEntity(new Interactable(1 * 32 - 16, 8 * 32 - 16, 64, 64, gameEngine));
     gameEngine.setPlayer(new Player(48, 32));
 
     gameEngine.start();

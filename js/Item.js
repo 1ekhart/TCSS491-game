@@ -101,6 +101,6 @@ export default class Item extends WorldEntity {
         } else {
         ctx.fillStyle = "#ff00ff"
         }
-        ctx.fillRect(this.x, this.y, HITBOX_WIDTH, HITBOX_HEIGHT);
+        ctx.fillRect(this.x * CONSTANTS.SCALE, this.y * CONSTANTS.SCALE, HITBOX_WIDTH * CONSTANTS.SCALE, HITBOX_HEIGHT * CONSTANTS.SCALE);
     }
 }

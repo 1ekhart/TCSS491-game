@@ -3,7 +3,7 @@ import EntityInteractable from './AbstractClasses/EntityInteractable.js';
 import OnScreenTextSystem from '/js/GeneralUtils/OnScreenText.js';
 import Player from '/js/Player.js';
 import Item from '/js/Item.js';
-import { randomIntRange } from '/js/Util.js';
+import { randomIntRange, CONSTANTS } from '/js/Util.js';
 
 export default class Interactable extends EntityInteractable {
     constructor(x, y, width, height, engine) {
@@ -20,7 +20,8 @@ export default class Interactable extends EntityInteractable {
         this.toggleable = true;
 
         this.toggleState = false;
-        this.prompt = new OnScreenTextSystem(this, this.x + (width / 4), this.y - (height/2), "Press E to Interact", false);
+        this.prompt = new OnScreenTextSystem(this, 
+            CONSTANTS.SCALE * this.x + (width / 4), CONSTANTS.SCALE * this.y - (height / 4), "Press E to Interact", false);
         engine.addEntity(this.prompt);
     }
 
@@ -80,6 +81,11 @@ export default class Interactable extends EntityInteractable {
     draw(ctx, engine) {
         // draw *something* if a subclass doesn't correctly draw anything
         ctx.fillStyle = this.color;
-        ctx.fillRect(this.x, this.y, this.width / 2, this.height / 2);
+        ctx.fillRect(this.x * CONSTANTS.SCALE + (this.width * CONSTANTS.SCALE / 4), this.y * CONSTANTS.SCALE + (this.height * CONSTANTS.SCALE / 4), 
+        CONSTANTS.SCALE * this.width / 2, CONSTANTS.SCALE * this.height / 2);
+        if (CONSTANTS.DEBUG == true) {
+            ctx.strokeStyle = "#aa0000";
+            ctx.strokeRect(Math.floor(this.x * CONSTANTS.SCALE), Math.floor(this.y * CONSTANTS.SCALE), this.width * CONSTANTS.SCALE, this.height * CONSTANTS.SCALE);
+        }
     }
 }

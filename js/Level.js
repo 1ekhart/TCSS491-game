@@ -1,5 +1,6 @@
 /** @import GameEngine from "/js/GameEngine.js" */
 import Interactable from './Interactable.js';
+import { CONSTANTS } from '/js/Util.js';
 
 // size of a tile in screen pixels
 const TILE_SIZE = 32;
@@ -62,19 +63,19 @@ export default class LevelManager {
     //Handling level transitions and player movement
     update(engine) {
         const player = engine.getPlayer();
-        if (player.x < -0.25 * TILE_SIZE && Math.floor(player.y) >= 7 * TILE_SIZE && Math.floor(player.y) < 8 * TILE_SIZE && this.data === tileData1) {
+        if (player.x <= -0 * TILE_SIZE && Math.floor(player.y) >= 7 * TILE_SIZE && Math.floor(player.y) < 8 * TILE_SIZE && this.data === tileData1) {
             console.log("1 to 2")
             this.data = tileData2;
             player.x = 8 * TILE_SIZE ;
             player.y = (7 + Y_FIX) * TILE_SIZE - 1;
         }
-        if (player.x > 8.25 * TILE_SIZE && Math.floor(player.y) >= 7 * TILE_SIZE && Math.floor(player.y) < 8 * TILE_SIZE && this.data === tileData2) {
+        if (player.x > 8 * TILE_SIZE && Math.floor(player.y) >= 7 * TILE_SIZE && Math.floor(player.y) < 8 * TILE_SIZE && this.data === tileData2) {
             console.log("2 to 1")
             this.data = tileData1;
             player.x = 0 * TILE_SIZE;
             player.y = (7 + Y_FIX) * TILE_SIZE - 1;
         }
-        if (player.x < -0.25 * TILE_SIZE && Math.floor(player.y) >= 7 * TILE_SIZE && Math.floor(player.y) < 8 * TILE_SIZE && this.data === tileData2) {
+        if (player.x < -0 * TILE_SIZE && Math.floor(player.y) >= 7 * TILE_SIZE && Math.floor(player.y) < 8 * TILE_SIZE && this.data === tileData2) {
             console.log("2 to 3")
             this.data = tileData3;
             player.x = 8 * TILE_SIZE;
@@ -127,7 +128,7 @@ export default class LevelManager {
                 if (tile > 0) {
                     // temporary box graphics for tiles
                     ctx.fillStyle = tileColors[tile];
-                    ctx.fillRect(column * TILE_SIZE, row * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+                    ctx.fillRect(column * TILE_SIZE * CONSTANTS.SCALE, row * TILE_SIZE * CONSTANTS.SCALE, TILE_SIZE * CONSTANTS.SCALE, TILE_SIZE * CONSTANTS.SCALE);
                 }
             }
         }
