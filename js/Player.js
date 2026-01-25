@@ -16,10 +16,6 @@ export default class Player extends WorldEntity {
         this.width = 24;
         this.height = 48;
 
-        this.xVelocity = 0;
-        this.yVelocity = 0;
-        this.onGround = false;
-
         // mapping from item name to # of that item the player has
         this.inventory = new Inventory();
 
@@ -96,26 +92,7 @@ export default class Player extends WorldEntity {
         }
 
         // collision
-        const level = engine.getLevel();
-
-        // attempt to move, reducing velocity until no collision occurs (to touch the wall exactly)
-        while (this.xVelocity > 0 && level.checkIfBoxCollides(this.x + this.xVelocity, this.y, this.width, this.height)) {
-            this.xVelocity -= 1;
-        }
-        while (this.xVelocity < 0 && level.checkIfBoxCollides(this.x + this.xVelocity, this.y, this.width, this.height)) {
-            this.xVelocity += 1;
-        }
-        this.x += this.xVelocity;
-
-        this.onGround = false;
-        while (this.yVelocity > 0 && level.checkIfBoxCollides(this.x, this.y + this.yVelocity, this.width, this.height)) {
-            this.yVelocity -= 1;
-            this.onGround = true; // we collided with something while moving down
-        }
-        while (this.yVelocity < 0 && level.checkIfBoxCollides(this.x, this.y + this.yVelocity, this.width, this.height)) {
-            this.yVelocity += 1;
-        }
-        this.y += this.yVelocity;
+        this.moveColliding(engine);
 
         // this.y = 240;
     }

@@ -8,6 +8,9 @@ export default class WorldEntity extends Entity {
         this.y = 0;
         this.width = 32;
         this.height = 32;
+        this.xVelocity = 0;
+        this.yVelocity = 0;
+        this.onGround = false;
     }
 
     /** returns `true` if this entity is colliding with `otherEntity`.
@@ -17,6 +20,30 @@ export default class WorldEntity extends Entity {
             (this.x + this.width - 1 < otherEntity.x) || (otherEntity.x + otherEntity.width - 1 < this.x) || // this LEFT of other OR this RIGHT of other OR
             (this.y + this.height - 1 < otherEntity.y) || (otherEntity.y + otherEntity.height - 1 < this.y)  // this ABOVE other OR this BELOW other
         );
+    }
+
+    /** @param {GameEngine} engine */
+    moveColliding() {
+        const level = engine.getLevel();
+
+        // attempt to move, reducing velocity until no collision occurs (to touch the wall exactly)
+        while (this.xVelocity > 0 && level.checkIfBoxCollides(this.x + this.xVelocity, this.y, this.width, this.height)) {
+            this.xVelocity -= 1;
+        }
+        while (this.xVelocity < 0 && level.checkIfBoxCollides(this.x + this.xVelocity, this.y, this.width, this.height)) {
+            this.xVelocity += 1;
+        }
+        this.x += this.xVelocity;
+
+        this.onGround = false;
+        while (this.yVelocity > 0 && level.checkIfBoxCollides(this.x, this.y + this.yVelocity, this.width, this.height)) {
+            this.yVelocity -= 1;
+            this.onGround = true; // we collided with something while moving down
+        }
+        while (this.yVelocity < 0 && level.checkIfBoxCollides(this.x, this.y + this.yVelocity, this.width, this.height)) {
+            this.yVelocity += 1;
+        }
+        this.y += this.yVelocity;
     }
 
     /** called when the player presses interact while colliding with this entity

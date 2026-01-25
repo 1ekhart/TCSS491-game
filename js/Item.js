@@ -6,7 +6,6 @@ import { CONSTANTS } from '/js/Util.js';
 const HITBOX_WIDTH = 16;
 const HITBOX_HEIGHT = 16;
 const PICKUP_COOLDOWN = 1; // the item can't be picked up for this amount of time;
-const GRAVITY = 1;
 
 export default class Item extends WorldEntity {
     constructor(itemID, x, y, initVelocityX, initVelocityY, quantity) {
@@ -36,27 +35,7 @@ export default class Item extends WorldEntity {
     }
 
     update(engine) {
-
-        const level = engine.getLevel();
-        // attempt to move, reducing velocity until no collision occurs (to touch the wall exactly)
-        while (this.xVelocity > 0 && level.checkIfBoxCollides(this.x + this.xVelocity, this.y, HITBOX_WIDTH, HITBOX_HEIGHT)) {
-            this.xVelocity -= GRAVITY;
-        }
-        while (this.xVelocity < 0 && level.checkIfBoxCollides(this.x + this.xVelocity, this.y, HITBOX_WIDTH, HITBOX_HEIGHT)) {
-            this.xVelocity += GRAVITY;
-        }
-
-        this.x += this.xVelocity;
-        this.onGround = false;
-
-        while (this.yVelocity > 0 && level.checkIfBoxCollides(this.x, this.y + this.yVelocity, HITBOX_WIDTH, HITBOX_HEIGHT)) {
-            this.yVelocity -= GRAVITY;
-            this.onGround = true; // we collided with something while moving down
-        }
-        while (this.yVelocity < 0 && level.checkIfBoxCollides(this.x, this.y + this.yVelocity, HITBOX_WIDTH, HITBOX_HEIGHT)) {
-            this.yVelocity += GRAVITY;
-        }
-        this.y += this.yVelocity;
+        this.moveColliding(engine);
 
         // do the timer for when the item's able to be picked up.
         if (this.pickable == false) {
