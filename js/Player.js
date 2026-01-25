@@ -126,7 +126,7 @@ export default class Player extends WorldEntity {
      * @param {GameEngine} engine
      */
     draw(ctx, engine) {
-        this.animations[this.animationState].drawFrame(CONSTANTS.TICK_TIME, ctx, this.x - 17, floor(this.y) - this.height + 32, !this.isRight)
+        this.animations[this.animationState].drawFrame(CONSTANTS.TICK_TIME, ctx, this.x - 17, floor(this.y) - this.height + 32, !this.isRight, CONSTANTS.SCALE)
         if (CONSTANTS.DEBUG == true) {
             ctx.strokeStyle = "#aa0000";
             ctx.strokeRect(floor(this.x), floor(this.y), this.width, this.height);

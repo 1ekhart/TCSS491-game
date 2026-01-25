@@ -13,6 +13,13 @@ export const CONSTANTS = {
 export const randomInt = n => Math.floor(Math.random() * n);
 
 /**
+ * @param {Number} max The maximum value
+ * @param {Number} min The minimum
+ * @returns Random Integer Between the min and max
+ */
+export const randomIntRange = (max, min) => Math.floor(Math.random() * (max - min) + min);
+
+/**
  * @param {Number} r Red Value
  * @param {Number} g Green Value
  * @param {Number} b Blue Value

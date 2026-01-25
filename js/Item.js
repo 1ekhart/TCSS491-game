@@ -37,6 +37,14 @@ export default class Item extends WorldEntity {
 
     update(engine) {
 
+        if (this.xVelocity > 0) {
+            this.xVelocity -= GRAVITY;
+        } if (this.xVelocity < 0) {
+            this.xVelocity += GRAVITY;
+        }
+
+        this.yVelocity += GRAVITY;
+
         const level = engine.getLevel();
         // attempt to move, reducing velocity until no collision occurs (to touch the wall exactly)
         while (this.xVelocity > 0 && level.checkIfBoxCollides(this.x + this.xVelocity, this.y, HITBOX_WIDTH, HITBOX_HEIGHT)) {

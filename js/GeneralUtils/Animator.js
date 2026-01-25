@@ -8,8 +8,13 @@ export default class Animator {
     };
 
     // draws the frame, pass the ctx, deltaTime (just CONSTANTS.TICK_TIME), the position and if it's flipped horizontally
-    drawFrame(tick, ctx, x, y, isFlipped) {
+    drawFrame(tick, ctx, x, y, isFlipped, scale) {
         this.elapsedTime += tick;
+
+        const theScale = scale;
+        if (!scale) {
+            theScale = CONSTANTS.SCALE;
+        }
 
         if (this.isDone()) {
             if (this.loop) {
@@ -28,15 +33,15 @@ export default class Animator {
             ctx.drawImage(this.spritesheet,
             this.xStart + frame * (this.width + this.framePadding), this.yStart,
             this.width, this.height,
-            -x - this.width*CONSTANTS.SCALE, y,
-            this.width*CONSTANTS.SCALE, this.height*CONSTANTS.SCALE);
+            -x - this.width*theScale, y,
+            this.width*theScale, this.height*theScale);
             ctx.restore();
         } else {
             ctx.drawImage(this.spritesheet,
             this.xStart + frame * (this.width + this.framePadding), this.yStart,
             this.width, this.height,
             x, y,
-            this.width*CONSTANTS.SCALE, this.height*CONSTANTS.SCALE);
+            this.width*theScale, this.height * theScale);
         }
     };
 
