@@ -6,6 +6,7 @@ import CollisionTester from "/js/CollisionTester.js";
 import CropEntity from "/js/CropEntity.js";
 import InGameClock from "/js/InGameClock.js";
 import Interactable from "/js/Interactable.js";
+import InventoryUI from "/js/InventoryUI.js";
 
 const gameEngine = new GameEngine();
 
@@ -21,10 +22,14 @@ ASSET_MANAGER.downloadAll(() => {
     ctx.font = "12px monospace";
     gameEngine.init(ctx);
 
+    const player = new Player(48, 32);
+    const inventoryUI = new InventoryUI(player, ctx);
+
     // TODO: once the UI is implemented, the main menu or some manager class should be the first entity added
     // it will then spawn all the other entities as necessary
     gameEngine.setLevel(new Level());
-    gameEngine.setPlayer(new Player(48, 32));
+    gameEngine.setPlayer(player);
+    gameEngine.inventoryUI = inventoryUI;
     gameEngine.addEntity(new InGameClock());
     gameEngine.addEntity(new CollisionTester());
     gameEngine.addEntity(new CropEntity(2 * 32, 8 * 32));

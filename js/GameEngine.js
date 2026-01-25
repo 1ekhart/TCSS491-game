@@ -137,6 +137,10 @@ export default class GameEngine {
         for (const entity of this.entities) {
             entity.draw(this.ctx, this);
         }
+
+        if (this.inventoryUI) {
+            this.inventoryUI.draw();
+        }
     };
 
     update() {
@@ -148,6 +152,12 @@ export default class GameEngine {
             if (!entity.removeFromWorld) {
                 entity.update(this);
             }
+        }
+
+        // backpack
+        if (this.click && this.inventoryUI) {
+            this.inventoryUI.handleBackpackClick(this.click);
+            this.click = null;
         }
 
         for (let i = this.entities.length - 1; i >= 0; --i) {

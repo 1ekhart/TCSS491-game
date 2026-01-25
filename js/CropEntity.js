@@ -13,7 +13,13 @@ export default class CropEntity extends WorldEntity {
     /** @param {Player} player */
     interact(player) {
         this.removeFromWorld = true;
-        player.inventory["lettuce"] += 1;
+
+        const item = {
+            itemID : "Lettuce",
+            quantity: 1
+        };
+
+        player.inventory.addItem(item);
     }
 
     /** @param {CanvasRenderingContext2D} ctx */

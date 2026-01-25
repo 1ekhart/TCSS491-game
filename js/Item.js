@@ -78,8 +78,12 @@ export default class Item extends WorldEntity {
     }
 
     pickUpItem(player) {
-        console.log("Player picked up item");
-        this.removeFromWorld = true;
+        if (player.inventory.addItem({itemID: this.itemID, quantity: this.quantity})) {
+            console.log("Player picked up item");
+            this.removeFromWorld = true;
+        } else {
+            console.log("Inventory full, cannot pick up item");
+        }
     }
 
     /**

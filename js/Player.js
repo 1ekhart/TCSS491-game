@@ -1,6 +1,7 @@
 /** @import GameEngine from "/js/GameEngine.js" */
 import WorldEntity from "/js/AbstractClasses/WorldEntity.js";
 import Animator from "/js/GeneralUtils/Animator.js";
+import Inventory from "/js/Inventory.js";
 import { CONSTANTS } from "/js/Util.js";
 
 const floor = Math.floor;
@@ -20,9 +21,7 @@ export default class Player extends WorldEntity {
         this.onGround = false;
 
         // mapping from item name to # of that item the player has
-        this.inventory = {
-            "lettuce": 0,
-        };
+        this.inventory = new Inventory();
 
         //stuff for animations
         this.animations = [];
