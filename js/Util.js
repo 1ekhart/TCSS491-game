@@ -1,10 +1,13 @@
 //Global Constants
 export const CONSTANTS = {
     DEBUG: true,
-    SCALE: 2.5,
+    SCALE: 2,
     BITWIDTH: 16,
+    TILESIZE: 32,
     TICK_TIME: 1 / 60,  // the amount of time per engine tick
-    EPSILON: 0.005
+    EPSILON: 0.005,
+    CANVAS_WIDTH: 1024,
+    CANVAS_HEIGHT: 768
 };
 
 /**

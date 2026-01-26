@@ -33,7 +33,7 @@ export default class OnScreenTextSystem extends Entity {
         }
         const width = ctx.measureText(this.text).width;
         ctx.fillStyle = "#000000"
-        ctx.font = `${12 * CONSTANTS.SCALE}px monospace`;
-        ctx.fillText(this.text, this.x - (width/2), this.y);
+        ctx.font = `${12 * 1}px monospace`;
+        ctx.fillText(this.text, this.x - (width/2) - engine.camera.x, this.y);
     }
 }

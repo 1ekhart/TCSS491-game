@@ -21,7 +21,7 @@ export default class Interactable extends EntityInteractable {
 
         this.toggleState = false;
         this.prompt = new OnScreenTextSystem(this,
-            CONSTANTS.SCALE * this.x + (width / 4), CONSTANTS.SCALE * this.y - (height / 4), "Press E to Interact", false);
+            this.x + (width / 4), this.y - (height / 4), "Press E to Interact", false);
         engine.addEntity(this.prompt);
     }
 
@@ -76,16 +76,16 @@ export default class Interactable extends EntityInteractable {
 
     /**
      * @param {CanvasRenderingContext2D} ctx
-     * @param {GameEngine} engine
+     * @param {GameEngine} enginea 
      */
     draw(ctx, engine) {
         // draw *something* if a subclass doesn't correctly draw anything
         ctx.fillStyle = this.color;
-        ctx.fillRect(this.x * CONSTANTS.SCALE + (this.width * CONSTANTS.SCALE / 4), this.y * CONSTANTS.SCALE + (this.height * CONSTANTS.SCALE / 4),
-        CONSTANTS.SCALE * this.width / 2, CONSTANTS.SCALE * this.height / 2);
+        ctx.fillRect((this.x - engine.camera.x) + (this.width / 4), this.y + (this.height / 4),
+        this.width / 2, this.height / 2);
         if (CONSTANTS.DEBUG == true) {
             ctx.strokeStyle = "#aa0000";
-            ctx.strokeRect(Math.floor(this.x * CONSTANTS.SCALE), Math.floor(this.y * CONSTANTS.SCALE), this.width * CONSTANTS.SCALE, this.height * CONSTANTS.SCALE);
+            ctx.strokeRect(Math.floor(this.x - engine.camera.x), Math.floor(this.y), this.width, this.height);
         }
     }
 }

@@ -104,11 +104,11 @@ export default class Player extends WorldEntity {
      */
     draw(ctx, engine) {
         this.animations[this.animationState].drawFrame(CONSTANTS.TICK_TIME, ctx,
-            this.x * CONSTANTS.SCALE - (18 * CONSTANTS.SCALE), floor(this.y * CONSTANTS.SCALE) - (this.height * CONSTANTS.SCALE) + (32 * CONSTANTS.SCALE),
-             !this.isRight, 2 * CONSTANTS.SCALE)
+            (this.x - (18)) - engine.camera.x, floor(this.y) - (this.height) + (32),
+             !this.isRight, 2)
         if (CONSTANTS.DEBUG == true) {
             ctx.strokeStyle = "#aa0000";
-            ctx.strokeRect(floor(this.x * CONSTANTS.SCALE), floor(this.y * CONSTANTS.SCALE), this.width * CONSTANTS.SCALE, this.height * CONSTANTS.SCALE);
+            ctx.strokeRect(floor(this.x ) - engine.camera.x, floor(this.y), this.width, this.height);
         }
     }
 }

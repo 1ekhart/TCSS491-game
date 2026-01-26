@@ -26,6 +26,6 @@ export default class CropEntity extends WorldEntity {
     /** @param {CanvasRenderingContext2D} ctx */
     draw(ctx) {
         ctx.fillStyle = "#aaff00"
-        ctx.fillRect(this.x * CONSTANTS.SCALE, this.y * CONSTANTS.SCALE, this.width * CONSTANTS.SCALE, this.height * CONSTANTS.SCALE);
+        ctx.fillRect(this.x, this.y, this.width, this.height);
     }
 }
