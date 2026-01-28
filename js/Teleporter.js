@@ -36,13 +36,17 @@ export default class Teleporter extends EntityInteractable {
     interact(player) {
         let theX = 1;
         let theY = 1;
-        if (this.level == 2) {
+        if (this.level == 1) {
+            theX = 17;
+            theY = 1;
+        } else if (this.level == 2) {
             theX = 2;
             theY = 2;
-        } else if (this.level == 1) {
-            theX = 18;
-            theY = 2;
+        } else if (this.level == 3) {
+            theX = 2;
+            theY = 5
         }
+        
         this.engine.camera.teleport(this.level, theX, theY);
     }
 

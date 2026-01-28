@@ -9,6 +9,7 @@ import Interactable from "/js/Interactable.js";
 import InventoryUI from "/js/InventoryUI.js";
 import { CONSTANTS } from "/js/Util.js";
 import Teleporter from "/js/Teleporter.js";
+import Oven from "/js/Oven.js";
 
 const gameEngine = new GameEngine();
 
@@ -41,8 +42,10 @@ ASSET_MANAGER.downloadAll(() => {
     // gameEngine.addEntity(new CropEntity(5 * 32, 8 * 32));
     gameEngine.addEntity(new Interactable(3 * 32 - 16, 2 * 32 - 16, 64, 64, gameEngine));
     gameEngine.addEntity(new Interactable(1 * 32 - 16, 8 * 32 - 16, 64, 64, gameEngine));
+    gameEngine.addEntity(new Oven(13 * tileSize - .5 * tileSize, 8 * tileSize - .5 * tileSize, 64, 64, gameEngine));
     gameEngine.addEntity(new Teleporter(gameEngine, 4*tileSize, 8*tileSize, tileSize, tileSize, 1))
     gameEngine.addEntity(new Teleporter(gameEngine, 7*tileSize, 8*tileSize, tileSize, tileSize, 2))
+    gameEngine.addEntity(new Teleporter(gameEngine, 10*tileSize, 8*tileSize, tileSize, tileSize, 3))
     // ctx.translate(-CONSTANTS.CANVAS_WIDTH / 4, 0)
 
     gameEngine.start();
