@@ -7,6 +7,8 @@ import CropEntity from "/js/CropEntity.js";
 import InGameClock from "/js/InGameClock.js";
 import Interactable from "/js/Interactable.js";
 import InventoryUI from "/js/InventoryUI.js";
+import PrepStation from "/js/PrepStation.js";
+import CookingStation from "/js/CookingStation.js";
 
 const gameEngine = new GameEngine();
 
@@ -36,6 +38,10 @@ ASSET_MANAGER.downloadAll(() => {
     gameEngine.addEntity(new CropEntity(5 * 32, 8 * 32));
     gameEngine.addEntity(new Interactable(3 * 32 - 16, 2 * 32 - 16, 64, 64, gameEngine));
     gameEngine.addEntity(new Interactable(1 * 32 - 16, 8 * 32 - 16, 64, 64, gameEngine));
+
+    gameEngine.addEntity(new PrepStation(3 * 32, 9 * 32 - 32, 32, 32, new CookingStation("1"), gameEngine));
+
+
 
     gameEngine.start();
 });
