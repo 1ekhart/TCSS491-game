@@ -156,7 +156,11 @@ export default class GameEngine {
 
         // backpack
         if (this.click && this.inventoryUI) {
-            this.inventoryUI.handleBackpackClick(this.click);
+            const clickedButton = this.inventoryUI.handleBackpackClick(this.click);
+
+            if (!clickedButton) {
+                this.inventoryUI.handleSlotClick(this.click);
+            }
             this.click = null;
         }
 
