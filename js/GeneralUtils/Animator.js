@@ -45,6 +45,26 @@ export default class Animator {
         }
     };
 
+    drawFramePlain(ctx, x, y, scale, frame) {
+        let theScale;
+        if (!scale) {
+            theScale = CONSTANTS.SCALE;
+        } else {
+            theScale = scale;
+        }
+        let theFrame;
+        if (!frame) {
+            theFrame = 0;
+        } else {
+            theFrame = frame;
+        }
+        ctx.drawImage(this.spritesheet,
+        this.xStart + theFrame * (this.width + this.framePadding), this.yStart,
+        this.width, this.height,
+        x, y,
+        Math.floor(this.width*theScale), Math.floor(this.height * theScale));
+    }
+
     currentFrame() {
         return Math.floor(this.elapsedTime / this.frameDuration)
     };

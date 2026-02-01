@@ -3,18 +3,17 @@ import AssetManager from "/js/AssetManager.js";
 import Level from "/js/Level.js";
 import Player from "/js/Player.js";
 import CollisionTester from "/js/CollisionTester.js";
-import CropEntity from "/js/CropEntity.js";
 import InGameClock from "/js/InGameClock.js";
-import Interactable from "/js/Interactable.js";
 import InventoryUI from "/js/InventoryUI.js";
 import { CONSTANTS } from "/js/Util.js";
-import Teleporter from "/js/Teleporter.js";
 
 const gameEngine = new GameEngine();
 
 const ASSET_MANAGER = new AssetManager();
 
 ASSET_MANAGER.queueDownload("/Assets/Player/IdleRun-Sheet.png")
+ASSET_MANAGER.queueDownload("/Assets/WorldItems/grey-pot.png")
+ASSET_MANAGER.queueDownload("/Assets/WorldItems/PotatoPlant-Sheet.png")
 
 
 ASSET_MANAGER.downloadAll(() => {

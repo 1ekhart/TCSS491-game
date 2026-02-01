@@ -1,5 +1,6 @@
 /** @import GameEngine from "/js/GameEngine.js" */
 import Interactable from './Interactable.js';
+import InGameClock from '/js/InGameClock.js';
 import PottedPlant from '/js/PottedPlant.js';
 import Teleporter from '/js/Teleporter.js';
 import { CONSTANTS } from '/js/Util.js';
@@ -105,6 +106,7 @@ export default class LevelManager {
         this.player.y = 1 * TILE_SIZE;
         this.x = this.player.x;
         this.y = this.player.y;
+        // this.reloadClock();
         
         //  keeps track of entities so we can load or destroy all of the entities in a particular scene.
         
@@ -123,13 +125,14 @@ export default class LevelManager {
         this.sceneEntities.push(new Interactable(2 * TILE_SIZE - (TILE_SIZE/2), 8 * TILE_SIZE - (TILE_SIZE/2), TILE_SIZE*2, TILE_SIZE*2, this.engine));
         this.sceneEntities.push(new Teleporter(this.engine, 4*TILE_SIZE, 8*TILE_SIZE, TILE_SIZE, TILE_SIZE, 1));
         this.sceneEntities.push(new Teleporter(this.engine, 7*TILE_SIZE, 8*TILE_SIZE, TILE_SIZE, TILE_SIZE, 2));
-        this.sceneEntities.push(new PottedPlant(this.engine, 12 * TILE_SIZE, 8 * TILE_SIZE, TILE_SIZE, TILE_SIZE, 2, this.engine.getClock().dayCount + 2));
-        this.sceneEntities.push(new PottedPlant(this.engine, 15 * TILE_SIZE, 8 * TILE_SIZE, TILE_SIZE, TILE_SIZE, 2, this.engine.getClock().dayCount + 1));
+        this.sceneEntities.push(new PottedPlant(this.engine, 12 * TILE_SIZE, 8 * TILE_SIZE, TILE_SIZE, TILE_SIZE, 3, this.engine.getClock().dayCount));
+        this.sceneEntities.push(new PottedPlant(this.engine, 15 * TILE_SIZE, 8 * TILE_SIZE, TILE_SIZE, TILE_SIZE, 3, this.engine.getClock().dayCount));
 
         const engine = this.engine;
         this.sceneEntities.forEach(function (entity) {
             engine.addEntity(entity);
         })
+        // this.reloadClock();
     }
 
     //Initialize level 2
@@ -146,8 +149,15 @@ export default class LevelManager {
         this.sceneEntities.forEach(function (entity) {
             engine.addEntity(entity);
         })
+        this.reloadClock();
     }
 
+    reloadClock() {
+        const clock = this.engine.getClock();
+        this.engine.setClock(new InGameClock());
+        this.engine.getClock().removeFromWorld = true;
+        this.engine.setClock(clock);
+    }
     teleport(level, x, y) {
         if (level == 2) {
             this.loadLevel2();

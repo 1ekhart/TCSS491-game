@@ -23,6 +23,10 @@ export default class OnScreenTextSystem extends Entity {
         this.isOn = false;
     }
 
+    changeText(newText) {
+        this.text = newText;
+    }
+
     /**
      * @param {CanvasRenderingContext2D} ctx
      * @param {GameEngine} engine
