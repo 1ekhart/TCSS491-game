@@ -76,11 +76,15 @@ export default class GameEngine {
             this.mouse = getXandY(e);
         });
 
-        this.ctx.canvas.addEventListener("click", e => {
+        this.ctx.canvas.addEventListener("mousedown", e => {
             if (this.options.debugging) {
                 console.log("CLICK", getXandY(e));
             }
             this.click = getXandY(e);
+        });
+
+        this.ctx.canvas.addEventListener("mouseup", e => {
+            this.click = null;
         });
 
         this.ctx.canvas.addEventListener("wheel", e => {

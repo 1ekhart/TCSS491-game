@@ -27,6 +27,7 @@ export default class Player extends WorldEntity {
         this.loadAnimations();
         this.animationState = "Idle"
         this.isRight = true;
+        this.haltMovement = false;
     }
 
     loadAnimations() {
@@ -37,7 +38,7 @@ export default class Player extends WorldEntity {
         this.run = new Animator(ASSET_MANAGER.getAsset("/Assets/Player/IdleRun-Sheet.png"), 0, 32, 32, 32, 6, .25, 0, false, true);
         this.animations["Run"] = this.run;
 
-        this.idleAttack = new Animator(ASSET_MANAGER.getAsset("/Assets/Player/IdleRun-Sheet.png"), 0, 64, 32, 32, 6, .05, 0, false, false);
+        this.idleAttack = new Animator(ASSET_MANAGER.getAsset("/Assets/Player/IdleRun-Sheet.png"), 0, 64, 32, 32, 6, .1, 0, false, false);
         this.animations["IdleAttack"] = this.idleAttack;
     }
 
@@ -74,25 +75,32 @@ export default class Player extends WorldEntity {
             this.yVelocity = JUMPING_STRENGTH;
         }
 
-        if (engine.input.left) {
-            this.setAnimationState("Run");
-            this.isRight = false;
-        } else if (engine.input.right) {
-            this.setAnimationState("Run");
-            this.isRight = true;
-        } else {
-            this.setAnimationState("Idle");
-        }
-
-
-        // gravity
-        if (engine.input.jump && this.yVelocity < 0) {
-            this.yVelocity += (GRAVITY / 2);
-        } else if (engine.input.down){
-            this.yVelocity += (GRAVITY * 1.5);
+        if (this.haltMovement == false) {
+            if (engine.click) {
+                console.log("CLICK")
+                this.setAnimationState("IdleAttack")
+                this.haltMovement = true;
+            } else if (engine.input.left) {
+                this.setAnimationState("Run");
+                this.isRight = false;
+            } else if (engine.input.right) {
+                this.setAnimationState("Run");
+                this.isRight = true;
+            } else {
+                this.setAnimationState("Idle");
+            }
+            // gravity
+            if (engine.input.jump && this.yVelocity < 0) {
+                this.yVelocity += (GRAVITY / 2);
+            } else if (engine.input.down){
+                this.yVelocity += (GRAVITY * 1.5);
+            } else {
+                this.yVelocity += GRAVITY;
+            }
         } else {
             this.yVelocity += GRAVITY;
         }
+
 
         // collision
         this.moveColliding(engine);
@@ -103,6 +111,8 @@ export default class Player extends WorldEntity {
      * @param {GameEngine} engine
      */
     draw(ctx, engine) {
+        if (this.haltMovement === true && this.animations[this.animationState].isDone()) {this.goDefaultState();}
+
         this.animations[this.animationState].drawFrame(CONSTANTS.TICK_TIME, ctx,
             (this.x - (18)) - engine.camera.x, floor(this.y) - (this.height) + (32) - floor(engine.camera.y),
              !this.isRight, 2)
@@ -110,5 +120,11 @@ export default class Player extends WorldEntity {
             ctx.strokeStyle = "#aa0000";
             ctx.strokeRect(floor(this.x ) - engine.camera.x, this.y - engine.camera.y, this.width, this.height);
         }
+    }
+
+    goDefaultState() {
+        this.haltMovement = false;
+        this.animations[this.animationState].resetTimer();
+        this.setAnimationState("Idle")
     }
 }

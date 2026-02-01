@@ -13,7 +13,7 @@ const Potato = {
     width: 16,
     height: 32,
     regrows: false,
-    growTime: 2,
+    growTime: 3,
     scale: 2,
     assetName: "/Assets/WorldItems/PotatoPlant-Sheet.png"
 }
