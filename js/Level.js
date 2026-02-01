@@ -4,6 +4,8 @@ import InGameClock from '/js/InGameClock.js';
 import PottedPlant from '/js/PottedPlant.js';
 import Teleporter from '/js/Teleporter.js';
 import Oven from "/js/Oven.js";
+import PrepStation from "/js/PrepStation.js";
+import CookingStation from "/js/CookingStation.js";
 import { CONSTANTS } from '/js/Util.js';
 
 // size of a tile in screen pixels
@@ -153,12 +155,10 @@ export default class LevelManager {
         this.data = level3;
 
         this.sceneEntities = [];
-        this.sceneEntities.push(new Interactable(3 * TILE_SIZE - 16, 2 * TILE_SIZE - 16, 64, 64, this.engine));
-        this.sceneEntities.push(new Interactable(1 * TILE_SIZE - 16, 8 * TILE_SIZE - 16, 64, 64, this.engine));
-        this.sceneEntities.push(new Teleporter(this.engine, 4*TILE_SIZE, 8*TILE_SIZE, TILE_SIZE, TILE_SIZE, 1));
-        this.sceneEntities.push(new Teleporter(this.engine, 7*TILE_SIZE, 8*TILE_SIZE, TILE_SIZE, TILE_SIZE, 2));
-        // this.sceneEntities.push(new Teleporter(this.engine, 10*TILE_SIZE, 8*TILE_SIZE, TILE_SIZE, TILE_SIZE, 3));
-        this.sceneEntities.push(new Oven(13 * TILE_SIZE - .5 * TILE_SIZE, 8 * TILE_SIZE - .5 * TILE_SIZE, 64, 64, this.engine));
+        this.sceneEntities.push(new Teleporter(this.engine, 6*TILE_SIZE, 16*TILE_SIZE, TILE_SIZE, TILE_SIZE, 1));
+        this.sceneEntities.push(new Teleporter(this.engine, 9*TILE_SIZE, 16*TILE_SIZE, TILE_SIZE, TILE_SIZE, 2));
+        this.sceneEntities.push(new Oven(3 * TILE_SIZE - .5 * TILE_SIZE, 13 * TILE_SIZE - .5 * TILE_SIZE, 64, 64, this.engine));
+        this.sceneEntities.push(new PrepStation(5 * TILE_SIZE, 13 * TILE_SIZE, TILE_SIZE, TILE_SIZE, new CookingStation("1"), this.engine));
 
         const engine = this.engine;
         this.sceneEntities.forEach(function (entity) {

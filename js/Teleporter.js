@@ -43,8 +43,8 @@ export default class Teleporter extends EntityInteractable {
             theX = 2;
             theY = 2;
         } else if (this.level == 3) {
-            theX = 0;
-            theY = 1
+            theX = 4;
+            theY = 15;
         }
         this.prompt.hideText();
         this.engine.camera.teleport(this.level, theX, theY);

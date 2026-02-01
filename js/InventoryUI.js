@@ -3,8 +3,6 @@ import { CONSTANTS } from "/js/Util.js";
 
 const SLOT_SIZE = 32;
 const PADDING = 5;
-const BACKPACK_COLS = 5;
-const BACKPACK_ROWS = 1;
 
 export default class InventoryUI {
     constructor(player, ctx) {
@@ -21,8 +19,8 @@ export default class InventoryUI {
 
         this.backpackX = 10;
         this.backpackY = this.hotbarY - (this.slotSize * 2) - 20;
-        this.backpackCols = BACKPACK_COLS;
-        this.backpackRows = BACKPACK_ROWS;
+        this.backpackCols = Math.min(this.player.inventory.backpackSize, 5);
+        this.backpackRows = Math.ceil(this.player.inventory.backpackSize / this.backpackCols);
 
     }
 
@@ -35,6 +33,36 @@ export default class InventoryUI {
             this.player.inventory.backpackOpen = !this.player.inventory.backpackOpen;
             console.log("Backpack:", this.player.inventory.backpackOpen ? "OPEN" : "CLOSED");
             return true; //clicked
+        }
+        return false;
+    }
+
+    handleSlotClick(click) {
+        if (this.player.inventory.backpackOpen) {
+            const startIndex = this.player.inventory.hotbarSize;
+            for (let i = 0; i < this.player.inventory.backpackSize; i++) {
+                const col = i % this.backpackCols;
+                const row = Math.floor(i / this.backpackCols);
+                const x = this.backpackX + this.padding + col * (this.slotSize + this.padding);
+                const y = this.backpackY + this.padding + row * (this.slotSize + this.padding);
+
+                if (click.x >= x && click.x <= x + this.slotSize && click.y >= y && click.y <= y + this.slotSize) {
+                    this.player.inventory.equipSlot(startIndex + i);
+                    console.log("Backpack slot", i, "clicked.");
+                    return true;
+                }
+            }
+        }
+        const hotbarStartX = this.backpackButtonSize + this.padding + 10;
+        for (let i = 0; i < this.player.inventory.hotbarSize; i++) {
+            const x = hotbarStartX + i * (this.slotSize + this.padding);
+            const y = this.hotbarY;
+
+            if (click.x >= x && click.x <= x + this.slotSize && click.y >= y && click.y <= y + this.slotSize) {
+                this.player.inventory.equipSlot(i);
+                console.log("Hotbar slot", i, "clicked.");
+                return true;
+            }
         }
         return false;
     }
@@ -86,8 +114,14 @@ export default class InventoryUI {
                     this.ctx.font = "12px monospace";
                     this.ctx.fillText(slot.quantity, x + this.slotSize - 12, y + this.slotSize - 6);
                 }
-                this.ctx.strokeStyle = "#fff";
+
+                const slotIndex = startIndex + i;
+                const isEquipped = slotIndex === this.player.inventory.equippedSlot;
+
+                this.ctx.strokeStyle = isEquipped ? "#ffd700" : "#fff"; //yellow if equipped
+                this.ctx.lineWidth = isEquipped ? 3 : 1;
                 this.ctx.strokeRect(x, y, this.slotSize, this.slotSize);
+                this.ctx.lineWidth = 1;
             }
         }
 
@@ -111,8 +145,14 @@ export default class InventoryUI {
                 this.ctx.font = "14px monospace";
                 this.ctx.fillText(slot.quantity, x + this.slotSize - 12, y + this.slotSize - 6);
             }
-            this.ctx.strokeStyle = "#fff";
+
+            const slotIndex = i;
+            const isEquipped = slotIndex === this.player.inventory.equippedSlot;
+
+            this.ctx.strokeStyle = isEquipped ? "#ffd700" : "#fff"; //yellow if equipped
+            this.ctx.lineWidth = isEquipped ? 3 : 1;
             this.ctx.strokeRect(x, y, this.slotSize, this.slotSize);
+            this.ctx.lineWidth = 1;
         }
     }
 }

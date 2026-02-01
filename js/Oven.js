@@ -87,7 +87,7 @@ export default class Oven extends EntityInteractable {
             }
         }
     }
-    
+
     toggleEntity() {
         this.toggleState = true;
         this.color = cookColor;
@@ -114,16 +114,16 @@ export default class Oven extends EntityInteractable {
 
     /**
      * @param {CanvasRenderingContext2D} ctx
-     * @param {GameEngine} enginea 
+     * @param {GameEngine} enginea
      */
     draw(ctx, engine) {
         // draw *something* if a subclass doesn't correctly draw anything
         ctx.fillStyle = this.color;
-        ctx.fillRect((this.x - engine.camera.x) + (this.width / 4), this.y + (this.height / 4),
+        ctx.fillRect((this.x - engine.camera.x) + (this.width / 4), (this.y - engine.camera.y) + (this.height / 4),
         this.width / 2, this.height / 2);
         if (CONSTANTS.DEBUG == true) {
             ctx.strokeStyle = "#aa0000";
-            ctx.strokeRect(Math.floor(this.x - engine.camera.x), Math.floor(this.y), this.width, this.height);
+            ctx.strokeRect(Math.floor(this.x - engine.camera.x), Math.floor(this.y - engine.camera.y), this.width, this.height);
         }
     }
 }
