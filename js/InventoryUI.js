@@ -38,6 +38,8 @@ export default class InventoryUI {
     }
 
     handleSlotClick(click) {
+        const xClick = click.x / CONSTANTS.SCALE;
+        const yClick = click.y / CONSTANTS.SCALE;
         if (this.player.inventory.backpackOpen) {
             const startIndex = this.player.inventory.hotbarSize;
             for (let i = 0; i < this.player.inventory.backpackSize; i++) {
@@ -46,9 +48,9 @@ export default class InventoryUI {
                 const x = this.backpackX + this.padding + col * (this.slotSize + this.padding);
                 const y = this.backpackY + this.padding + row * (this.slotSize + this.padding);
 
-                if (click.x >= x && click.x <= x + this.slotSize && click.y >= y && click.y <= y + this.slotSize) {
+                if (xClick >= x && xClick <= x + this.slotSize && yClick >= y && yClick <= y + this.slotSize) {
                     this.player.inventory.equipSlot(startIndex + i);
-                    console.log("Backpack slot", i, "clicked.");
+                    console.log("Backpack slot", i + 1, "clicked.");
                     return true;
                 }
             }
@@ -58,9 +60,9 @@ export default class InventoryUI {
             const x = hotbarStartX + i * (this.slotSize + this.padding);
             const y = this.hotbarY;
 
-            if (click.x >= x && click.x <= x + this.slotSize && click.y >= y && click.y <= y + this.slotSize) {
+            if (xClick >= x && xClick <= x + this.slotSize && yClick >= y && yClick <= y + this.slotSize) {
                 this.player.inventory.equipSlot(i);
-                console.log("Hotbar slot", i, "clicked.");
+                console.log("Hotbar slot", i + 1, "clicked.");
                 return true;
             }
         }
