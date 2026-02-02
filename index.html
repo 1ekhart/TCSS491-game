@@ -6,7 +6,28 @@
     <title>TCSS491-game</title>
     <script type="module" src="/js/main.js"></script>
 </head>
+<style>
+    body {
+        font-family: "Ubuntu", sans-serif;
+        font-weight: 400;
+        font-style: normal;
+        font-size: 1.5em;
+        text-align:center;
+        text-shadow: 5px 5px #5c5c5a2c;
+        background-color: rgb(58, 61, 67);
+        justify-items: center;
+        align-items: center;
+        color:rgb(220, 221, 237)
+    }
+</style>
 <body>
-    <canvas id="gameWorld" width="1024" height="768" style="background: white; border: 1px solid black; image-rendering: pixelated;" tabindex="0" autofocus></canvas>
+    <div>
+        <canvas id="gameWorld" width="1024" height="768" style="background: white; border: 1px solid black; image-rendering: pixelated;" tabindex="0" autofocus></canvas>
+    </div>
+    <div>
+        <h2>Controls: A + D to Move, Space to Jump, E to Interact, and Mouse Click to Interact.</h1>
+        <h2>Click on the "B" Icon to Open the Backpack</h1>
+        <h3>Waiting a few days will grow a plant, interact to harvest.</h2>
+    </div>
 </body>
 </html>

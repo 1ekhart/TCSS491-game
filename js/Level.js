@@ -101,7 +101,7 @@ export default class LevelManager {
         this.player.y = 1 * TILE_SIZE;
         this.x = this.player.x;
         this.y = this.player.y;
-        // this.reloadClock();
+        this.reloadClock();
 
         //  keeps track of entities so we can load or destroy all of the entities in a particular scene.
 
@@ -128,7 +128,7 @@ export default class LevelManager {
         this.sceneEntities.forEach(function (entity) {
             engine.addEntity(entity);
         })
-        // this.reloadClock();
+        this.reloadClock();
     }
 
     //Initialize level 2
