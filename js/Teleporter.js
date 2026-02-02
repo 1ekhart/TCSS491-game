@@ -36,12 +36,15 @@ export default class Teleporter extends EntityInteractable {
     interact(player) {
         let theX = 1;
         let theY = 1;
-        if (this.level == 2) {
+        if (this.level == 1) {
+            theX = 17;
+            theY = 1;
+        } else if (this.level == 2) {
             theX = 2;
             theY = 2;
-        } else if (this.level == 1) {
-            theX = 18;
-            theY = 2;
+        } else if (this.level == 3) {
+            theX = 4;
+            theY = 15;
         }
         this.prompt.hideText();
         this.engine.camera.teleport(this.level, theX, theY);
@@ -51,7 +54,7 @@ export default class Teleporter extends EntityInteractable {
         ctx.fillStyle = "#d37cd3";
         ctx.fillRect(this.renderX - engine.camera.x, this.renderY - engine.camera.y,
         this.width / 2, this.height / 2);
-        
+
         if (CONSTANTS.DEBUG == true) {
             ctx.strokeStyle = "#aa0000";
             ctx.strokeRect(Math.floor(this.x - engine.camera.x), Math.floor(this.y - engine.camera.y), this.width, this.height);

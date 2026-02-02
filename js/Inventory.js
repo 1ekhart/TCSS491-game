@@ -1,8 +1,8 @@
 // hotbar # of slots
-const HOTBAR_SIZE = 3;
+const HOTBAR_SIZE = 2;
 
 // backpack # of slots
-const BACKPACK_SIZE = 5;
+const BACKPACK_SIZE = 1;
 
 export default class Inventory {
     constructor() {
@@ -13,6 +13,9 @@ export default class Inventory {
         // each slot is either null or {itemID, quantity}
         this.slots = new Array(this.totalSlots).fill(null);
         this.backpackOpen = false;
+
+        // selected/equipped slot
+        this.equippedSlot = null;
     }
 
     addItem(item) {
@@ -75,6 +78,20 @@ export default class Inventory {
             }
         }
         return -1;
+    }
+
+    equipSlot(slotIndex) {
+        if (this.equippedSlot === slotIndex) {
+            this.equippedSlot = null;
+            console.log("Unequipped slot:", this.slots[slotIndex].itemID)
+        } else if (this.slots[slotIndex]) {
+            this.equippedSlot = slotIndex;
+            console.log("Equipped slot:", this.slots[slotIndex].itemID)
+        }
+    }
+
+    getEquippedItem() {
+        return this.equippedSlot !== null ? this.slots[this.equippedSlot].itemID : null;
     }
 
     hasHotbarSpace() {

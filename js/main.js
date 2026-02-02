@@ -29,10 +29,7 @@ ASSET_MANAGER.downloadAll(() => {
 
     const player = new Player(48, 32);
     const inventoryUI = new InventoryUI(player, ctx);
-    const tileSize = CONSTANTS.TILESIZE;
 
-    // TODO: once the UI is implemented, the main menu or some manager class should be the first entity added
-    // it will then spawn all the other entities as necessary
     gameEngine.setPlayer(player);
     gameEngine.setClock(new InGameClock())
     gameEngine.setLevel(new Level(gameEngine));
