@@ -1,3 +1,5 @@
+import { getItemData } from "./DataClasses/ItemList.js";
+import Animator from "./GeneralUtils/Animator.js";
 import Inventory from "/js/Inventory.js";
 import { CONSTANTS } from "/js/Util.js";
 
@@ -21,7 +23,32 @@ export default class InventoryUI {
         this.backpackY = this.hotbarY - (this.slotSize * 2) - 20;
         this.backpackCols = Math.min(this.player.inventory.backpackSize, 5);
         this.backpackRows = Math.ceil(this.player.inventory.backpackSize / this.backpackCols);
+        this.isHovered = false;
 
+    }
+
+    update(engine) {
+        if (engine.mouse) {
+            const x = engine.mouse.x / CONSTANTS.SCALE;
+            const y = engine.mouse.y / CONSTANTS.SCALE;
+            if (x >= this.backpackButtonX && x <= this.backpackButtonX + this.backpackButtonSize &&
+            y >= this.backpackButtonY && y <= this.backpackButtonY + this.backpackButtonSize) {
+                if (!this.isHovered) {
+                    this.isHovered = true;
+                    engine.setMouseSignal(1);
+                }
+                if (engine.click) {
+                    const clickedButton = this.handleBackpackClick(engine.click);
+                    if (!clickedButton) {
+                        this.handleSlotClick(engine.click);
+                    }
+                    engine.click = null;
+                }
+            } else if (this.isHovered) {
+                this.isHovered = false;
+                engine.setMouseSignal(0);
+            }
+        }
     }
 
     handleBackpackClick(click) {
@@ -109,8 +136,19 @@ export default class InventoryUI {
                 this.ctx.fillRect(x, y, this.slotSize, this.slotSize);
 
                 if (slot) {
+                if (!slot.itemData) {
+                    slot.itemData = getItemData(slot.itemID);
+                    if (slot.itemData) {
+                    slot.sprite = new Animator(ASSET_MANAGER.getAsset(slot.itemData.assetName), 0, 0, slot.itemData.width, slot.itemData.height, 1, 1, 0);
+                    }
+                }
+                if (slot.itemData) {
+                    slot.sprite.drawFramePlain(this.ctx, x, y, slot.itemData.scale * (this.slotSize / slot.itemData.width));
+                } else {
                     this.ctx.fillStyle = "#0f0";
                     this.ctx.fillRect(x + 4, y + 4, this.slotSize - 8, this.slotSize - 8);
+                }
+
 
                     this.ctx.fillStyle = "#fff";
                     this.ctx.font = "12px monospace";
@@ -138,9 +176,19 @@ export default class InventoryUI {
             this.ctx.fillRect(x, y, this.slotSize, this.slotSize);
 
             if (slot) {
-                // slot with item
-                this.ctx.fillStyle = "#0f0";
-                this.ctx.fillRect(x + 4, y + 4, this.slotSize - 8, this.slotSize - 8);
+                if (!slot.itemData) {
+                    slot.itemData = getItemData(slot.itemID);
+                    if (slot.itemData) {
+                        slot.sprite = new Animator(ASSET_MANAGER.getAsset(slot.itemData.assetName), 0, 0, slot.itemData.width, slot.itemData.height, 1, 1, 0);
+                    }
+                }
+                if (slot.itemData) {
+                    slot.sprite.drawFramePlain(this.ctx, x, y, slot.itemData.scale * (this.slotSize / slot.itemData.width));
+                } else {
+                    this.ctx.fillStyle = "#0f0";
+                    this.ctx.fillRect(x + 4, y + 4, this.slotSize - 8, this.slotSize - 8);
+                }
+
 
                 // quantity of item
                 this.ctx.fillStyle = "#fff";

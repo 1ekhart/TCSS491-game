@@ -1,5 +1,6 @@
 /** @import GameEngine from "/js/GameEngine.js" */
 import Entity from "/js/AbstractClasses/Entity.js";
+import { appendSaveData, getSave } from "/js/GeneralUtils/SaveDataRetrieval.js";
 import { CONSTANTS } from "/js/Util.js";
 
 // how many seconds each day will last. Each day is 24 hours, so the hour length will be DAY_LENGTH / 24 and minutes  will be 60/hour length
@@ -20,11 +21,35 @@ export default class InGameClock extends Entity {
         this.y = 12;
         this.dayTime = HOUR_LENGTH * STARTING_HOUR; // seconds elapsed in the day
         this.dayCount = 1;
-        this.loadSavedTime();
+        this.load();
+        this.halted = false;
     }
 
-    loadSavedTime() { // for when we work with persisting data. Loads the current day, etc.
+    load() { // for when we work with persisting data. Loads the current day, etc.
+        const save = getSave();
+        if (save) {
+            console.log("SaveData:" + save)
+            this.dayCount = save.dayCount;
+        }
+    }
 
+    save() {
+    }
+
+    saveTime() {
+        const save = getSave();
+        if (save) {
+            save.dayCount = this.dayCount;
+            appendSaveData(save);
+        }
+    }
+
+    stopTime() {
+        this.halted = true;
+    }
+
+    resumeTime() {
+        this.halted = false;
     }
 
     getGameHour() {
@@ -40,11 +65,14 @@ export default class InGameClock extends Entity {
      * @param {GameEngine} engine
      */
     update(engine) {
-        this.dayTime += CONSTANTS.TICK_TIME;
+        if (!this.halted) {
+            this.dayTime += CONSTANTS.TICK_TIME;
 
-        if (this.dayTime >= DAY_LENGTH) {
-            this.dayTime = HOUR_LENGTH * STARTING_HOUR;
-            this.dayCount += 1;
+            if (this.dayTime >= DAY_LENGTH) {
+                this.dayTime = HOUR_LENGTH * STARTING_HOUR;
+                this.dayCount += 1;
+                this.saveTime();
+            }  
         }
     }
 

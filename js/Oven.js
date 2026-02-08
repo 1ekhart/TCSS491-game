@@ -38,7 +38,8 @@ export default class Oven extends EntityInteractable {
     update(engine) {
         if (this.toggleState == false) {
             this.timer.hideText();
-            for (const entity of engine.entities) {
+            if (!engine.entities[4]) return;
+            for (const entity of engine.entities[4]) {
                 if (entity instanceof Player) {
                     if (this.isCollidingWith(entity)) {
                         this.prompt.showText();

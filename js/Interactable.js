@@ -28,7 +28,8 @@ export default class Interactable extends EntityInteractable {
     /** @param {GameEngine} engine */
     update(engine) {
         if (this.toggleState == false) {
-            for (const entity of engine.entities) {
+            if (!engine.entities[4]) return;
+            for (const entity of engine.entities[4]) {
                 if (entity instanceof Player) {
                     if (this.isCollidingWith(entity)) {
                         this.prompt.showText();

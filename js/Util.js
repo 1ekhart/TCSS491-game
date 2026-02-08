@@ -7,7 +7,8 @@ export const CONSTANTS = {
     TICK_TIME: 1 / 60,  // the amount of time per engine tick
     EPSILON: 0.005,
     CANVAS_WIDTH: 1024,
-    CANVAS_HEIGHT: 768
+    CANVAS_HEIGHT: 768,
+    CONTEXT: document.getElementById("gameWorld").getContext("2d")
 };
 
 /**

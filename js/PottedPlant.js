@@ -56,7 +56,8 @@ export default class PottedPlant extends EntityInteractable {
     update(engine) {
         const newText = `${this.plant.name} in ${Math.floor((this.plant.growTime + this.dayPlaced - 1) /engine.clock.dayCount)} days`
         this.prompt.changeText(newText);
-        for (const entity of engine.entities) {
+        if (!engine.entities[4]) return;
+        for (const entity of engine.entities[4]) {
             if (entity instanceof Player) {
                 if (this.isCollidingWith(entity)) {
                     this.prompt.showText();

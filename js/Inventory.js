@@ -18,6 +18,14 @@ export default class Inventory {
         this.equippedSlot = null;
     }
 
+    hasItem(itemID) { // return the inventory space if the item is in the inventory
+        for (let i = 0; i < this.totalSlots; i++) {
+            if (this.slots[i] && this.slots[i].itemID === itemID) {
+                return i; 
+            }
+        }
+    }
+
     addItem(item) {
         // if item already exists, increment
         for (let i = 0; i < this.totalSlots; i++) {

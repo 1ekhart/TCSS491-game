@@ -1,5 +1,7 @@
 /** @import GameEngine from "/js/GameEngine.js" */
 import WorldEntity from '/js/AbstractClasses/WorldEntity.js';
+import { getItemData } from '/js/DataClasses/ItemList.js';
+import Animator from '/js/GeneralUtils/Animator.js';
 import Player from '/js/Player.js';
 import { CONSTANTS } from '/js/Util.js';
 
@@ -19,6 +21,7 @@ export default class Item extends WorldEntity {
         this.itemID = itemID;
         this.pickable = false;
         this.elapsedTime = 0;
+
         if (!initVelocityX) {
             this.xVelocity = 0;
         } else {
@@ -33,6 +36,18 @@ export default class Item extends WorldEntity {
             this.quantity = 1;
         } else {
             this.quantity = quantity;
+        }
+
+        // Initialize the sprite and other item data.
+        this.itemData = getItemData(itemID);
+        if (this.itemData) {
+            this.sprite = new Animator(ASSET_MANAGER.getAsset(this.itemData.assetName), 0, 0, 32, 32, 1, 1, 0);
+        }
+    }
+
+    getSprite() {
+        if (itemData) {
+            return this.sprite;
         }
     }
 
@@ -56,7 +71,8 @@ export default class Item extends WorldEntity {
         }
 
         if (this.pickable == true) {
-            for (const entity of engine.entities) {
+            if (!engine.entities[4]) return;
+            for (const entity of engine.entities[4]) {
                 if (entity instanceof Player) {
                     if (this.isCollidingWith(entity)) {
                         this.pickUpItem(entity);
@@ -82,10 +98,21 @@ export default class Item extends WorldEntity {
     draw(ctx, engine) {
         // draw *something* if a subclass doesn't correctly draw anything
         if (this.pickable == false) {
+        ctx.strokeStyle = "#ff00ff45"
         ctx.fillStyle = "#ff00ff45"
         } else {
+        ctx.strokeStyle = "#ff00ff"
         ctx.fillStyle = "#ff00ff"
         }
-        ctx.fillRect(this.x - engine.camera.x, this.y - engine.camera.y, HITBOX_WIDTH, HITBOX_HEIGHT);
+        if (CONSTANTS.DEBUG) {
+            ctx.strokeRect(this.x - engine.camera.x, this.y - engine.camera.y, HITBOX_WIDTH, HITBOX_HEIGHT);
+        }
+        if (this.itemData) { // if a valid item draw the sprite, otherwise give a plain rectangle
+            this.sprite.drawFramePlain(ctx, this.x - (this.itemData.width / 4) - engine.camera.x, 
+            this.y - (this.itemData.height / 4) - engine.camera.y, 
+            this.itemData.scale, 0);
+        } else {
+            ctx.fillRect(this.x - engine.camera.x, this.y - engine.camera.y, HITBOX_WIDTH, HITBOX_HEIGHT);
+        }
     }
 }

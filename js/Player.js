@@ -52,9 +52,12 @@ export default class Player extends WorldEntity {
 
         // harvesting crops, etc.
         if (engine.input.interact) {
-            for (const entity of engine.entities) {
+            if (!engine.entities[3]) return;
+            for (const entity of engine.entities[3]) {
                 if (entity instanceof WorldEntity && this.isCollidingWith(entity)) {
-                    entity.interact(this);
+                    if (entity.interact) {
+                        entity.interact(this);
+                    }
                 }
             }
         }
@@ -64,20 +67,24 @@ export default class Player extends WorldEntity {
     move(engine) {
         // movement
         // TODO: adjust acceleration & drag to 'feel' better, these are placeholder values
-        if (engine.input.left && this.xVelocity > -WALKING_SPEED) {
+
+        if (this.haltMovement == false) {
+            if (engine.input.left && this.xVelocity > -WALKING_SPEED) {
             this.xVelocity -= ACCELERATION;
-        } else if (engine.input.right && this.xVelocity < WALKING_SPEED) {
-            this.xVelocity += ACCELERATION;
+            } else if (engine.input.right && this.xVelocity < WALKING_SPEED) {
+                this.xVelocity += ACCELERATION;
+            } else {
+                this.xVelocity = decreaseToZero(this.xVelocity, GRAVITY / 2); // deceleration with no inputs held
+            }
+            if (this.onGround && engine.input.jump) {
+                this.yVelocity = JUMPING_STRENGTH;
+            }
         } else {
             this.xVelocity = decreaseToZero(this.xVelocity, GRAVITY / 2); // deceleration with no inputs held
-        }
-        if (this.onGround && engine.input.jump) {
-            this.yVelocity = JUMPING_STRENGTH;
         }
 
         if (this.haltMovement == false) {
             if (engine.click) {
-                console.log("CLICK")
                 this.setAnimationState("IdleAttack")
                 this.haltMovement = true;
             } else if (engine.input.left) {
@@ -89,18 +96,16 @@ export default class Player extends WorldEntity {
             } else {
                 this.setAnimationState("Idle");
             }
-            // gravity
-            if (engine.input.jump && this.yVelocity < 0) {
-                this.yVelocity += (GRAVITY / 2);
-            } else if (engine.input.down){
-                this.yVelocity += (GRAVITY * 1.5);
-            } else {
-                this.yVelocity += GRAVITY;
-            }
+        }
+
+        // gravity
+        if (engine.input.jump && this.yVelocity < 0) {
+            this.yVelocity += (GRAVITY / 2);
+        } else if (engine.input.down){
+            this.yVelocity += (GRAVITY * 1.5);
         } else {
             this.yVelocity += GRAVITY;
         }
-
 
         // collision
         this.moveColliding(engine);
@@ -114,11 +119,11 @@ export default class Player extends WorldEntity {
         if (this.haltMovement === true && this.animations[this.animationState].isDone()) {this.goDefaultState();}
 
         this.animations[this.animationState].drawFrame(CONSTANTS.TICK_TIME, ctx,
-            (this.x - (18)) - engine.camera.x, floor(this.y) - (this.height) + (32) - floor(engine.camera.y),
+            (this.x - (20)) - engine.camera.x, floor(this.y) - (this.height) + (32) - floor(engine.camera.y),
              !this.isRight, 2)
         if (CONSTANTS.DEBUG == true) {
             ctx.strokeStyle = "#aa0000";
-            ctx.strokeRect(floor(this.x ) - engine.camera.x, this.y - engine.camera.y, this.width, this.height);
+            ctx.strokeRect(floor(this.x) - engine.camera.x, this.y - engine.camera.y, this.width, this.height);
         }
     }
 

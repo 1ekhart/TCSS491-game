@@ -1,7 +1,9 @@
 /** @import Entity from "/js/Entity.js" */
 /** @import Level from "/js/Level.js" */
 /** @import Player from "/js/Player.js" */
+/** @import Cursor from "/js/GeneralUtils/Cursor.js" */
 
+import EntityInteractable from "/js/AbstractClasses/EntityInteractable.js";
 import InGameClock from "/js/InGameClock.js";
 import { CONSTANTS } from "/js/Util.js";
 
@@ -23,6 +25,9 @@ const INPUT_MAP = {
 // the amount of time per engine tick
 const TICK_TIME = CONSTANTS.TICK_TIME;
 
+// the amount of layers in the entity array
+const ENTITY_LAYER_COUNT = 8;
+
 // This game shell was happily modified from Googler Seth Ladd's "Bad Aliens" game and his Google IO talk in 2011
 export default class GameEngine {
     constructor(options) {
@@ -33,6 +38,11 @@ export default class GameEngine {
         // Everything that will be updated and drawn each frame
         /** @type {Entity[]} */
         this.entities = [];
+
+        for (let i = 0; i < ENTITY_LAYER_COUNT; i++) {
+            this.entities.push([])
+        }
+
 
         // Information on the input
         this.click = null;
@@ -91,7 +101,7 @@ export default class GameEngine {
             if (this.options.debugging) {
                 console.log("WHEEL", getXandY(e), e.wheelDelta);
             }
-            // e.preventDefault(); // Prevent Scrolling
+            e.preventDefault(); // Prevent Scrolling
             this.wheel = e;
         });
 
@@ -105,20 +115,47 @@ export default class GameEngine {
 
         this.ctx.canvas.addEventListener("keydown", event => {
             this.input[INPUT_MAP[event.code]] = true;
+            event.preventDefault();
         });
         this.ctx.canvas.addEventListener("keyup", event => {
             this.input[INPUT_MAP[event.code]] = false;
+            event.preventDefault();
         });
     };
 
-    addEntity(entity) {
-        this.entities.push(entity);
+
+    /** @param {Number} layer the layer of the entity 0-7, higher layers get rendered to the front, and layers exceeding 7 default to layer 7, 3 by default*/
+    /** @param {*} entity the entity to be added, must have a draw() or update() method */
+    addEntity(entity, layer) {
+        let row;
+        if (!layer || layer < 0) {
+            row = 4;
+        } else {
+            row = layer;
+            if (layer >= ENTITY_LAYER_COUNT) {
+                row = ENTITY_LAYER_COUNT - 1;
+            }
+        }
+        if (entity instanceof EntityInteractable) {
+            row = 3;
+        }
+        const rowArray = this.entities[row];
+        rowArray.push(entity);
     };
+
+    /**
+     * Adds a UI entity to the top layer, always being under the mouse (having the layer be)
+     * @param {*} entity Entity that will be added the UI layer
+     */
+    addUIEntity(entity) {
+        const rowArray = this.entities[ENTITY_LAYER_COUNT - 1];
+        rowArray.splice(rowArray.length - 1, 0, entity);
+    }
 
     // the Level is a special entity that many other entities will need to access directly
     /** @param {Level} level */
     setLevel(level) {
-        this.addEntity(level);
+        this.addEntity(level, 2);
         this.level = level;
     }
     getLevel() {
@@ -131,14 +168,31 @@ export default class GameEngine {
         this.addEntity(player);
         this.player = player;
     }
+
     getPlayer() {
         return this.player
+    }
+
+    /** @param {Cursor} cursor */
+    setCursor(cursor) {
+        // if (this.cursor) {
+        //     this.cursor.removeFromWorld = true;
+        // }
+        const UIArray = this.entities[ENTITY_LAYER_COUNT - 1];
+        UIArray.push(cursor);
+        this.cursor = cursor;
+    }
+
+    // signals which mouse sprite to change to. 0 is a normal sprite, while 1 is a pointer sprite.
+    /** @param {Number} signal */
+    setMouseSignal(signal) {
+       this.cursor.setSprite(signal);
     }
 
     // the in-game clock may also need to be accessed by many other entities who use logic that's virtually timed.
     /** @param {InGameClock} clock */
     setClock(clock) {
-        this.addEntity(clock);
+        this.addEntity(clock, 6);
         this.clock = clock;
     }
 
@@ -150,41 +204,76 @@ export default class GameEngine {
         // Clear the whole canvas with transparent color (rgba(0, 0, 0, 0))
         this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
 
-        for (const entity of this.entities) {
-            entity.draw(this.ctx, this);
-        }
+        for (const entityLayer of this.entities) {
+            if (!entityLayer) {
+                continue;
+            }
 
-        if (this.inventoryUI) {
-            this.inventoryUI.draw();
+            for (const entity of entityLayer) {
+                entity.draw(this.ctx, this);
+            }
         }
     };
 
     update() {
-        let entitiesCount = this.entities.length;
+        let entitiesCount = ENTITY_LAYER_COUNT;
 
+        //iterate through all layers
         for (let i = 0; i < entitiesCount; i++) {
-            let entity = this.entities[i];
+            const entityLayer = this.entities[i];
 
-            if (!entity.removeFromWorld) {
-                entity.update(this);
+            if (!entityLayer) {
+                continue;
+            }
+
+            let entityColumns = entityLayer.length;
+
+            //iterate through an individual layer
+            for (let j = 0; j < entityColumns; j++) {
+                let entity = entityLayer[j];
+
+                if (!entity.removeFromWorld) {
+                    entity.update(this);
+                } else { // small change to remove elements without re-iterating through the entity list
+                    console.log("Just destroyed " + entity.constructor.name)
+                    entityLayer.splice(j, 1);
+                    j--;
+                    entityColumns--;
+                }
             }
         }
 
-        // backpack
-        if (this.click && this.inventoryUI) {
-            const clickedButton = this.inventoryUI.handleBackpackClick(this.click);
+        // June Note: My code doesn't has the backpack as a plain entity so this is commented out and handled in the update() for inventoryUI
+        // // backpack
+        // if (this.click && this.inventoryUI) {
+        //     const clickedButton = this.inventoryUI.handleBackpackClick(this.click);
 
-            if (!clickedButton) {
-                this.inventoryUI.handleSlotClick(this.click);
-            }
-            this.click = null;
-        }
+        //     if (!clickedButton) {
+        //         this.inventoryUI.handleSlotClick(this.click);
+        //     }
+        //     this.click = null;
+        // }
 
-        for (let i = this.entities.length - 1; i >= 0; --i) {
-            if (this.entities[i].removeFromWorld) {
-                this.entities.splice(i, 1);
-            }
-        }
+        //
+        // let UIEntitiesLength = this.UIEntities.length;
+
+        // for (let i = 0; i < UIEntitiesLength; i++) {
+        //     let entity = this.UIEntities[i];
+
+        //     if (!entity.removeFromWorld) {
+        //         entity.update(this);
+        //     } else { // small change to remove elements without re-iterating through the entity list
+        //         this.UIEntities.splice(i, 1);
+        //         i--;
+        //         UIEntitiesLength--;
+        //     }
+        // }
+
+        // for (let i = this.entities.length - 1; i >= 0; --i) {
+        //     if (this.entities[i].removeFromWorld) {
+        //         this.entities.splice(i, 1);
+        //     }
+        // }
     };
 
     loop(now) {

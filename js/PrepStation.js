@@ -47,7 +47,8 @@ export default class PrepStation extends EntityInteractable {
         if (!this.toggleState) {
             this.timer.hideText();
             this.ingredientText.hideText();
-            for (const entity of engine.entities) {
+            if (!engine.entities[4]) return;
+            for (const entity of engine.entities[4]) {
                 if (entity instanceof Player) {
                     if (this.isCollidingWith(entity)) {
                         this.prompt.showText();
