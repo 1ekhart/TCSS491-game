@@ -14,6 +14,9 @@ const ASSET_MANAGER = new AssetManager();
 ASSET_MANAGER.queueDownload("/Assets/Player/IdleRun-Sheet.png")
 ASSET_MANAGER.queueDownload("/Assets/WorldItems/grey-pot.png")
 ASSET_MANAGER.queueDownload("/Assets/WorldItems/PotatoPlant-Sheet.png")
+ASSET_MANAGER.queueDownload("/Assets/WorldTiles/Wood_(Placed).webp")
+ASSET_MANAGER.queueDownload("/Assets/WorldTiles/GrassSheet.png")
+
 
 
 ASSET_MANAGER.downloadAll(() => {
