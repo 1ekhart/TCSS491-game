@@ -27,6 +27,9 @@ export default class CookingStation {
         }
         this.currentOrder = order;
         this.ingredients = order.ingredients;
+
+        this.cookTime = order.cookTime || 0;
+        this.assembleTime = order.assembleTime || 0;
         this.state = STATION_STATE.HAS_ORDER;
         console.log("Order assigned to station.")
         return true;

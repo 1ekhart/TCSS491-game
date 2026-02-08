@@ -14,7 +14,7 @@ export default class Customer extends EntityInteractable {
         this.order = order;
         this.orderTaken = false;
 
-        this.prompt = new OnScreenTextSystem(this, x + width/2, y - 10, `Press E to take order: ${order.name}`, false);
+        this.prompt = new OnScreenTextSystem(this, x + width/2, y - 10, `Press E to take order: ${order.id}`, false);
         engine.addEntity(this.prompt);
     }
 

@@ -7,6 +7,7 @@ import Oven from "/js/Oven.js";
 import PrepStation from "/js/PrepStation.js";
 import { CONSTANTS } from '/js/Util.js';
 import Customer from '/js/Customer.js';
+import { RECIPES } from '/js/Data/Recipes.js';
 import Button from '/js/AbstractClasses/Button.js';
 import InventoryUI from '/js/InventoryUI.js';
 import DialogueBox from '/js/GeneralUtils/DialogueBox.js';
@@ -206,10 +207,7 @@ export default class LevelManager {
         this.sceneEntities.push(new PottedPlant(this.engine, 12 * TILE_SIZE, 8 * TILE_SIZE, TILE_SIZE, TILE_SIZE, 3, this.engine.getClock().dayCount));
         this.sceneEntities.push(new PottedPlant(this.engine, 15 * TILE_SIZE, 8 * TILE_SIZE, TILE_SIZE, TILE_SIZE, 3, this.engine.getClock().dayCount));
 
-        const testOrder = {
-            name: "Burger",
-            ingredients: ["Bun", "Meat", "Lettuce"]
-        };
+        const testOrder = RECIPES.Burger;
 
         this.sceneEntities.push(new Customer(19 * TILE_SIZE, 8 * TILE_SIZE, TILE_SIZE / 2, TILE_SIZE, testOrder, this.engine));
         this.sceneEntities.push(new Customer(22 * TILE_SIZE, 8 * TILE_SIZE, TILE_SIZE / 2, TILE_SIZE, testOrder, this.engine));

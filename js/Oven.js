@@ -106,10 +106,12 @@ export default class Oven extends EntityInteractable {
             this.isCooking = true;
             this.elapsedCook = 0;
 
+            this.cookingTime = this.station.currentOrder.cookTime || 300;
+
             this.station.startCooking();
             this.color = cookColor;
 
-            console.log("Oven started cooking", this.station.currentOrder.name);
+            console.log("Oven started cooking", this.station.currentOrder.id);
        }
     }
 
