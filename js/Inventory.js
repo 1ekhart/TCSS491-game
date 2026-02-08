@@ -91,10 +91,31 @@ export default class Inventory {
     equipSlot(slotIndex) {
         if (this.equippedSlot === slotIndex) {
             this.equippedSlot = null;
-            console.log("Unequipped slot:", this.slots[slotIndex].itemID)
+            console.log("Unequipped slot:", slotIndex + 1)
         } else if (this.slots[slotIndex]) {
             this.equippedSlot = slotIndex;
-            console.log("Equipped slot:", this.slots[slotIndex].itemID)
+            console.log("Equipped slot:", slotIndex + 1)
+        }
+    }
+
+    moveOrSwap(fromIndex, toIndex) {
+        if (fromIndex === toIndex) return;
+
+        const fromSlot = this.slots[fromIndex];
+        const toSlot = this.slots[toIndex];
+
+        if (!fromSlot) return;
+
+        // swap
+        this.slots[fromIndex] = toSlot;
+        this.slots[toIndex] = fromSlot;
+        console.log("Swapped", this.slots[fromIndex], "and", this.slots[toIndex]); 
+
+        // equipped slot
+        if (this.equippedSlot === fromIndex) {
+            this.equippedSlot = toIndex;
+        } else if (this.equippedSlot === toIndex) {
+            this.equippedSlot = fromIndex;
         }
     }
 
