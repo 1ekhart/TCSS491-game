@@ -95,7 +95,7 @@ export default class PrepStation extends EntityInteractable {
                 return;
             }
 
-            console.log("Collected", this.station.currentOrder);
+            console.log("Collected", this.station.currentOrder.name);
             this.station.reset();
             this.color = idleColor;
             this.toggleState = false;

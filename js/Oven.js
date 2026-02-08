@@ -10,7 +10,7 @@ const cookColor = "#36454F";
 const doneColor = "#8A9A5B";
 
 export default class Oven extends EntityInteractable {
-    constructor(x, y, width, height, engine) {
+    constructor(x, y, width, height, station, engine) {
         super();
         this.x = x;
         this.y = y;
@@ -22,6 +22,9 @@ export default class Oven extends EntityInteractable {
         this.elapsedCook = 0;
         this.isCooking = false;
         this.elapsedTicks = 0;
+
+        this.station = station;
+
         this.engine = engine;
 
         this.toggleable = true;
@@ -68,12 +71,20 @@ export default class Oven extends EntityInteractable {
             if (this.elapsedCook > this.cookingTime) {
                 this.isCooking = false;
                 this.elapsedCook = 0;
+                this.toggleState = false;
+                this.toggleable = true;
+
+                this.station.finishCooking();
+                this.color = doneColor;
+
+                console.log("Cooking finished, ready to assemble");
             }
         }
     }
 
     /** @param {Player} player */
     interact(player) {
+        /*
         if (this.toggleable == true && this.isCooking == false) {
             this.toggleable = false;
             if (this.toggleState == true) {
@@ -86,7 +97,20 @@ export default class Oven extends EntityInteractable {
             else {
                 console.log("You can't cook air!");
             }
-        }
+        }*/
+       if (!this.toggleable) return;
+
+       if (this.station.canStartCooking()) {
+            this.toggleable = false;
+            this.toggleState = true;
+            this.isCooking = true;
+            this.elapsedCook = 0;
+
+            this.station.startCooking();
+            this.color = cookColor;
+
+            console.log("Oven started cooking", this.station.currentOrder.name);
+       }
     }
 
     toggleEntity() {

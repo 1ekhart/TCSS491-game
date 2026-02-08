@@ -123,7 +123,7 @@ export default class InventoryUI {
         const dx = mouse.x / CONSTANTS.SCALE - this.mouseDownPos.x;
         const dy = mouse.y / CONSTANTS.SCALE - this.mouseDownPos.y;
 
-        if (Math.hypot(dx, dy) > 5) {
+        if (Math.hypot(dx, dy) > DRAG_THRESHOLD) {
             this.isDragging = true;
         }
     }
