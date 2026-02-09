@@ -45,12 +45,9 @@ ASSET_MANAGER.downloadAll(() => {
     gameEngine.init(ctx);
 
     const player = new Player(48, 32);
-    // const inventoryUI = new InventoryUI(player, ctx);
 
     gameEngine.setPlayer(player);
     gameEngine.setLevel(new Level(gameEngine));
-    // gameEngine.inventoryUI = inventoryUI;
-    // gameEngine.addUIEntity(inventoryUI)
     gameEngine.setCursor(new Cursor());
     // gameEngine.addEntity(new CollisionTester());
     // ctx.translate(-CONSTANTS.CANVAS_WIDTH / 4, 0)

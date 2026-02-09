@@ -4,17 +4,17 @@ export default class CookingStation {
     constructor(id) {
         this.id = id;
 
-        //this.state = STATION_STATE.IDLE;
-        this.state = STATION_STATE.ASSEMBLE_READY; // for testing prep station
-        this.currentOrder = "Burger";   // for testing
+        this.state = STATION_STATE.IDLE;
+
+        this.currentOrder = null;
 
         // oven - cooking phase
         this.cookProgress = 0;
         this.cookQuality = 1.0;
 
         // prep station - assembly phase
-        //this.ingredients = []; 
-        this.ingredients = ["Bun", "Patty", "Lettuce"]; // for testing
+        this.ingredients = []; 
+
         this.currentIngredientIndex = 0;
         this.assemblyStepsRequired = 0;
         this.assemblyStepsCompleted = 0;
@@ -26,6 +26,10 @@ export default class CookingStation {
             return false;
         }
         this.currentOrder = order;
+        this.ingredients = order.ingredients;
+
+        this.cookTime = order.cookTime || 0;
+        this.assembleTime = order.assembleTime || 0;
         this.state = STATION_STATE.HAS_ORDER;
         console.log("Order assigned to station.")
         return true;

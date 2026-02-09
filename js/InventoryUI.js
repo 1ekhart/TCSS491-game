@@ -5,6 +5,7 @@ import { CONSTANTS } from "/js/Util.js";
 
 const SLOT_SIZE = 32;
 const PADDING = 5;
+const DRAG_THRESHOLD = 5;
 
 export default class InventoryUI {
     constructor(player, ctx) {
@@ -25,26 +26,23 @@ export default class InventoryUI {
         this.backpackRows = Math.ceil(this.player.inventory.backpackSize / this.backpackCols);
         this.isHovered = false;
 
+        this.mouseDownPos = null;
+        this.draggedSlotIndex = null;
+        this.isDragging = false;
     }
 
     update(engine) {
         if (engine.mouse) {
             const x = engine.mouse.x / CONSTANTS.SCALE;
             const y = engine.mouse.y / CONSTANTS.SCALE;
-            if (x >= this.backpackButtonX && x <= this.backpackButtonX + this.backpackButtonSize &&
-            y >= this.backpackButtonY && y <= this.backpackButtonY + this.backpackButtonSize) {
-                if (!this.isHovered) {
-                    this.isHovered = true;
-                    engine.setMouseSignal(1);
-                }
-                if (engine.click) {
-                    const clickedButton = this.handleBackpackClick(engine.click);
-                    if (!clickedButton) {
-                        this.handleSlotClick(engine.click);
-                    }
-                    engine.click = null;
-                }
-            } else if (this.isHovered) {
+
+            const hoveringBackpack = x >= this.backpackButtonX && x <= this.backpackButtonX + this.backpackButtonSize &&
+            y >= this.backpackButtonY && y <= this.backpackButtonY + this.backpackButtonSize;
+
+            if (hoveringBackpack && !this.isHovered) {
+                this.isHovered = true;
+                engine.setMouseSignal(1);
+            } else if (!hoveringBackpack && this.isHovered) {
                 this.isHovered = false;
                 engine.setMouseSignal(0);
             }
@@ -64,9 +62,8 @@ export default class InventoryUI {
         return false;
     }
 
-    handleSlotClick(click) {
-        const xClick = click.x / CONSTANTS.SCALE;
-        const yClick = click.y / CONSTANTS.SCALE;
+    getSlotIndexAt(xClick, yClick) {
+        // backpack slots
         if (this.player.inventory.backpackOpen) {
             const startIndex = this.player.inventory.hotbarSize;
             for (let i = 0; i < this.player.inventory.backpackSize; i++) {
@@ -76,24 +73,68 @@ export default class InventoryUI {
                 const y = this.backpackY + this.padding + row * (this.slotSize + this.padding);
 
                 if (xClick >= x && xClick <= x + this.slotSize && yClick >= y && yClick <= y + this.slotSize) {
-                    this.player.inventory.equipSlot(startIndex + i);
-                    console.log("Backpack slot", i + 1, "clicked.");
-                    return true;
+                    return startIndex + i;
                 }
             }
         }
+        // hotbar slots
         const hotbarStartX = this.backpackButtonSize + this.padding + 10;
         for (let i = 0; i < this.player.inventory.hotbarSize; i++) {
             const x = hotbarStartX + i * (this.slotSize + this.padding);
             const y = this.hotbarY;
 
             if (xClick >= x && xClick <= x + this.slotSize && yClick >= y && yClick <= y + this.slotSize) {
-                this.player.inventory.equipSlot(i);
-                console.log("Hotbar slot", i + 1, "clicked.");
-                return true;
+                return i;
             }
         }
+        return null;
+    }
+
+    handleMouseDown(click) {
+        const x = click.x / CONSTANTS.SCALE;
+        const y = click.y / CONSTANTS.SCALE;
+
+        if (this.handleBackpackClick(click)) {
+            return true;
+        }
+
+        const slotIndex = this.getSlotIndexAt(x, y);
+        if (slotIndex !== null) {
+            this.mouseDownPos = { x, y };
+            this.draggedSlotIndex = slotIndex;
+            this.isDragging = false;
+            return true;
+        }
         return false;
+    }
+
+    handleMouseMove(mouse) {
+        if (!this.mouseDownPos || this.draggedSlotIndex === null) return;
+        const dx = mouse.x / CONSTANTS.SCALE - this.mouseDownPos.x;
+        const dy = mouse.y / CONSTANTS.SCALE - this.mouseDownPos.y;
+
+        if (Math.hypot(dx, dy) > DRAG_THRESHOLD) {
+            this.isDragging = true;
+        }
+    }
+
+    handleMouseUp(click) {
+        const x = click.x / CONSTANTS.SCALE;
+        const y = click.y / CONSTANTS.SCALE;
+
+        const targetSlotIndex = this.getSlotIndexAt(x, y);
+        if (this.draggedSlotIndex !== null) {
+            if (this.isDragging && targetSlotIndex !== null) {
+                // drag -> move or swap
+                this.player.inventory.moveOrSwap(this.draggedSlotIndex, targetSlotIndex);
+            } else {
+                // no drag -> regular click
+                this.player.inventory.equipSlot(this.draggedSlotIndex);
+            }
+        }
+        this.draggedSlotIndex = null;
+        this.mouseDownPos = null;
+        this.isDragging = false;
     }
 
     draw() {

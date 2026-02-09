@@ -40,6 +40,8 @@ export default class PrepStation extends EntityInteractable {
         this.ingredients = order.ingredients;
         this.currentIngredientIndex = 0;
         this.elapsedTime = 0;
+
+        this.assemblyTime = order.assembleTime || 240;
         this.station.startAssembly(this.ingredients.length);
     }
 
@@ -95,7 +97,7 @@ export default class PrepStation extends EntityInteractable {
                 return;
             }
 
-            console.log("Collected", this.station.currentOrder);
+            console.log("Collected", this.station.currentOrder.id);
             this.station.reset();
             this.color = idleColor;
             this.toggleState = false;

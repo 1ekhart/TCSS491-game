@@ -6,6 +6,7 @@
 import EntityInteractable from "/js/AbstractClasses/EntityInteractable.js";
 import InGameClock from "/js/InGameClock.js";
 import { CONSTANTS } from "/js/Util.js";
+import CookingStationManager from "/js/CookingStationManager.js";
 
 const INPUT_MAP = {
     "KeyW": "up",
@@ -54,6 +55,10 @@ export default class GameEngine {
         this.options = options || {
             debugging: false,
         };
+
+        this.stationManager = new CookingStationManager();
+        this.stationManager.createStation("1");
+        this.stationManager.createStation("2");
     };
 
     /** @param {CanvasRenderingContext2D} ctx */
@@ -79,23 +84,20 @@ export default class GameEngine {
             y: e.clientY - this.ctx.canvas.getBoundingClientRect().top
         });
 
-        this.ctx.canvas.addEventListener("mousemove", e => {
-            if (this.options.debugging) {
-                console.log("MOUSE_MOVE", getXandY(e));
-            }
-            this.mouse = getXandY(e);
-        });
-
         this.ctx.canvas.addEventListener("mousedown", e => {
-            if (this.options.debugging) {
-                console.log("CLICK", getXandY(e));
-            }
-            this.click = getXandY(e);
+            const pos = getXandY(e);
+            this.click = pos;
+            this.mouseDown = pos;
         });
 
         this.ctx.canvas.addEventListener("mouseup", e => {
+            this.mouseUp = getXandY(e);
             this.click = null;
         });
+
+        this.ctx.canvas.addEventListener("mousemove", e => {
+            this.mouse = getXandY(e);
+        })
 
         this.ctx.canvas.addEventListener("wheel", e => {
             if (this.options.debugging) {
@@ -242,17 +244,14 @@ export default class GameEngine {
                 }
             }
         }
-
-        // June Note: My code doesn't has the backpack as a plain entity so this is commented out and handled in the update() for inventoryUI
-        // // backpack
-        // if (this.click && this.inventoryUI) {
-        //     const clickedButton = this.inventoryUI.handleBackpackClick(this.click);
-
-        //     if (!clickedButton) {
-        //         this.inventoryUI.handleSlotClick(this.click);
-        //     }
-        //     this.click = null;
-        // }
+        
+        if (this.inventoryUI) {
+                if (this.mouseDown) this.inventoryUI.handleMouseDown(this.mouseDown);
+                if (this.mouse) this.inventoryUI.handleMouseMove(this.mouse);
+                if (this.mouseUp) this.inventoryUI.handleMouseUp(this.mouseUp);
+        }
+        this.mouseDown = null;
+        this.mouseUp = null;
 
         //
         // let UIEntitiesLength = this.UIEntities.length;
