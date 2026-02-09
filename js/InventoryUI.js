@@ -35,20 +35,14 @@ export default class InventoryUI {
         if (engine.mouse) {
             const x = engine.mouse.x / CONSTANTS.SCALE;
             const y = engine.mouse.y / CONSTANTS.SCALE;
-            if (x >= this.backpackButtonX && x <= this.backpackButtonX + this.backpackButtonSize &&
-            y >= this.backpackButtonY && y <= this.backpackButtonY + this.backpackButtonSize) {
-                if (!this.isHovered) {
-                    this.isHovered = true;
-                    engine.setMouseSignal(1);
-                }
-                if (engine.click) {
-                    const clickedButton = this.handleBackpackClick(engine.click);
-                    if (!clickedButton) {
-                        this.handleSlotClick(engine.click);
-                    }
-                    engine.click = null;
-                }
-            } else if (this.isHovered) {
+
+            const hoveringBackpack = x >= this.backpackButtonX && x <= this.backpackButtonX + this.backpackButtonSize &&
+            y >= this.backpackButtonY && y <= this.backpackButtonY + this.backpackButtonSize;
+
+            if (hoveringBackpack && !this.isHovered) {
+                this.isHovered = true;
+                engine.setMouseSignal(1);
+            } else if (!hoveringBackpack && this.isHovered) {
                 this.isHovered = false;
                 engine.setMouseSignal(0);
             }
@@ -79,8 +73,6 @@ export default class InventoryUI {
                 const y = this.backpackY + this.padding + row * (this.slotSize + this.padding);
 
                 if (xClick >= x && xClick <= x + this.slotSize && yClick >= y && yClick <= y + this.slotSize) {
-                    //this.player.inventory.equipSlot(startIndex + i);
-                    //console.log("Backpack slot", i + 1, "clicked.");
                     return startIndex + i;
                 }
             }
@@ -92,8 +84,6 @@ export default class InventoryUI {
             const y = this.hotbarY;
 
             if (xClick >= x && xClick <= x + this.slotSize && yClick >= y && yClick <= y + this.slotSize) {
-                //this.player.inventory.equipSlot(i);
-                //console.log("Hotbar slot", i + 1, "clicked.");
                 return i;
             }
         }

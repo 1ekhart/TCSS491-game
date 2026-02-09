@@ -4,6 +4,7 @@ import OnScreenTextSystem from '/js/GeneralUtils/OnScreenText.js';
 import Player from '/js/Player.js';
 import Item from '/js/Item.js';
 import { randomIntRange, CONSTANTS } from '/js/Util.js';
+import { STATION_STATE } from '/js/Constants/cookingStationStates.js';
 
 const idleColor = "#7393B3";
 const cookColor = "#36454F";
@@ -79,6 +80,10 @@ export default class Oven extends EntityInteractable {
 
                 console.log("Cooking finished, ready to assemble");
             }
+        }
+
+        if (this.station.state === STATION_STATE.IDLE) {
+            this.color = idleColor;
         }
     }
 

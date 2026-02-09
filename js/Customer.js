@@ -35,10 +35,12 @@ export default class Customer extends EntityInteractable {
     update(engine) {
         if (this.orderTaken) return;
 
-        for (const entity of engine.entities) {
-            if (entity instanceof Player && this.isCollidingWith(entity)) {
-                this.prompt.showText();
-                return;
+        for (const layer of engine.entities) {
+            for (const entity of layer) {
+                if (entity instanceof Player && this.isCollidingWith(entity)) {
+                    this.prompt.showText();
+                    return;
+                }
             }
         }
         this.prompt.hideText();

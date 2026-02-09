@@ -244,14 +244,14 @@ export default class GameEngine {
                 }
             }
         }
-
-       if (this.inventoryUI) {
-            if (this.mouseDown) this.inventoryUI.handleMouseDown(this.mouseDown);
-            if (this.mouse) this.inventoryUI.handleMouseMove(this.mouse);
-            if (this.mouseUp) this.inventoryUI.handleMouseUp(this.mouseUp);
-       }
-       this.mouseDown = null;
-       this.mouseUp = null;
+        
+        if (this.inventoryUI) {
+                if (this.mouseDown) this.inventoryUI.handleMouseDown(this.mouseDown);
+                if (this.mouse) this.inventoryUI.handleMouseMove(this.mouse);
+                if (this.mouseUp) this.inventoryUI.handleMouseUp(this.mouseUp);
+        }
+        this.mouseDown = null;
+        this.mouseUp = null;
 
         //
         // let UIEntitiesLength = this.UIEntities.length;

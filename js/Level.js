@@ -147,7 +147,9 @@ export default class LevelManager {
             that.menu = false;
             discardMenuUI();
             this.engine.setClock(new InGameClock());
-            that.engine.addUIEntity(new InventoryUI(this.player, ctx));
+            const inventoryUI = new InventoryUI(this.player, ctx);
+            that.engine.inventoryUI = inventoryUI;
+            that.engine.addUIEntity(inventoryUI);
             that.engine.addUIEntity(new DialogueBox(that.engine, "Hello this is a dialogue box and You can close these by clicking the 'close' button."));
             that.teleport(1, 2, 2);
         }
@@ -209,7 +211,7 @@ export default class LevelManager {
 
         const testOrder = RECIPES.Burger;
 
-        this.sceneEntities.push(new Customer(19 * TILE_SIZE, 8 * TILE_SIZE, TILE_SIZE / 2, TILE_SIZE, testOrder, this.engine));
+        this.sceneEntities.push(new Customer(21 * TILE_SIZE, 8 * TILE_SIZE, TILE_SIZE / 2, TILE_SIZE, testOrder, this.engine));
         this.sceneEntities.push(new Customer(22 * TILE_SIZE, 8 * TILE_SIZE, TILE_SIZE / 2, TILE_SIZE, testOrder, this.engine));
         this.sceneEntities.push(new MarketPlace(this.engine, 18 * TILE_SIZE, 8 * TILE_SIZE, TILE_SIZE, TILE_SIZE))
         this.sceneEntities.push(new MovingEntity(this.engine, 15 * TILE_SIZE, 8 * TILE_SIZE));
