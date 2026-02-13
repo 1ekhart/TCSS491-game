@@ -1,3 +1,5 @@
+import { getSave } from "./GeneralUtils/SaveDataRetrieval.js";
+
 // hotbar # of slots
 const HOTBAR_SIZE = 2;
 
@@ -16,7 +18,41 @@ export default class Inventory {
 
         // selected/equipped slot
         this.equippedSlot = null;
+        this.money = 0;
+        this.loadSaveData();
     }
+
+    loadSaveData() {
+        const save = getSave();
+        const saveInventory = save.inventory; // fill the inventory with the save data.
+
+        for (const key in saveInventory) {
+            console.log(key);
+            const obj = saveInventory[key];
+            this.slots[key] = {
+                itemID: obj.itemID,
+                quantity: obj.quantity
+            }
+        }
+
+        this.money = save.money;
+    }
+
+    save(saveObj) {
+        let data = {};
+        for (let i = 0; i < this.totalSlots; i++) {
+            if (this.slots[i]) {
+                const slotData = {
+                    itemID: this.slots[i].itemID,
+                    quantity: this.slots[i].quantity
+                }
+                data[i] = slotData;
+            }
+        }
+        console.log(data);
+        saveObj.setInventory(data);
+        saveObj.setMoney(this.money)
+    };
 
     hasItem(itemID) { // return the inventory space if the item is in the inventory
         for (let i = 0; i < this.totalSlots; i++) {
@@ -28,6 +64,10 @@ export default class Inventory {
 
     addItem(item) {
         // if item already exists, increment
+        if (item.itemID == 1) { // if the ID for money, then just append the money count
+            this.money += item.quantity * 50
+            return true;
+        }
         for (let i = 0; i < this.totalSlots; i++) {
             if (this.slots[i] && this.slots[i].itemID === item.itemID) {
                 this.slots[i].quantity += item.quantity;

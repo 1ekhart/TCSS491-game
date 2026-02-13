@@ -69,10 +69,16 @@ export default class MarketPlaceUI extends Entity {
                 };
                 const addToInventory = () => {
                     const player = that.engine.getPlayer();
-                    const slotIndex = player.inventory.slots[player.inventory.hasItem(1)];
-                    if (slotIndex) { // we'll use item 1 as currency for now
-                        player.inventory.removeItem(player.inventory.hasItem(1));
-                        player.inventory.addItem(item); 
+                    // const slotIndex = player.inventory.slots[player.inventory.hasItem(1)];
+                    // if (slotIndex) { // we'll use item 1 as currency for now
+                    //     player.inventory.removeItem(player.inventory.hasItem(1));
+                    //     player.inventory.addItem(item); 
+                    // }
+
+                    const money = player.inventory.money;
+                    if (money && money >= itemData.sellPrice) {
+                        player.inventory.money -= itemData.sellPrice;
+                        player.inventory.addItem(item);
                     }
                 }
                 const newButton = new Button(x, this.y + this.buttonHeight + (columnIndex * this.buttonHeight), 

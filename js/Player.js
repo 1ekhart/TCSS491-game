@@ -31,6 +31,10 @@ export default class Player extends WorldEntity {
         this.haltMovement = false;
     }
 
+    save(saveObject) { // saves the inventory list for now
+        this.inventory.save(saveObject);
+    }   
+
     loadAnimations() {
         this.animations = [];
         this.idle = new Animator(ASSET_MANAGER.getAsset("/Assets/Player/IdleRun-Sheet.png"), 0, 0, 32, 32, 2, 1, 0, false, true);

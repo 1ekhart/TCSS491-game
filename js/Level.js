@@ -13,6 +13,7 @@ import DialogueBox from '/js/GeneralUtils/DialogueBox.js';
 import { wipeSave } from '/js/GeneralUtils/SaveDataRetrieval.js';
 import MarketPlace from '/js/MarketPlace.js';
 import MovingEntity from '/js/MovingEntity.js';
+import Player from './Player.js';
 
 // size of a tile in screen pixels
 const TILE_SIZE = 32;
@@ -162,6 +163,10 @@ export default class LevelManager {
 
         const wipeSaveData = () => { // wipes the save and starts a new game
             wipeSave();
+            that.player.removeFromWorld = true;
+            const player = new Player(-50, -50);
+            that.engine.setPlayer(player);
+            that.player = player;
             startLevelFunc();
         }
 

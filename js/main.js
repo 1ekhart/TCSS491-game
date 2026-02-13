@@ -42,6 +42,7 @@ ASSET_MANAGER.downloadAll(() => {
     ctx.font = "12px monospace";
     ctx.scale(CONSTANTS.SCALE, CONSTANTS.SCALE);
     canvas.style.cursor = 'none';
+    canvas.style.backgroundColor = "rgb(116, 127, 142)"
     gameEngine.init(ctx);
 
     const player = new Player(48, 32);

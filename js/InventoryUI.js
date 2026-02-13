@@ -14,6 +14,7 @@ export default class InventoryUI {
         this.slotSize = SLOT_SIZE;
         this.padding = PADDING;
         this.hotbarY = (ctx.canvas.height / CONSTANTS.SCALE) - this.slotSize - 10;
+        this.coinInfoY = (ctx.canvas.height / CONSTANTS.SCALE) / 4
 
         this.backpackButtonX = 10;
         this.backpackButtonY = this.hotbarY;
@@ -108,6 +109,15 @@ export default class InventoryUI {
         this.ctx.fillStyle = "#fff";
         this.ctx.font = "12px monospace";
         this.ctx.fillText("B", this.backpackButtonX + 13, this.backpackButtonY + 20);
+
+        // draw money count:
+        this.ctx.save();
+        this.ctx.font = "15px monospace";
+        this.ctx.strokeStyle = "#00000049"
+        this.ctx.fillStyle = "rgb(74, 40, 2)";
+        this.ctx.strokeText("Money: $" + this.player.inventory.money, this.backpackButtonX, this.coinInfoY)
+        this.ctx.fillText("Money: $" + this.player.inventory.money, this.backpackButtonX, this.coinInfoY)
+        this.ctx.restore();
         
         
         // backpack

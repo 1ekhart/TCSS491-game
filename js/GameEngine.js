@@ -3,6 +3,7 @@
 /** @import Player from "/js/Player.js" */
 /** @import Cursor from "/js/GeneralUtils/Cursor.js" */
 
+import SaveDataRetrieval from "./GeneralUtils/SaveDataRetrieval.js";
 import EntityInteractable from "/js/AbstractClasses/EntityInteractable.js";
 import InGameClock from "/js/InGameClock.js";
 import { CONSTANTS } from "/js/Util.js";
@@ -49,6 +50,7 @@ export default class GameEngine {
         this.mouse = null;
         this.wheel = null;
         this.input = Object.create(null);
+        this.save = new SaveDataRetrieval()
 
         // Options and the Details
         this.options = options || {
@@ -173,6 +175,12 @@ export default class GameEngine {
         return this.player
     }
 
+
+
+    getSaveObject() {
+        return this.save;
+    }
+
     /** @param {Cursor} cursor */
     setCursor(cursor) {
         // if (this.cursor) {
@@ -235,7 +243,7 @@ export default class GameEngine {
                 if (!entity.removeFromWorld) {
                     entity.update(this);
                 } else { // small change to remove elements without re-iterating through the entity list
-                    console.log("Just destroyed " + entity.constructor.name)
+                    // console.log("Just destroyed " + entity.constructor.name)
                     entityLayer.splice(j, 1);
                     j--;
                     entityColumns--;
