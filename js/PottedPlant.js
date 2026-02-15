@@ -17,44 +17,48 @@ export default class PottedPlant extends EntityInteractable {
         this.height = height * 2;
         this.x = x - (width / 2);
         this.y = y - (height / 2);
-        this.plantID = plantID;
         this.dayPlaced = dayPlaced;
+
 
         // get the area where the pot is rendered
         this.renderX = x;
         this.renderY = y;
         this.renderWidth = width;
         this.renderHeight = height;
-        this.plantID = plantID;
-        this.initializePlant();
+        if(plantID !== false) {
+            this.initializePlant(plantID);
+        } else {
+            this.plant = false; // empty pot
+        }
         this.prompt = new OnScreenTextSystem(this,
                     x + (width / 4), y - (height) - (height/4), `${this.plant.name} in day ${Math.floor(this.plant.growTime + dayPlaced / engine.clock.dayCount)}`, false);
         engine.addEntity(this.prompt);
         this.potSprite = new Animator(ASSET_MANAGER.getAsset("/Assets/WorldItems/grey-pot.png"), 0, 0, 32, 32, 1, 1, 0, false, false);
     }
 
-    initializePlant() {
-        this.plant = getPlantData(this.plantID);
+    initializePlant(plantID) {
+        this.plant = getPlantData(plantID);
         if (this.plant.regrows == false) {
             console.log(this.plant.name)
-            this.plantSprite = new Animator(ASSET_MANAGER.getAsset(this.plant.assetName), 
-            0, 0, 
+            this.plantSprite = new Animator(ASSET_MANAGER.getAsset(this.plant.assetName),
+            0, 0,
             this.plant.width, this.plant.height, 3, 0, false, false);
         } else { // if plant doesn't regrow there's a 4th frame
-            this.plantSprite = new Animator(ASSET_MANAGER.getAsset(this.plant.assetName), 
-            0, 0, 
+            this.plantSprite = new Animator(ASSET_MANAGER.getAsset(this.plant.assetName),
+            0, 0,
             this.plant.width, this.plant.height, 4, 0, false, false);
         }
     }
 
     getPercentGrown() {
+        if(!this.plant) return 0;
         return engine.getClock().dayCount / (this.dayPlaced + this.plant.growTime);
     }
 
-    
+
 
     update(engine) {
-        const newText = `${this.plant.name} in ${Math.floor((this.plant.growTime + this.dayPlaced - 1) /engine.clock.dayCount)} days`
+        const newText = this.plant ? `${this.plant.name} in ${Math.floor((this.plant.growTime + this.dayPlaced - 1) /engine.clock.dayCount)} days` : "Empty"
         this.prompt.changeText(newText);
         if (!engine.entities[4]) return;
         for (const entity of engine.entities[4]) {
@@ -76,19 +80,25 @@ export default class PottedPlant extends EntityInteractable {
             this.dayPlaced = this.engine.clock.dayCount;
             console.log("Interacted!")
             this.engine.addEntity(
-                new Item(this.plantID, 
-                    this.renderX + (this.width / 4), this.renderY - (this.height / 2), 
-                    randomIntRange(10, -10), -5, 
+                new Item(this.plant.itemID,
+                    this.renderX + (this.width / 4), this.renderY - (this.height / 2),
+                    randomIntRange(10, -10), -5,
                     randomInt(5))
             )
             if (this.plant.regrows == true) {
                 this.dayPlaced = this.engine.clock.dayCount;
             }
         }
+        if(!this.plant) {
+            this.initializePlant(3)
+            console.log("planted plant")
+        }
     }
 
     draw(ctx, engine) {
         this.potSprite.drawFramePlain(ctx, this.renderX - engine.camera.x, this.renderY - engine.camera.y, 1)
+
+        if(!this.plant) return;
 
         // calculate the percentage growth it is
         const timePassed = this.getPercentGrown();
@@ -105,13 +115,13 @@ export default class PottedPlant extends EntityInteractable {
         if (this.plant.regrows == true && timePassed >= 0.5) { // if 50% grown and regrows, then show the readying harvest sprite
             plantStage = 3;
         }
-            
+
 
         this.plantSprite.drawFramePlain(ctx, this.renderX - engine.camera.x, this.renderY - engine.camera.y - (this.plant.height*2) + 8, 2, plantStage);
-        
+
         // ctx.fillRect((this.renderX + this.renderWidth - (this.renderWidth + plantWidth)/2) - engine.camera.x, (this.renderY - plantHeight) - engine.camera.y,
         // plantWidth, plantHeight);
-        
+
         if (CONSTANTS.DEBUG == true) {
             ctx.strokeStyle = "#aa0000";
             ctx.strokeRect(Math.floor(this.x - engine.camera.x), Math.floor(this.y - engine.camera.y), this.width, this.height);
