@@ -64,10 +64,15 @@ export default class Player extends WorldEntity {
         }
 
         if(engine.click) {
-            for(const entity of engine.entities[3]) {
-                if(entity instanceof MovingEntity && this.isCollidingWith(entity)) {
-                    entity.onAttack(this);
-                    engine.click = null; // consume the click if the attack landed
+            if(this.inventory.equippedSlot !== null) {
+                this.inventory.useItem(this.inventory.equippedSlot, this, engine)
+                engine.click = null;
+            } else {
+                for(const entity of engine.entities[3]) {
+                    if(entity instanceof MovingEntity && this.isCollidingWith(entity)) {
+                        entity.onAttack(this);
+                        engine.click = null; // consume the click if the attack landed
+                    }
                 }
             }
         }
@@ -94,7 +99,7 @@ export default class Player extends WorldEntity {
         }
 
         if (this.haltMovement == false) {
-            if (engine.click) {
+            if (engine.click && this.inventory.equippedSlot === null) {
                 this.setAnimationState("IdleAttack")
                 this.haltMovement = true;
             } else if (engine.input.left) {

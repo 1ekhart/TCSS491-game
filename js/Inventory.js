@@ -1,3 +1,5 @@
+import PottedPlant from "/js/PottedPlant.js";
+
 // hotbar # of slots
 const HOTBAR_SIZE = 2;
 
@@ -21,7 +23,7 @@ export default class Inventory {
     hasItem(itemID) { // return the inventory space if the item is in the inventory
         for (let i = 0; i < this.totalSlots; i++) {
             if (this.slots[i] && this.slots[i].itemID === itemID) {
-                return i; 
+                return i;
             }
         }
     }
@@ -70,12 +72,20 @@ export default class Inventory {
         return true;
     }
 
-    useItem(slotIndex, player) {
+    useItem(slotIndex, player, engine) {
         const slot = this.slots[slotIndex];
         if (!slot) return false;
-
-        // later call items effect
         console.log("Using " + slot.itemID);
+
+        if(slot.itemID === 2) { // pot
+            engine.addEntity(new PottedPlant(
+                engine, player.x, player.y + 15.25, 32, 32,
+                false, engine.getClock().dayCount
+            ));
+        } else {
+            return; // don't remove items that have no use action
+        }
+
         this.removeItem(slotIndex);
     }
 
@@ -109,7 +119,7 @@ export default class Inventory {
         // swap
         this.slots[fromIndex] = toSlot;
         this.slots[toIndex] = fromSlot;
-        console.log("Swapped", this.slots[fromIndex], "and", this.slots[toIndex]); 
+        console.log("Swapped", this.slots[fromIndex], "and", this.slots[toIndex]);
 
         // equipped slot
         if (this.equippedSlot === fromIndex) {
@@ -127,7 +137,7 @@ export default class Inventory {
         return this.slots.slice(0, this.hotbarSize).some(slot => slot === null);
     }
 
-    hasBackpackSpace() { 
+    hasBackpackSpace() {
         return this.slots.slice(this.hotbarSize).some(slot => slot === null);
     }
 }
