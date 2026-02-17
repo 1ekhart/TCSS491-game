@@ -22,7 +22,7 @@ export default class PottedPlant extends EntityInteractable {
 
         // get the area where the pot is rendered
         this.renderX = x;
-        this.renderY = y;
+        this.renderY = y +5;
         this.renderWidth = width;
         this.renderHeight = height;
         this.plantID = plantID;

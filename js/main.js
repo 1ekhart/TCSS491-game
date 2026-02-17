@@ -15,6 +15,7 @@ const ASSET_MANAGER = new AssetManager();
 //download from player folder
 ASSET_MANAGER.queueDownload("/Assets/Player/IdleRun-Sheet.png")
 ASSET_MANAGER.queueDownload("/Assets/Player/Cursor-Sheet.png")
+ASSET_MANAGER.queueDownload("/Assets/Player/BladeEffect-Sheet.png")
 
 //download from world items folder
 ASSET_MANAGER.queueDownload("/Assets/WorldItems/grey-pot.png")

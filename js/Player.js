@@ -1,6 +1,7 @@
 /** @import GameEngine from "/js/GameEngine.js" */
 import WorldEntity from "/js/AbstractClasses/WorldEntity.js";
 import Animator from "/js/GeneralUtils/Animator.js";
+import HitBox from "/js/GeneralUtils/Hitbox.js";
 import Inventory from "/js/Inventory.js";
 import MovingEntity from "/js/MovingEntity.js";
 import { CONSTANTS, decreaseToZero } from "/js/Util.js";
@@ -11,6 +12,7 @@ const WALKING_SPEED = 6;
 const ACCELERATION = 1;
 const JUMPING_STRENGTH = -9.5;
 const GRAVITY = 0.75;
+const ATTACK_COOLDOWN = 0.3;
 
 export default class Player extends WorldEntity {
     constructor(x, y) {
@@ -29,6 +31,7 @@ export default class Player extends WorldEntity {
         this.animationState = "Idle"
         this.isRight = true;
         this.haltMovement = false;
+        this.attackTimer = ATTACK_COOLDOWN;
     }
 
     save(saveObject) { // saves the inventory list for now
@@ -67,12 +70,29 @@ export default class Player extends WorldEntity {
             }
         }
 
-        if(engine.click) {
-            for(const entity of engine.entities[3]) {
-                if(entity instanceof MovingEntity && this.isCollidingWith(entity)) {
-                    entity.onAttack(this);
-                    engine.click = null; // consume the click if the attack landed
-                }
+        if (this.haltMovement == false && engine.click && this.attackTimer <= 0) {
+            this.setAnimationState("IdleAttack")
+            this.haltMovement = true;
+            this.attackTimer = ATTACK_COOLDOWN;
+            if (this.isRight) { // spawn it with respect to width and height if facing right
+                engine.addEntity(new BladeHitbox(this.x + this.width + 10, this.y, 48, 48, ATTACK_COOLDOWN, true))
+            } else {
+                engine.addEntity(new BladeHitbox(this.x, this.y, 48, 48, ATTACK_COOLDOWN, true))
+            }
+        }
+
+        this.attackTimer -= CONSTANTS.TICK_TIME;
+    }
+
+    tryAttack() {
+        if (engine.click && this.attackTimer <= 0) {
+            this.setAnimationState("IdleAttack")
+            this.haltMovement = true;
+            this.attackTimer = ATTACK_COOLDOWN;
+            if (this.isRight) { // spawn it with respect to width and height if facing right
+                engine.addEntity(new BladeHitbox(this.x + this.width + 10, this.y, 48, 48, ATTACK_COOLDOWN, true))
+            } else {
+                engine.addEntity(new BladeHitbox(this.x - 10, this.y, 48, 48, ATTACK_COOLDOWN, false))
             }
         }
     }
@@ -99,8 +119,7 @@ export default class Player extends WorldEntity {
 
         if (this.haltMovement == false) {
             if (engine.click) {
-                this.setAnimationState("IdleAttack")
-                this.haltMovement = true;
+                this.tryAttack();
             } else if (engine.input.left) {
                 this.setAnimationState("Run");
                 this.isRight = false;
@@ -146,4 +165,42 @@ export default class Player extends WorldEntity {
         this.animations[this.animationState].resetTimer();
         this.setAnimationState("Idle")
     }
+}
+
+class BladeHitbox extends HitBox {
+    constructor(x, y, width, height, timer, isFacingRight) {
+        super(x, y, width, height, timer)
+        this.isFacingRight = isFacingRight;
+        this.facingLeftOffset = 0;
+        if (!isFacingRight) {
+            this.x -= width;
+            this.facingLeftOffset = this.width / 2
+        }
+        this.animation = new Animator(ASSET_MANAGER.getAsset("/Assets/Player/BladeEffect-Sheet.png"), 0, 0, 32, 32, 7, this.timer / 4, 0, false, false);
+    }
+
+    update(engine) {
+        this.decrementTimer();
+        if (this.timer <= 0) {
+            this.removeFromWorld = true;
+        }
+
+        for(const entity of engine.entities[3]) {
+            if (entity instanceof MovingEntity && this.isCollidingWith(entity)) {
+                entity.onAttack();
+            }
+        }
+    }
+
+    draw(ctx, engine) {
+        this.animation.drawFrame(CONSTANTS.TICK_TIME, ctx,
+            this.x - engine.camera.x - this.facingLeftOffset, this.y - engine.camera.y - 20, !this.isFacingRight, 2);
+
+        if (CONSTANTS.DEBUG == true) {
+            ctx.strokeStyle = "#aa0000";
+            ctx.strokeRect(floor(this.x) - engine.camera.x, this.y - engine.camera.y, this.width, this.height);
+        }
+    }
+
+
 }
