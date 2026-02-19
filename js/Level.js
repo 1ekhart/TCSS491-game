@@ -16,7 +16,6 @@ import MarketPlace from '/js/MarketPlace.js';
 import MovingEntity, { Basan } from '/js/MovingEntity.js';
 import Player from './Player.js';
 import StationPlaceholder from '/js/StationPlaceholder.js';
-import MovingEntity from '/js/MovingEntity.js';
 import CustomerManager from '/js/CustomerManager.js';
 
 // size of a tile in screen pixels
