@@ -90,7 +90,7 @@ export default class PrepStation extends EntityInteractable {
 
     interact(player) {
         if (this.station.isComplete()) {
-            const success = player.inventory.addItem({ itemID: this.station.currentOrder, quantity: 1});
+            const success = player.inventory.addItem({ itemID: this.station.currentOrder.id, quantity: 1});
 
             if (!success) {
                 console.log("Inventory is full!");

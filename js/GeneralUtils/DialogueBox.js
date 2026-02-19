@@ -6,7 +6,7 @@ import { CONSTANTS } from "/js/Util.js";
 // then delete itself when the "Close Dialogue" button is pressed, or just stay in the world until
 // the calling class destroys it manually
 export default class DialogueBox extends Entity {
-    constructor(engine, text, noClose) {
+    constructor(engine, text, noClose, extended) {
         super();
         this.engine = engine;
         this.x = (CONSTANTS.CANVAS_WIDTH / CONSTANTS.SCALE) / (6) // take up 1/3 of the screen;
@@ -14,6 +14,10 @@ export default class DialogueBox extends Entity {
         this.width = this.x * (4);
         this.height = this.y * (4);
         this.text = text;
+
+        if (extended) {
+            this.height *= 2;
+        }
 
         const that = this;
         // function to destroy object;
@@ -41,13 +45,13 @@ export default class DialogueBox extends Entity {
         for (let i = 0; i < words.length; i++) {
             let sampleLine = line + words[i] + " ";
             if (ctx.measureText(sampleLine).width > this.width - (this.width / 9)) {
-                lines.push(line);
+                lines.push(line.slice(0, -1));
                 line = words[i] + ' ';
             } else {
                 line = sampleLine;
             }
         }
-        lines.push(line);
+        lines.push(line.slice(0, -1));
         this.lines = lines;
 
         const txtMetrics = ctx.measureText(text)
@@ -65,7 +69,7 @@ export default class DialogueBox extends Entity {
         ctx.strokeStyle = "#000000c0"
         ctx.fillStyle = "#ffffffcb"
         ctx.lineWidth = 1 * CONSTANTS.SCALE;
-        let textX = this.x + (this.width / 18);
+        let textX = this.x + (this.width / 36);
         let textY = this.y + (this.height / 8);
         for (let i = 0; i < this.lines.length; i++) {
             ctx.strokeText(this.lines[i], textX, textY)

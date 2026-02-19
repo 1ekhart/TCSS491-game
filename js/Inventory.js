@@ -1,8 +1,11 @@
+import { getSave } from "./GeneralUtils/SaveDataRetrieval.js";
+import { CONSTANTS } from "/js/Util.js";
+
 // hotbar # of slots
-const HOTBAR_SIZE = 2;
+const HOTBAR_SIZE = 6;
 
 // backpack # of slots
-const BACKPACK_SIZE = 1;
+const BACKPACK_SIZE = 6;
 
 export default class Inventory {
     constructor() {
@@ -16,7 +19,43 @@ export default class Inventory {
 
         // selected/equipped slot
         this.equippedSlot = null;
+        this.money = 0;
+        this.loadSaveData();
     }
+
+    loadSaveData() {
+        const save = getSave();
+        const saveInventory = save.inventory; // fill the inventory with the save data.
+
+        for (const key in saveInventory) {
+            console.log(key);
+            const obj = saveInventory[key];
+            this.slots[key] = {
+                itemID: obj.itemID,
+                quantity: obj.quantity
+            }
+        }
+
+        this.money = save.money;
+    }
+
+    save(saveObj) {
+        let data = {};
+        for (let i = 0; i < this.totalSlots; i++) {
+            if (this.slots[i]) {
+                const slotData = {
+                    itemID: this.slots[i].itemID,
+                    quantity: this.slots[i].quantity
+                }
+                data[i] = slotData;
+            }
+        }
+        if (CONSTANTS.DEBUG) {
+            console.log(data);
+        }
+        saveObj.setInventory(data);
+        saveObj.setMoney(this.money)
+    };
 
     hasItem(itemID) { // return the inventory space if the item is in the inventory
         for (let i = 0; i < this.totalSlots; i++) {
@@ -24,14 +63,21 @@ export default class Inventory {
                 return i; 
             }
         }
+        return null;
     }
 
     addItem(item) {
         // if item already exists, increment
+        if (item.itemID == 1) { // if the ID for money, then just append the money count
+            this.money += item.quantity * 50
+            return true;
+        }
         for (let i = 0; i < this.totalSlots; i++) {
             if (this.slots[i] && this.slots[i].itemID === item.itemID) {
                 this.slots[i].quantity += item.quantity;
-                console.log("Added to exisitng item");
+                if (CONSTANTS.DEBUG) {
+                    console.log("Added to exisitng item, x"  + item.quantity);
+                }
                 return true;
             }
         }
@@ -39,7 +85,9 @@ export default class Inventory {
         let index = this.findEmptySlot(0, this.hotbarSize);
         if (index !== -1) {
             this.slots[index] = item;
-            console.log("Item added to hotbar");
+            if (CONSTANTS.DEBUG) {
+                console.log("Item added to hotbar");
+            }
             return true;
         }
 
@@ -47,7 +95,9 @@ export default class Inventory {
         index = this.findEmptySlot(this.hotbarSize, this.totalSlots);
         if (index !== -1) {
             this.slots[index] = item;
-            console.log("Item added to backpack");
+            if (CONSTANTS.DEBUG) {
+                 console.log("Item added to backpack");   
+            }
             return true;
         }
 
@@ -66,6 +116,10 @@ export default class Inventory {
 
         if (slot.quantity <= 0) {
             this.slots[slotIndex] = null;
+            // unequip empty slot
+            if (this.equippedSlot === slotIndex) {
+                this.equippedSlot = null;
+            }
         }
         return true;
     }

@@ -4,7 +4,7 @@ import { appendSaveData, getSave } from "/js/GeneralUtils/SaveDataRetrieval.js";
 import { CONSTANTS } from "/js/Util.js";
 
 // how many seconds each day will last. Each day is 24 hours, so the hour length will be DAY_LENGTH / 24 and minutes  will be 60/hour length
-const DAY_LENGTH = 10; // 200 day length means each minute will be rough 0.14 seconds
+const DAY_LENGTH = 30; // 200 day length means each minute will be rough 0.14 seconds
 const HOUR_LENGTH = DAY_LENGTH / 24;
 const MINUTE_LENGTH = HOUR_LENGTH / 60;
 
@@ -33,17 +33,6 @@ export default class InGameClock extends Entity {
         }
     }
 
-    save() {
-    }
-
-    saveTime() {
-        const save = getSave();
-        if (save) {
-            save.dayCount = this.dayCount;
-            appendSaveData(save);
-        }
-    }
-
     stopTime() {
         this.halted = true;
     }
@@ -60,6 +49,23 @@ export default class InGameClock extends Entity {
         return Math.floor(this.dayTime % HOUR_LENGTH / MINUTE_LENGTH);
     }
 
+    handleEndOfDay(engine) {
+        const save = engine.getSaveObject();
+        save.setDay(this.dayCount);
+        engine.entities.forEach(function (entitylist) {
+            const entityLine = entitylist;
+            if (entityLine) {
+                entityLine.forEach(function (entity) {
+                    if (entity.save) {
+                        entity.save(save);
+                    }
+                })
+            }
+        });
+        save.syncData();
+
+    }
+
 
     /**
      * @param {GameEngine} engine
@@ -68,10 +74,10 @@ export default class InGameClock extends Entity {
         if (!this.halted) {
             this.dayTime += CONSTANTS.TICK_TIME;
 
-            if (this.dayTime >= DAY_LENGTH) {
+            if (this.dayTime >= DAY_LENGTH) { // handle the end of the day
                 this.dayTime = HOUR_LENGTH * STARTING_HOUR;
                 this.dayCount += 1;
-                this.saveTime();
+                this.handleEndOfDay(engine)
             }  
         }
     }

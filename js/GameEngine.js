@@ -3,6 +3,7 @@
 /** @import Player from "/js/Player.js" */
 /** @import Cursor from "/js/GeneralUtils/Cursor.js" */
 
+import SaveDataRetrieval from "./GeneralUtils/SaveDataRetrieval.js";
 import EntityInteractable from "/js/AbstractClasses/EntityInteractable.js";
 import InGameClock from "/js/InGameClock.js";
 import { CONSTANTS } from "/js/Util.js";
@@ -50,6 +51,7 @@ export default class GameEngine {
         this.mouse = null;
         this.wheel = null;
         this.input = Object.create(null);
+        this.save = new SaveDataRetrieval()
 
         // Options and the Details
         this.options = options || {
@@ -59,6 +61,8 @@ export default class GameEngine {
         this.stationManager = new CookingStationManager();
         this.stationManager.createStation("1");
         this.stationManager.createStation("2");
+
+        this.customerManager = null;
     };
 
     /** @param {CanvasRenderingContext2D} ctx */
@@ -134,8 +138,8 @@ export default class GameEngine {
             row = 4;
         } else {
             row = layer;
-            if (layer >= ENTITY_LAYER_COUNT) {
-                row = ENTITY_LAYER_COUNT - 1;
+            if (layer > ENTITY_LAYER_COUNT) {
+                row = ENTITY_LAYER_COUNT - 2;
             }
         }
         if (entity instanceof EntityInteractable) {
@@ -173,6 +177,12 @@ export default class GameEngine {
 
     getPlayer() {
         return this.player
+    }
+
+
+
+    getSaveObject() {
+        return this.save;
     }
 
     /** @param {Cursor} cursor */
@@ -237,42 +247,20 @@ export default class GameEngine {
                 if (!entity.removeFromWorld) {
                     entity.update(this);
                 } else { // small change to remove elements without re-iterating through the entity list
-                    console.log("Just destroyed " + entity.constructor.name)
+                    if (CONSTANTS.DEBUG) {
+                        console.log("Just destroyed " + entity.constructor.name)
+                    }
+                
                     entityLayer.splice(j, 1);
                     j--;
                     entityColumns--;
                 }
             }
         }
-        
-        if (this.inventoryUI) {
-                if (this.mouseDown) this.inventoryUI.handleMouseDown(this.mouseDown);
-                if (this.mouse) this.inventoryUI.handleMouseMove(this.mouse);
-                if (this.mouseUp) this.inventoryUI.handleMouseUp(this.mouseUp);
+
+        if (this.customerManager) {
+            this.customerManager.update();
         }
-        this.mouseDown = null;
-        this.mouseUp = null;
-
-        //
-        // let UIEntitiesLength = this.UIEntities.length;
-
-        // for (let i = 0; i < UIEntitiesLength; i++) {
-        //     let entity = this.UIEntities[i];
-
-        //     if (!entity.removeFromWorld) {
-        //         entity.update(this);
-        //     } else { // small change to remove elements without re-iterating through the entity list
-        //         this.UIEntities.splice(i, 1);
-        //         i--;
-        //         UIEntitiesLength--;
-        //     }
-        // }
-
-        // for (let i = this.entities.length - 1; i >= 0; --i) {
-        //     if (this.entities[i].removeFromWorld) {
-        //         this.entities.splice(i, 1);
-        //     }
-        // }
     };
 
     loop(now) {

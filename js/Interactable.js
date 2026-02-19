@@ -66,7 +66,7 @@ export default class Interactable extends EntityInteractable {
         this.toggleState = true;
         this.color = "#7086f1";
         console.log("Toggled!")
-        this.engine.addEntity(new Item(1, this.x + (this.width / 4), this.y - (this.height / 2), randomIntRange(10, -10), -5, 1))
+        this.engine.addEntity(new Item(1, this.x + (this.width / 4), this.y - (this.height / 2), randomIntRange(10, -10), -5, randomIntRange(5, 1)))
     }
 
     unToggleEntity() {
