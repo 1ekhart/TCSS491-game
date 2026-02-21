@@ -77,6 +77,16 @@ const BoarMeat = {
     assetName: "/Assets/Icons/BoarMeat.png"
 }
 
+const Burger = {
+    itemID: 9,
+    name: "Burger Plate",
+    width: 32,
+    height: 32,
+    scale: 1,
+    sellPrice: 150,
+    assetName: "/Assets/Icons/BurgerPlate.png"
+}
+
 const itemList = {
     1: Coin,
     2: Pot,
@@ -86,6 +96,7 @@ const itemList = {
     6: Cabbage,
     7: Flour,
     8: BoarMeat,
+    9: Burger,
 }
 
 const grains = [Rice, Flour]

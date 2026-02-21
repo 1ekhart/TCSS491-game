@@ -1,5 +1,5 @@
 /** @import GameEngine from "/js/GameEngine.js" */
-import Interactable from './Interactable.js';
+import Interactable, { BedroomDoor, HouseDoor } from './Interactable.js';
 import InGameClock from '/js/InGameClock.js';
 import PottedPlant from '/js/PottedPlant.js';
 import Teleporter from '/js/Teleporter.js';
@@ -17,6 +17,7 @@ import MovingEntity, { Basan } from '/js/MovingEntity.js';
 import Player from './Player.js';
 import StationPlaceholder from '/js/StationPlaceholder.js';
 import CustomerManager from '/js/CustomerManager.js';
+import MarketPlaceUI from '/js/MarketplaceUI.js';
 
 // size of a tile in screen pixels
 const TILE_SIZE = 32;
@@ -88,7 +89,7 @@ const level3 = [
 	[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
 	[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
 	[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
-	[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
+	[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
 	[1, 0, 0, 0, 3, 0, 0, 0, 3, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
 	[1, 0, 3, 0, 3, 0, 3, 0, 3, 0, 3, 0, 3, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
 	[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4]
@@ -109,9 +110,9 @@ const level4 = [
 	[0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 4, 4, 4, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2], 
 	[0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 4, 4, 4, 4, 4, 0, 0, 0, 4, 4, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2], 
 	[0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2], 
-	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2], 
-	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2], 
-	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 4, 4, 4, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2], 
+	[0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2], 
+	[0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2], 
+	[0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 4, 4, 4, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2], 
 	[4, 4, 4, 4, 1, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0, 0, 0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 1, 1, 3, 3, 3, 3, 3, 3, 1, 1, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4], 
 	[4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 2], 
 	[4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 2], 
@@ -133,7 +134,10 @@ const level4 = [
 	[4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 444, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4]
 ]
 
-
+const menuButtonWidth = 3*TILE_SIZE;
+const menuButtonHeight = 1*TILE_SIZE;
+const centerX = CONSTANTS.CANVAS_WIDTH / (2 * CONSTANTS.SCALE)
+const centerY = CONSTANTS.CANVAS_HEIGHT / (2 * CONSTANTS.SCALE);
 const INTERACTABLE_OBJECT_LAYER = 3;
 export default class LevelManager {
     constructor(engine) {
@@ -183,11 +187,13 @@ export default class LevelManager {
         const startLevelFunc = () => { //starts the level;
             that.menu = false;
             discardMenuUI();
-            this.engine.setClock(new InGameClock());
+            this.engine.setClock(new InGameClock(this.engine));
             const inventoryUI = new InventoryUI(this.player, ctx);
             that.engine.inventoryUI = inventoryUI;
             that.engine.addUIEntity(inventoryUI);
-            that.engine.addUIEntity(new DialogueBox(that.engine, "Hello this is a dialogue box and You can close these by clicking the 'close' button."));
+            if (that.engine.getClock().dayCount <= 1) {
+                that.engine.addUIEntity(new DialogueBox(that.engine, "You have to make $3000 by next week! Go to the front door and press 'E' to visit the marketplace to buy supplies for next week or gather ingredients outside to cook meals!"));
+            }
             that.teleport(1, 2, 2);
         }
 
@@ -270,6 +276,72 @@ export default class LevelManager {
         })
     }
 
+    promptForNextDay() {
+        this.discardMenuUI();
+        const that = this;
+        const discardMenuUI = () => {
+            that.discardMenuUI();
+        };
+        const fastForward = () => {
+            that.engine.getClock().skipToNextDay();
+        }
+        this.menuButtons = [];
+        this.menuButtons.push(new DialogueBox(this.engine, "Sleep to the next day? (saves the game)", true));
+        this.menuButtons.push(new Button(centerX - (menuButtonWidth / 2), centerY, menuButtonWidth, menuButtonHeight,
+        fastForward, "Sleep", "#81c2f3", "#040404"));
+        this.menuButtons.push(new Button(centerX - (menuButtonWidth / 2), centerY + menuButtonHeight + 5, menuButtonWidth, menuButtonHeight,
+        discardMenuUI, "Exit", "#81c2f3", "#040404"));
+        this.addMenuUIEntities();
+    }
+
+    doorPrompt(door, isOutside) {
+        this.discardMenuUI();
+        const that = this;
+        const discardMenuUI = () => {
+            that.discardMenuUI();
+            door.displaying = false;
+        };
+        const goOutside = () => {
+            that.discardMenuUI();
+            that.teleport(2, 10, 10)
+            door.displaying = false;
+        }
+        const goInside = () => {
+            that.discardMenuUI();
+            if (!that.engine.getClock().isCookingMode) {
+                that.engine.getClock().skipToCookingMode();
+            } else {
+                console.log("attempted to go inside when already cooking mode")
+                that.teleport(3, 40, 14);
+            }
+            door.displaying = false;
+        }
+        const openMarket = () => {
+            that.discardMenuUI();
+            const cookingUI = new MarketPlaceUI(that.engine, door);
+            that.engine.addUIEntity(cookingUI);
+        }
+        this.menuButtons = [];
+        if (isOutside) {
+            this.menuButtons.push(new DialogueBox(this.engine, "Go inside? (Skips to shop opening and you cannot go outside until the next day)", true));
+            this.menuButtons.push(new Button(centerX - (menuButtonWidth / 2), centerY, menuButtonWidth, menuButtonHeight,
+                goInside, "Go Inside", "#81c2f3", "#040404"))
+            this.menuButtons.push(new Button(centerX - (menuButtonWidth / 2), centerY + menuButtonHeight + 5, menuButtonWidth, menuButtonHeight,
+                discardMenuUI, "Exit", "#81c2f3", "#040404"))
+        } else {
+            this.menuButtons.push(new DialogueBox(this.engine, "Go outside? (You can't return until shop opens)", true));
+            this.menuButtons.push(new Button(centerX - (menuButtonWidth / 2), centerY, menuButtonWidth, menuButtonHeight,
+            goOutside, "Go Outside", "#81c2f3", "#040404"));
+            this.menuButtons.push(new Button(centerX - (menuButtonWidth / 2), centerY + menuButtonHeight + 5, menuButtonWidth, menuButtonHeight,
+                openMarket, "Visit Market", "#81c2f3", "#040404"))
+            this.menuButtons.push(new Button(centerX - (menuButtonWidth / 2), centerY + 2* (menuButtonHeight + 5), menuButtonWidth, menuButtonHeight,
+                discardMenuUI, "Exit", "#81c2f3", "#040404"))
+        }
+
+
+        this.addMenuUIEntities();
+    }
+
     //Initialize level 1;
     loadLevel1() {
         // refresh scene entities
@@ -313,8 +385,9 @@ export default class LevelManager {
         this.data = level4;
 
         this.sceneEntities = [];
-        this.sceneEntities.push(new Teleporter(this.engine, 8*TILE_SIZE, 16*TILE_SIZE, TILE_SIZE, TILE_SIZE, 1))
-        this.sceneEntities.push(new Teleporter(this.engine, 10*TILE_SIZE, 16*TILE_SIZE, TILE_SIZE, TILE_SIZE, 3))
+        this.sceneEntities.push(new Teleporter(this.engine, 12*TILE_SIZE, 19*TILE_SIZE, TILE_SIZE, TILE_SIZE, 1))
+        // this.sceneEntities.push(new Teleporter(this.engine, 10*TILE_SIZE, 16*TILE_SIZE, TILE_SIZE, TILE_SIZE, 3))
+        this.sceneEntities.push(new HouseDoor(this.engine, 4 * TILE_SIZE, 16*TILE_SIZE, true));
 
 
         const engine = this.engine;
@@ -324,7 +397,12 @@ export default class LevelManager {
     }
 
     loadLevel3() {
-        this.customerManager.setActive(true);
+        if (this.engine.getClock().isCookingMode) {
+            this.customerManager.setActive(true);
+        } else {
+            this.customerManager.setActive(false);
+        }
+
 
         this.sceneEntities.forEach(function (entity) {
             entity.removeFromWorld = true;
@@ -332,18 +410,24 @@ export default class LevelManager {
         this.data = level3;
 
         this.sceneEntities = [];
-        this.sceneEntities.push(new Teleporter(this.engine, 10*TILE_SIZE, 16*TILE_SIZE, TILE_SIZE, TILE_SIZE, 1));
-        this.sceneEntities.push(new Teleporter(this.engine, 13*TILE_SIZE, 16*TILE_SIZE, TILE_SIZE, TILE_SIZE, 2));
+        // this.sceneEntities.push(new Teleporter(this.engine, 10*TILE_SIZE, 16*TILE_SIZE, TILE_SIZE, TILE_SIZE, 1));
+        // this.sceneEntities.push(new Teleporter(this.engine, 13*TILE_SIZE, 16*TILE_SIZE, TILE_SIZE, TILE_SIZE, 2));
 
         const stationManager = this.engine.stationManager;
 
         this.sceneEntities.push(new StationPlaceholder(this.engine, 25 * TILE_SIZE, 16*TILE_SIZE, TILE_SIZE,TILE_SIZE));
+        this.sceneEntities.push(new BedroomDoor(30 * TILE_SIZE, 16*TILE_SIZE, this.engine));
+        this.sceneEntities.push(new HouseDoor(this.engine, 42*TILE_SIZE, 16*TILE_SIZE, false));
 
-        this.sceneEntities.push(new PrepStation(36 * TILE_SIZE, 16 * TILE_SIZE, TILE_SIZE, TILE_SIZE, stationManager.getStationById("1"), this.engine));
-        this.sceneEntities.push(new Oven(34 * TILE_SIZE - .5 * TILE_SIZE, 16 * TILE_SIZE - .5 * TILE_SIZE, 64, 64, stationManager.getStationById("1"),this.engine));
+        if (this.engine.getClock().isCookingMode && this.engine.getClock().dayCount <= 1) {
+            this.engine.addUIEntity(new DialogueBox(this.engine, "Take orders from the customers before they walk out! Customers will ask for a dish with a specific ingredient, so go to a cooking station and make sure you use it while cooking."));
+        }
 
-        this.sceneEntities.push(new PrepStation(41 * TILE_SIZE, 16 * TILE_SIZE, TILE_SIZE, TILE_SIZE, stationManager.getStationById("2"), this.engine));
-        this.sceneEntities.push(new Oven(39 * TILE_SIZE - .5 * TILE_SIZE, 16 * TILE_SIZE - .5 * TILE_SIZE, 64, 64, stationManager.getStationById("2"),this.engine));
+        // this.sceneEntities.push(new PrepStation(36 * TILE_SIZE, 16 * TILE_SIZE, TILE_SIZE, TILE_SIZE, stationManager.getStationById("1"), this.engine));
+        // this.sceneEntities.push(new Oven(34 * TILE_SIZE - .5 * TILE_SIZE, 16 * TILE_SIZE - .5 * TILE_SIZE, 64, 64, stationManager.getStationById("1"),this.engine));
+
+        // this.sceneEntities.push(new PrepStation(41 * TILE_SIZE, 16 * TILE_SIZE, TILE_SIZE, TILE_SIZE, stationManager.getStationById("2"), this.engine));
+        // this.sceneEntities.push(new Oven(39 * TILE_SIZE - .5 * TILE_SIZE, 16 * TILE_SIZE - .5 * TILE_SIZE, 64, 64, stationManager.getStationById("2"),this.engine));
 
         const engine = this.engine;
         this.sceneEntities.forEach(function (entity) {
@@ -353,7 +437,7 @@ export default class LevelManager {
 
     reloadClock() {
         const clock = this.engine.getClock();
-        this.engine.setClock(new InGameClock());
+        this.engine.setClock(new InGameClock(this.engine));
         this.engine.getClock().removeFromWorld = true;
         this.engine.setClock(clock); 
     }

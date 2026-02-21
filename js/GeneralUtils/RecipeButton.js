@@ -93,13 +93,11 @@ export default class RecipeButton { // like button but with some added features
         for (const data in this.ingredientList) {
             const item = this.ingredientList[data];
             if (item.hasSpecificIngredient == true) { // handle if specific ingredients
-                console.log("checking specific ingredient")
                 let itemValid = false;
                 // const commonIngredients = filter =>
                 for (const itemID in item.eligibleIngredients) { // iterate through the eligible ingredients, if the array has none, return
                     if (ingredientArray.includes(item.eligibleIngredients[itemID])) {
                         itemValid = true;
-                        console.log("found item " + item.eligibleIngredients[itemID]);
                         break;
                     }
                     console.log("couldn't find specific ingredient " + itemID)
@@ -114,12 +112,10 @@ export default class RecipeButton { // like button but with some added features
                     for (let i = 0; i < meats.length; i++) { // iterate through the category, checking if the array has the item id of any in the category
                         if (ingredientArray.includes(meats[i].itemID)) {
                             itemValid = true;
-                            console.log("found item " + meats[i].itemID);
                             break;
                         }
                     }
                     if (itemValid) continue;
-                    console.log("couldn't find Meat")
                     isIngredientListValid = false;
                     break;
                 } else if (item.category == "Vegetable") {
@@ -127,13 +123,11 @@ export default class RecipeButton { // like button but with some added features
                     for (let i = 0; i < category.length; i++) {
                         if (ingredientArray.includes(category[i].itemID)) {
                             itemValid = true;
-                            console.log("found item " + category[i].itemID);
                             break;
                         }
                         console.log("Ingredient array doesn't contain " + category[i].itemID)
                     }
                     if (itemValid) continue;
-                    console.log("couldn't find vegetable")
                     isIngredientListValid = false;
                     break;
                 } else if (item.category == "Grain") {
@@ -145,7 +139,7 @@ export default class RecipeButton { // like button but with some added features
                         }
                     }
                     if (itemValid) continue;
-                    console.log("couldn't find vegetable")
+                    // console.log("couldn't find vegetable")
                     isIngredientListValid = false;
                     break;
                 } else {console.log("invalid item category!" + item.category)}
@@ -155,10 +149,10 @@ export default class RecipeButton { // like button but with some added features
         if (isIngredientListValid == true) {
             this.isOpaque = true;
             this.requestedIngredients = ingredientArray;
-            console.log("valid recipe")
+            // console.log("valid recipe")
         } else {
             this.isOpaque = false;
-            console.log("not valid recipe")
+            // console.log("not valid recipe")
             console.log(ingredientArray);
             console.log(this.ingredientList)
         }
@@ -225,12 +219,12 @@ export default class RecipeButton { // like button but with some added features
         const inventory = engine.getPlayer().inventory;
         const that = this;
         for (const ingredientID in this.requestedIngredients) {
-            console.log("remove item " + that.requestedIngredients[ingredientID])
+            // console.log("remove item " + that.requestedIngredients[ingredientID])
             const index = inventory.hasItem(that.requestedIngredients[ingredientID]);
             if (index !== null) {
                 inventory.removeItem(index);
             } else {
-                console.log("Not enough Ingredients")
+                // console.log("Not enough Ingredients")
                 that.isOpaque = false;
                 that.parent.refreshIngredientData();
                 return;

@@ -1,10 +1,11 @@
 /** @import GameEngine from "/js/GameEngine.js" */
 import Entity from "/js/AbstractClasses/Entity.js";
+import DialogueBox from "/js/GeneralUtils/DialogueBox.js";
 import { appendSaveData, getSave } from "/js/GeneralUtils/SaveDataRetrieval.js";
-import { CONSTANTS } from "/js/Util.js";
+import { compareFloat, CONSTANTS } from "/js/Util.js";
 
 // how many seconds each day will last. Each day is 24 hours, so the hour length will be DAY_LENGTH / 24 and minutes  will be 60/hour length
-const DAY_LENGTH = 30; // 200 day length means each minute will be rough 0.14 seconds
+const DAY_LENGTH = 120; // 200 day length means each minute will be rough 0.14 seconds
 const HOUR_LENGTH = DAY_LENGTH / 24;
 const MINUTE_LENGTH = HOUR_LENGTH / 60;
 
@@ -14,15 +15,18 @@ const FINAL_HOUR = 24; // fall asleep at midnight
 const MODE_SWITCH_HOUR = 15; // game switches from gathering to cooking at this hour
 
 export default class InGameClock extends Entity {
-    constructor() {
+    constructor(engine) {
         super();
         this.x = 100;
+        this.engine = engine;
         // this.y = (CONSTANTS.CANVAS_HEIGHT / CONSTANTS.SCALE) - 20
         this.y = 12;
         this.dayTime = HOUR_LENGTH * STARTING_HOUR; // seconds elapsed in the day
         this.dayCount = 1;
         this.load();
         this.halted = false;
+        this.isCookingMode = false;
+        this.isDisplayingWarning = false;
     }
 
     load() { // for when we work with persisting data. Loads the current day, etc.
@@ -63,7 +67,25 @@ export default class InGameClock extends Entity {
             }
         });
         save.syncData();
+        this.isCookingMode = false;
+        if (this.dayCount == 7 && this.engine.getPlayer().inventory.money < 3000) { // handle the end of the game
+            save.money = 0;
+            this.engine.getPlayer().inventory.money = 0;
+            this.engine.addUIEntity(new DialogueBox(this.engine, "Oh no! Rent was due and the landlord took all the money, you can still play though, or make a new save and try again"))
+        } else if (this.dayCount == 7) {
+            this.engine.addUIEntity(new DialogueBox(this.engine, "Congrats! You didn't go bankrupt! You can keep playing and try to get as much money as you can!"))
+        }
+    }
 
+    skipToCookingMode() {
+        this.dayTime = MODE_SWITCH_HOUR * HOUR_LENGTH;
+        this.handleModeSwitch(this.engine);
+    }
+
+    skipToNextDay() {
+        this.dayTime = HOUR_LENGTH * STARTING_HOUR;
+        this.dayCount += 1;
+        this.handleEndOfDay(this.engine)
     }
 
 
@@ -76,11 +98,26 @@ export default class InGameClock extends Entity {
 
             if (this.dayTime >= DAY_LENGTH) { // handle the end of the day
                 this.dayTime = HOUR_LENGTH * STARTING_HOUR;
-                this.dayCount += 1;
                 this.handleEndOfDay(engine)
-            }  
+                this.dayCount += 1;
+            }  else if (compareFloat(this.dayTime / HOUR_LENGTH, MODE_SWITCH_HOUR, CONSTANTS.TICK_TIME) === 0) { // handle switching to cooking mode
+                this.handleModeSwitch(engine);
+            } else if (this.dayCount <= 1 && !this.isDisplayingWarning && compareFloat(this.dayTime / HOUR_LENGTH, MODE_SWITCH_HOUR - 1, CONSTANTS.TICK_TIME) === 0) { // give a warning when close to mode switch
+                console.log("It's almost time to open up shop! Gather as much ingredients before the time runs out!")
+                this.isDisplayingWarning = true;
+                engine.addUIEntity(new DialogueBox(engine, "It's almost time to open up shop! Gather as much ingredients before the time runs out!"));
+            }
+            
         }
     }
+
+    handleModeSwitch(engine) {
+        if (this.isCookingMode) { return;}
+        this.isDisplayingWarning = false;
+        this.isCookingMode = true;
+        engine.getLevel().teleport(3, 40, 14);
+    }
+    
 
     /**
      * @param {CanvasRenderingContext2D} ctx

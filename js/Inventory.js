@@ -162,10 +162,10 @@ export default class Inventory {
     equipSlot(slotIndex) {
         if (this.equippedSlot === slotIndex) {
             this.equippedSlot = null;
-            console.log("Unequipped slot:", slotIndex + 1)
+            // console.log("Unequipped slot:", slotIndex + 1)
         } else if (this.slots[slotIndex]) {
             this.equippedSlot = slotIndex;
-            console.log("Equipped slot:", slotIndex + 1)
+            // console.log("Equipped slot:", slotIndex + 1)
         }
     }
 

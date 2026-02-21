@@ -15,9 +15,16 @@ export default class Teleporter extends EntityInteractable {
 
         this.renderX = x;
         this.renderY = y;
-        this.prompt = new OnScreenTextSystem(this,
+        if (level == 1) {
+            this.prompt = new OnScreenTextSystem(this,
+                    x + (width / 4), y - (height / 4), `Teleport to Dev Playground? (This has cheat items)`, false);
+                engine.addEntity(this.prompt);
+        } else {
+            this.prompt = new OnScreenTextSystem(this,
                     x + (width / 4), y - (height / 4), `Teleport to Level ${level}`, false);
                 engine.addEntity(this.prompt);
+        }
+        
     }
 
     update(engine) {
