@@ -61,6 +61,10 @@ export class RecipePanel extends Entity{ // the recipe panel section of the UI
         this.parent.displayRecipeName(recipeName);
     }
 
+    setSelectedIngredients(ingredientString) {
+        this.parent.displayIngredientList(ingredientString);
+    } 
+
     scrollUp() {
         if (startIndex <= 0) {return;}
         this.startIndex--;
@@ -161,18 +165,31 @@ export class inventorySelection extends Entity {
         if (engine.mouse) {
             const x = engine.mouse.x / CONSTANTS.SCALE;
             const y = engine.mouse.y / CONSTANTS.SCALE;
-            if (x >= this.x && x <= this.x + this.width &&
-            y >= this.y && y <= this.y + this.height) {
+            // if (x >= this.x && x <= this.x + this.width &&
+            // y >= this.y && y <= this.y + this.height) {
+            //     if (!this.isHovered) {
+            //         this.isHovered = true;
+            //         engine.setMouseSignal(1);
+            //     }
+            // } else if (this.isHovered){
+            //     this.isHovered = false;
+            //     engine.setMouseSignal(0);
+            // }
+            const slotIndex = this.getSlotIndex(x, y);
+            if (slotIndex !== null && this.playerInventory.slots[slotIndex] != null) {
                 if (!this.isHovered) {
                     this.isHovered = true;
                     engine.setMouseSignal(1);
-                }
-            } else if (this.isHovered){
+                    engine.getCursor().showText(this.getSlotName(slotIndex));
+                } 
+            } else if (this.isHovered) {
                 this.isHovered = false;
                 engine.setMouseSignal(0);
+                engine.getCursor().hideText();
             }
 
             if (engine.click) {
+                console.log(this.isHovered);
                     const slotIX = this.getSlotIndex(x, y);
                     // console.log(slotIX);
                     if (slotIX !== null && this.playerInventory.slots[slotIX]) {
@@ -181,6 +198,21 @@ export class inventorySelection extends Entity {
                         engine.click = null;
                     }
                 }
+        }
+    }
+
+    getSlotName(slotIndex) {
+        const slotData = this.playerInventory.slots[slotIndex];
+        if (!slotData) {return;}
+        if (slotData.isDish) {
+            let ingredientList = slotData.itemData.name + " (";
+            for (let i = 0; i < slotData.ingredients.length - 1; i++) {
+                ingredientList += getItemData(slotData.ingredients[i]).name + ", " 
+            }
+            ingredientList += getItemData(slotData.ingredients[slotData.ingredients.length - 1]).name + ")"
+            return ingredientList;
+        } else {
+            return getItemData(slotData.itemID).name;
         }
     }
 
@@ -410,6 +442,11 @@ export default class CookingStationUI extends Entity {
             this.recipeName = "Make " + name + "?";
         }
     }
+    displayIngredientList(ingredientList) {
+        if (ingredientList) {
+            this.ingredientList = ingredientList;
+        }
+    }
 
     update() {
 
@@ -424,6 +461,14 @@ export default class CookingStationUI extends Entity {
             ctx.fillStyle = "rgb(0, 0, 0)"
             const txtMetrics = ctx.measureText(this.recipeName);
             ctx.fillText(this.recipeName, this.x + (this.width / 3) - (txtMetrics.width / 2), this.y + (this.height / 6))
+            ctx.restore();
+        }
+        if (this.ingredientList) {
+            ctx.save()
+            ctx.font = "9px monospace";
+            ctx.fillStyle = "rgb(0, 0, 0)"
+            const txtMetrics = ctx.measureText(this.ingredientList);
+            ctx.fillText(this.ingredientList, this.x + (this.width / 3) - (txtMetrics.width / 2), this.y + (this.height / 6) + 15)
             ctx.restore();
         }
     }

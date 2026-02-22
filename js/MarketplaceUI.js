@@ -62,7 +62,7 @@ export default class MarketPlaceUI extends Entity {
             const itemData = getItemData(itemid);
             if (itemData) {
                 const name = itemData.name;
-                const price = itemData.sellPrice;
+                const price = itemData.sellPrice * 2;
                 const txt = "" + name + ": $" + price;
                 const that = this;
                 const addToInventory = () => {
@@ -72,8 +72,8 @@ export default class MarketPlaceUI extends Entity {
                         itemID: itemid,
                         quantity: 1
                     };
-                    if (money && money >= itemData.sellPrice) {
-                        player.inventory.money -= itemData.sellPrice;
+                    if (money && money >= price) {
+                        player.inventory.money -= price;
                         player.inventory.addItem(item);
                     }
                 }

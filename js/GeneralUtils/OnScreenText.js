@@ -10,6 +10,11 @@ export default class OnScreenTextSystem extends Entity {
         this.y = y;
         this.text = text;
         this.isOn = isOn;
+        this.font = '12px monospace';
+    }
+
+    changeFont(font) {
+        this.font = font;
     }
 
     showText(text) {
@@ -43,8 +48,10 @@ export default class OnScreenTextSystem extends Entity {
         }
         const width = ctx.measureText(this.text).width;
         ctx.save();
-        ctx.fillStyle = "#000000"
-        ctx.font = `${12 * 1}px monospace`;
+        ctx.fillStyle = "#ffffff"
+        ctx.strokeStyle = "rgba(0, 0, 0, 0.63)"
+        ctx.font = this.font;
+        ctx.strokeText(this.text, this.x - (width/2) - engine.camera.x, this.y - engine.camera.y);
         ctx.fillText(this.text, this.x - (width/2) - engine.camera.x, this.y - engine.camera.y);
         ctx.restore();
     }

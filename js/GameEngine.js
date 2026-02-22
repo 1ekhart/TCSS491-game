@@ -195,6 +195,10 @@ export default class GameEngine {
         this.cursor = cursor;
     }
 
+    getCursor() {
+        return this.cursor;
+    }
+
     // signals which mouse sprite to change to. 0 is a normal sprite, while 1 is a pointer sprite.
     /** @param {Number} signal */
     setMouseSignal(signal) {

@@ -4,6 +4,7 @@ import OnScreenTextSystem from '/js/GeneralUtils/OnScreenText.js';
 import Player from '/js/Player.js';
 import Item from '/js/Item.js';
 import { randomIntRange, CONSTANTS } from '/js/Util.js';
+import Animator from '/js/GeneralUtils/Animator.js';
 
 export default class Interactable extends EntityInteractable {
     constructor(x, y, width, height, engine) {
@@ -89,4 +90,136 @@ export default class Interactable extends EntityInteractable {
             ctx.strokeRect(Math.floor(this.x - engine.camera.x), Math.floor(this.y - engine.camera.y), this.width, this.height);
         }
     }
+}
+
+
+export class BedroomDoor extends EntityInteractable {
+    constructor(x, y, engine) {
+        super();
+        const height = 64;
+        const width = 32;
+        this.width = width * 2;
+        this.height = height * 2;
+        this.x = x - (width / 2);
+        this.y = y - (height / 2);
+
+        this.renderX = x;
+        this.renderY = y - 32;
+        this.toggleCooldown = 60; // 1 second cooldown
+        this.elapsedTicks = 0;
+        this.engine = engine;
+
+        this.toggleable = true;
+
+        this.toggleState = false;
+        this.prompt = new OnScreenTextSystem(this,
+            this.renderX + (width / 4) + 8, this.renderY - (height / 4), "Go to Sleep?", false);
+        engine.addEntity(this.prompt);
+        this.sprite = new Animator(ASSET_MANAGER.getAsset("/Assets/Entities/Door-Sheet.png"), 0, 0, 16, 32, 2, 1, 0, false, false);
+    }
+
+    /** @param {GameEngine} engine */
+    update(engine) {
+        if (this.toggleState == false) {
+            if (!engine.entities[4]) return;
+            for (const entity of engine.entities[4]) {
+                if (entity instanceof Player) {
+                    if (this.isCollidingWith(entity)) {
+                        this.prompt.showText();
+                    } else {
+                        this.prompt.hideText();
+                    }
+                }
+            }
+        } else {
+            this.prompt.hideText();
+        }
+        if (this.toggleable == false) {
+            this.elapsedTicks += 1;
+            if (this.elapsedTicks > this.toggleCooldown) {
+                this.toggleable = true;
+                this.elapsedTicks = 0;
+            }
+        }
+    }
+
+    /** @param {Player} player */
+    interact(player) {
+        if (this.toggleable == true) {
+            this.toggleable = false;
+            if (this.toggleState == true) {
+                this.toggleState = false;
+            } else {
+                this.engine.getLevel().promptForNextDay();
+            }
+        }
+    }
+
+
+
+    /**
+     * @param {CanvasRenderingContext2D} ctx
+     * @param {GameEngine} enginea 
+     */
+    draw(ctx, engine) {
+        this.sprite.drawFramePlain(ctx, this.renderX - engine.camera.x, this.renderY - engine.camera.y, 2, 0);
+        if (CONSTANTS.DEBUG == true) {
+            ctx.strokeStyle = "#aa0000";
+            ctx.strokeRect(Math.floor(this.x - engine.camera.x), Math.floor(this.y - engine.camera.y), this.width, this.height);
+        }
+    }
+}
+
+export class HouseDoor extends EntityInteractable {
+    constructor(engine, x, y, isOutside) {
+            super();
+            const height = 64;
+            const width = 32;
+            this.engine = engine;
+            this.width = width * 2;
+            this.height = height * 2;
+            this.x = x - (width / 2);
+            this.y = y - (height / 2);
+            this.isOutside = isOutside;
+    
+            this.renderX = x;
+            this.renderY = y - (height / 2);
+            this.prompt = new OnScreenTextSystem(this,
+                        x + (width / 4), y - (height / 4) - 8, `Open the door?`, false);
+            engine.addUIEntity(this.prompt);
+            this.displaying = false;
+            this.sprite = new Animator(ASSET_MANAGER.getAsset("/Assets/Entities/Door-Sheet.png"), 16, 0, 16, 32, 1, 1, 0, false, false);
+        }
+    
+        update(engine) {
+            if (!engine.entities[4]) return;
+            for (const entity of engine.entities[4]) {
+                if (entity instanceof Player) {
+                    if (this.isCollidingWith(entity)) {
+                        this.prompt.showText();
+                    } else {
+                        this.prompt.hideText();
+                    }
+                }
+            }
+        }
+    
+        
+    
+         /** @param {Player} player */
+        interact(player) {
+            if (this.displaying == true) {return;}
+            if (this.engine.getClock().isCookingMode) {return;}
+            this.prompt.hideText();
+            this.engine.getLevel().doorPrompt(this, this.isOutside);
+            this.displaying = true;
+        }
+        
+        draw(ctx, engine) {
+            this.sprite.drawFramePlain(ctx, this.renderX - engine.camera.x, this.renderY - engine.camera.y, 2, 0);
+            if (CONSTANTS.DEBUG == true) {
+                ctx.strokeStyle = "#aa0000";
+                ctx.strokeRect(Math.floor(this.x - engine.camera.x), Math.floor(this.y - engine.camera.y), this.width, this.height);
+            }
+        }
 }

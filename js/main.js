@@ -19,6 +19,8 @@ ASSET_MANAGER.queueDownload("/Assets/Player/BladeEffect-Sheet.png")
 
 //download from the entities folder
 ASSET_MANAGER.queueDownload("/Assets/Entities/Basan-Sheet.png")
+ASSET_MANAGER.queueDownload("/Assets/Entities/Oven.png")
+ASSET_MANAGER.queueDownload("/Assets/Entities/Door-Sheet.png")
 
 //download from world items folder
 ASSET_MANAGER.queueDownload("/Assets/WorldItems/grey-pot.png")
@@ -33,6 +35,7 @@ ASSET_MANAGER.queueDownload("/Assets/WorldTiles/GrassSheet.png")
 ASSET_MANAGER.queueDownload("/Assets/WorldTiles/Stool.png")
 
 //download from icons folder
+ASSET_MANAGER.queueDownload("/Assets/Icons/BurgerPlate.png")
 ASSET_MANAGER.queueDownload("/Assets/Icons/PotatoIcon.png")
 ASSET_MANAGER.queueDownload("/Assets/Icons/Rice.png")
 ASSET_MANAGER.queueDownload("/Assets/Icons/RiceBowl.png")
@@ -40,7 +43,11 @@ ASSET_MANAGER.queueDownload("/Assets/Icons/CabbageIcon.png")
 ASSET_MANAGER.queueDownload("/Assets/Icons/Flour.png")
 ASSET_MANAGER.queueDownload("/Assets/Icons/BoarMeat.png")
 ASSET_MANAGER.queueDownload("/Assets/Icons/Coin.png")
-
+ASSET_MANAGER.queueDownload("/Assets/Icons/backpack.png");
+ASSET_MANAGER.queueDownload("/Assets/Icons/OrderBubble.png")
+ASSET_MANAGER.queueDownload("/Assets/Icons/PendingOrder.png")
+ASSET_MANAGER.queueDownload("/Assets/Icons/AngryOrder.png")
+ASSET_MANAGER.queueDownload("/Assets/Icons/CompleteOrder.png")
 
 
 
@@ -72,7 +79,7 @@ ASSET_MANAGER.downloadAll(() => {
 
     gameEngine.setPlayer(player);
     gameEngine.setLevel(new Level(gameEngine));
-    gameEngine.setCursor(new Cursor());
+    gameEngine.setCursor(new Cursor(gameEngine));
     // gameEngine.addEntity(new CollisionTester());
     // ctx.translate(-CONSTANTS.CANVAS_WIDTH / 4, 0)
 

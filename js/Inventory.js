@@ -5,7 +5,7 @@ import { CONSTANTS } from "/js/Util.js";
 const HOTBAR_SIZE = 6;
 
 // backpack # of slots
-const BACKPACK_SIZE = 6;
+const BACKPACK_SIZE = 12;
 
 export default class Inventory {
     constructor() {
@@ -28,12 +28,13 @@ export default class Inventory {
         const saveInventory = save.inventory; // fill the inventory with the save data.
 
         for (const key in saveInventory) {
-            console.log(key);
+            console.log(saveInventory[key]);
             const obj = saveInventory[key];
-            this.slots[key] = {
-                itemID: obj.itemID,
-                quantity: obj.quantity
-            }
+            // this.slots[key] = {
+            //     itemID: obj.itemID,
+            //     quantity: obj.quantity
+            // }
+            this.slots[key] = obj;
         }
 
         this.money = save.money;
@@ -43,10 +44,11 @@ export default class Inventory {
         let data = {};
         for (let i = 0; i < this.totalSlots; i++) {
             if (this.slots[i]) {
-                const slotData = {
-                    itemID: this.slots[i].itemID,
-                    quantity: this.slots[i].quantity
-                }
+                // const slotData = {
+                //     itemID: this.slots[i].itemID,
+                //     quantity: this.slots[i].quantity
+                // }
+                const slotData = this.slots[i];
                 data[i] = slotData;
             }
         }
@@ -74,9 +76,24 @@ export default class Inventory {
         }
         for (let i = 0; i < this.totalSlots; i++) {
             if (this.slots[i] && this.slots[i].itemID === item.itemID) {
-                this.slots[i].quantity += item.quantity;
+                if (item.isDish) { // do an additional check if dish (ingredients may be different)
+                    if (item.ingredients.length !== this.slots[i].ingredients.length) {continue;}
+                    const a1 = item.ingredients.slice().sort();
+                    const a2 = this.slots[i].ingredients.slice().sort();
+                    let isMatch = true;
+                    for (let j = 0; j < a1.length; j++) {
+                        if (a1[j] !== a2[j]) {
+                            isMatch = false; 
+                            break;
+                        }
+                    }
+                    if (isMatch == false) {continue;} // if a match, then add the ietm quality
+                    this.slots[i].quantity += item.quantity;
+                } else {
+                    this.slots[i].quantity += item.quantity;
+                }
                 if (CONSTANTS.DEBUG) {
-                    console.log("Added to exisitng item, x"  + item.quantity);
+                    console.log("Added to exising item, x"  + item.quantity);
                 }
                 return true;
             }
@@ -145,10 +162,10 @@ export default class Inventory {
     equipSlot(slotIndex) {
         if (this.equippedSlot === slotIndex) {
             this.equippedSlot = null;
-            console.log("Unequipped slot:", slotIndex + 1)
+            // console.log("Unequipped slot:", slotIndex + 1)
         } else if (this.slots[slotIndex]) {
             this.equippedSlot = slotIndex;
-            console.log("Equipped slot:", slotIndex + 1)
+            // console.log("Equipped slot:", slotIndex + 1)
         }
     }
 
@@ -175,6 +192,10 @@ export default class Inventory {
 
     getEquippedItem() {
         return this.equippedSlot !== null ? this.slots[this.equippedSlot].itemID : null;
+    }
+
+    getEquippedSlot() {
+        return this.equippedSlot;
     }
 
     hasHotbarSpace() {

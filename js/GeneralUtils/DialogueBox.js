@@ -68,7 +68,8 @@ export default class DialogueBox extends Entity {
 
         ctx.strokeStyle = "#000000c0"
         ctx.fillStyle = "#ffffffcb"
-        ctx.lineWidth = 1 * CONSTANTS.SCALE;
+        ctx.font = '12px monospace';
+        ctx.lineWidth = 2;
         let textX = this.x + (this.width / 36);
         let textY = this.y + (this.height / 8);
         for (let i = 0; i < this.lines.length; i++) {
