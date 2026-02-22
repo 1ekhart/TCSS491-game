@@ -17,8 +17,8 @@ export default class InventoryUI {
         this.hotbarY = (ctx.canvas.height / CONSTANTS.SCALE) - this.slotSize - 10;
         this.coinInfoY = (ctx.canvas.height / CONSTANTS.SCALE) / 4
 
-        this.backpackButtonX = 10;
-        this.backpackButtonY = this.hotbarY;
+        this.backpackButtonX = 8;
+        this.backpackButtonY = this.hotbarY - 2;
         this.backpackButtonSize = this.slotSize;
 
         this.backpackX = 10;
@@ -32,6 +32,8 @@ export default class InventoryUI {
         this.draggedSlotIndex = null;
         this.isDragging = false;
         this.isVisible = true;
+
+        this.backpackSprite = ASSET_MANAGER.getAsset("/Assets/Icons/backpack.png");
     }
 
     update(engine) {
@@ -188,13 +190,9 @@ export default class InventoryUI {
         const hotbarSlots = this.player.inventory.slots.slice(0, this.player.inventory.hotbarSize);
 
         // backpack button
-        this.ctx.fillStyle = this.player.inventory.backpackOpen ? "#420D09" : "#960019";
-        this.ctx.fillRect(this.backpackButtonX, this.backpackButtonY, this.backpackButtonSize, this.backpackButtonSize);
-        this.ctx.strokeStyle = "#fff";
-        this.ctx.strokeRect(this.backpackButtonX, this.backpackButtonY, this.backpackButtonSize, this.backpackButtonSize);
-        this.ctx.fillStyle = "#fff";
-        this.ctx.font = "12px monospace";
-        this.ctx.fillText("B", this.backpackButtonX + 13, this.backpackButtonY + 20);
+       const frameX = this.player.inventory.backpackOpen ? 32 : 0;
+       this.ctx.drawImage(this.backpackSprite, frameX, 0, 32, 32, this.backpackButtonX, this.backpackButtonY, this.backpackButtonSize+5,this.backpackButtonSize+5);
+
 
         // draw money count:
         this.ctx.save();

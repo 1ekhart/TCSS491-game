@@ -152,7 +152,7 @@ export default class LevelManager {
         this.y = 0;
         this.loadMainMenu();
         //  keeps track of entities so we can load or destroy all of the entities in a particular scene.
-
+        this.currentLevel = 1;
         this.customerSpots = [
             { x: 2 * TILE_SIZE, y: 15 * TILE_SIZE },
             { x: 6 * TILE_SIZE, y: 15 * TILE_SIZE }
@@ -272,6 +272,7 @@ export default class LevelManager {
 
     //Initialize level 1;
     loadLevel1() {
+        this.currentLevel = 1;
         // refresh scene entities
         this.sceneEntities.forEach(function (entity) {
             entity.removeFromWorld = true;
@@ -305,6 +306,7 @@ export default class LevelManager {
 
     //Initialize level 2
     loadLevel2() {
+        this.currentLevel = 2;
         this.customerManager.setActive(false);
 
         this.sceneEntities.forEach(function (entity) {
@@ -324,6 +326,7 @@ export default class LevelManager {
     }
 
     loadLevel3() {
+        this.currentLevel = 3;
         this.customerManager.setActive(true);
 
         this.sceneEntities.forEach(function (entity) {

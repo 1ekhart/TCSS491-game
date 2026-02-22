@@ -1,5 +1,4 @@
 import Customer from "/js/Customer.js";
-import { RECIPES } from "/js/Data/Recipes.js";
 import { getCategoryGrains, getCategoryMeats, getCategoryVegetables } from "/js/DataClasses/ItemList.js";
 import { getRecipeData, recipeList } from "/js/DataClasses/RecipeList.js";
 import { randomIntRange } from "/js/Util.js";
@@ -18,6 +17,10 @@ export default class CustomerManager {
     }
 
     update() {
+        /*
+        if (this.engine.getLevel().currentLevel !== 3) {
+            return;
+        }*/
         if (!this.active) return;
 
         if (!this.initialized) {
@@ -31,6 +34,7 @@ export default class CustomerManager {
     }
 
     spawnCustomer(spotIndex) {
+        
         const exisitng = this.activeCustomers.get(spotIndex);
         if (exisitng) {
             exisitng.removeFromWorld = true;
@@ -65,14 +69,17 @@ export default class CustomerManager {
 
         this.engine.addEntity(customer, 3);
         this.engine.addEntity(customer.prompt);
+        this.engine.addEntity(customer.timerDisplay);
         this.activeCustomers.set(spotIndex, customer);
     }
 
     setActive(isActive) {
         this.active = isActive;
+        /*
         if (!isActive) {
             this.reset();
-        }
+        }*/
+        
     }
 
     reset() {
