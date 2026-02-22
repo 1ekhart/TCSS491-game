@@ -23,8 +23,8 @@ const RiceBowl = {
     }
 }
 
-const Flour = {
-    recipeID: 2,
+const Flour = { // joke/prototype item do not add!!
+    recipeID: 0,
     itemID: 7,
     ingredients: {
         1: {
@@ -50,9 +50,32 @@ const Flour = {
     }
 }
 
+const Burger = {
+    recipeID: 2,
+    itemID: 9,
+    ingredients: {
+        1: {
+            hasSpecificIngredient: true,
+            eligibleIngredients: [7]
+        },
+        2: {
+            hasSpecificIngredient: true,
+            eligibleIngredients: [3]
+        },
+        3: {
+            hasSpecificIngredient: false,
+            category: "Meat"
+        },
+        4: {
+            hasSpecificIngredient: false,
+            category: "Vegetable"
+        }
+    }
+}
+
 export const recipeList = {
     1: RiceBowl,
-    2: Flour
+    2: Burger
 }
 
 export const getRecipeData = (recipeID) => {

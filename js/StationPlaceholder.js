@@ -1,4 +1,5 @@
 import EntityInteractable from "/js/AbstractClasses/EntityInteractable.js";
+import Animator from "/js/GeneralUtils/Animator.js";
 import CookingStationUI from "/js/GeneralUtils/CookingUI.js";
 import OnScreenTextSystem from "/js/GeneralUtils/OnScreenText.js";
 import MarketPlaceUI from "/js/MarketplaceUI.js";
@@ -17,9 +18,10 @@ export default class StationPlaceholder extends EntityInteractable {
         this.renderX = x;
         this.renderY = y;
         this.prompt = new OnScreenTextSystem(this,
-                    x + (width / 4), y - (height / 4), `Open Cooking Menu`, false);
+                    x + (width / 4), y - (height / 4) - 8, `Cook with Oven`, false);
         engine.addEntity(this.prompt);
         this.displaying = false;
+        this.sprite = new Animator(ASSET_MANAGER.getAsset("/Assets/Entities/Oven.png"), 0, 0, 16, 32, 1, 1, 0, false, false);
     }
 
     update(engine) {
@@ -47,9 +49,10 @@ export default class StationPlaceholder extends EntityInteractable {
     }
     
     draw(ctx, engine) {
-        ctx.fillStyle = "#fed18e";
-        ctx.fillRect(this.renderX - engine.camera.x, this.renderY - engine.camera.y,
-        this.width / 2, this.height / 2);
+        // ctx.fillStyle = "#fed18e";
+        // ctx.fillRect(this.renderX - engine.camera.x, this.renderY - engine.camera.y,
+        // this.width / 2, this.height / 2);
+        this.sprite.drawFramePlain(ctx, this.renderX - engine.camera.x, this.renderY - engine.camera.y - 32, 2);
     
         if (CONSTANTS.DEBUG == true) {
             ctx.strokeStyle = "#aa0000";

@@ -19,6 +19,8 @@ ASSET_MANAGER.queueDownload("/Assets/Player/BladeEffect-Sheet.png")
 
 //download from the entities folder
 ASSET_MANAGER.queueDownload("/Assets/Entities/Basan-Sheet.png")
+ASSET_MANAGER.queueDownload("/Assets/Entities/Oven.png")
+ASSET_MANAGER.queueDownload("/Assets/Entities/Door-Sheet.png")
 
 //download from world items folder
 ASSET_MANAGER.queueDownload("/Assets/WorldItems/grey-pot.png")
@@ -32,6 +34,7 @@ ASSET_MANAGER.queueDownload("/Assets/WorldTiles/StoneSheet.png")
 ASSET_MANAGER.queueDownload("/Assets/WorldTiles/GrassSheet.png")
 
 //download from icons folder
+ASSET_MANAGER.queueDownload("/Assets/Icons/BurgerPlate.png")
 ASSET_MANAGER.queueDownload("/Assets/Icons/PotatoIcon.png")
 ASSET_MANAGER.queueDownload("/Assets/Icons/Rice.png")
 ASSET_MANAGER.queueDownload("/Assets/Icons/RiceBowl.png")
