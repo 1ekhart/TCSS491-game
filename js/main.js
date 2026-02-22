@@ -30,6 +30,7 @@ ASSET_MANAGER.queueDownload("/Assets/WorldTiles/WoodSheet.png")
 ASSET_MANAGER.queueDownload("/Assets/WorldTiles/BWoodSheet.png")
 ASSET_MANAGER.queueDownload("/Assets/WorldTiles/StoneSheet.png")
 ASSET_MANAGER.queueDownload("/Assets/WorldTiles/GrassSheet.png")
+ASSET_MANAGER.queueDownload("/Assets/WorldTiles/Stool.png")
 
 //download from icons folder
 ASSET_MANAGER.queueDownload("/Assets/Icons/PotatoIcon.png")

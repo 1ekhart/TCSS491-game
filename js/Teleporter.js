@@ -41,8 +41,8 @@ export default class Teleporter extends EntityInteractable {
             theX = 17;
             theY = 1;
         } else if (this.level == 2) {
-            theX = 10;
-            theY = 10;
+            theX = 9;
+            theY = 15;
         } else if (this.level == 3) {
             theX = 4;
             theY = 15;
