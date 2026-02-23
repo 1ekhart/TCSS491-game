@@ -6,9 +6,6 @@
 export const getSave = () => {
     if (localStorage) {
         const saveData = localStorage.getItem('saveData');
-        if (saveData) {
-            wipeSave();
-        }
         const parsedData = JSON.parse(saveData);
         return parsedData;
     } else {
