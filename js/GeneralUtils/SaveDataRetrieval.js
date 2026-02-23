@@ -6,6 +6,9 @@
 export const getSave = () => {
     if (localStorage) {
         const saveData = localStorage.getItem('saveData');
+        if (saveData) {
+            wipeSave();
+        }
         const parsedData = JSON.parse(saveData);
         return parsedData;
     } else {
@@ -62,6 +65,10 @@ export default class SaveDataRetrieval {
     constructor() { // initializes the save data object
         this.storage = getStorage();
         this.data = getSave();
+        if (!this.data) {
+            wipeSave();
+            this.data = getSave();
+        }
         this.data.entities = {};
         this.data.inventory = {};
         this.upcomingData = {
