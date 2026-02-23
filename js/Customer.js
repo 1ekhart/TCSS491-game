@@ -30,7 +30,7 @@ export default class Customer extends EntityInteractable {
         console.log(this.text);
         this.prompt = new OnScreenTextSystem(this, x + width/2, y - 2, `${this.text}`, false);
 
-        this.waitTime = 10; // testing
+        this.waitTime = 18; // testing
         this.remainingTime = this.waitTime;
         this.timerDisplay = new OnScreenTextSystem(this, x + width / 2, y - 17, this.formatTime(this.remainingTime), false);
         

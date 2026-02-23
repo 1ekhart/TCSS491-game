@@ -37,6 +37,27 @@ export default class PottedPlant extends EntityInteractable {
         this.potSprite = new Animator(ASSET_MANAGER.getAsset("/Assets/WorldItems/grey-pot.png"), 0, 0, 32, 32, 1, 1, 0, false, false);
     }
 
+    save(saveObj) {
+        let plant;
+        if (this.plant) {
+            plant = this.plant.itemID
+        } else {
+            plant = false;
+        }
+        let data = {
+            type: "PottedPlant",
+            level: 2,
+            plant: plant,
+            x: this.renderX,
+            y: this.renderY - 5,
+            width: this.renderWidth,
+            height: this.renderHeight,
+            dayPlaced: this.dayPlaced
+        }
+        saveObj.setEntity(data);
+        console.log(data)
+    }
+
     initializePlant(plantID) {
         this.plant = getPlantData(plantID);
         if (this.plant.regrows == false) {
@@ -57,7 +78,7 @@ export default class PottedPlant extends EntityInteractable {
     }
 
     update(engine) {
-        const newText = this.plant ? `${this.plant.name} in ${Math.floor((this.plant.growTime + this.dayPlaced - 1) /engine.clock.dayCount)} days` : "Empty"
+        const newText = this.plant ? `${this.plant.name} in ${Math.max(0,((this.plant.growTime) + this.dayPlaced) - (engine.clock.dayCount))} days` : "Empty"
         this.prompt.changeText(newText);
         if (!engine.entities[4]) return;
         for (const entity of engine.entities[4]) {

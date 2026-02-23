@@ -5,14 +5,14 @@ import { appendSaveData, getSave } from "/js/GeneralUtils/SaveDataRetrieval.js";
 import { compareFloat, CONSTANTS } from "/js/Util.js";
 
 // how many seconds each day will last. Each day is 24 hours, so the hour length will be DAY_LENGTH / 24 and minutes  will be 60/hour length
-const DAY_LENGTH = 120; // 200 day length means each minute will be rough 0.14 seconds
+const DAY_LENGTH = 180; // 200 day length means each minute will be rough 0.14 seconds
 const HOUR_LENGTH = DAY_LENGTH / 24;
 const MINUTE_LENGTH = HOUR_LENGTH / 60;
 
 // consts for time settings, what is the start and end of each day, etc.
 const STARTING_HOUR = 6;
 const FINAL_HOUR = 24; // fall asleep at midnight
-const MODE_SWITCH_HOUR = 15; // game switches from gathering to cooking at this hour
+const MODE_SWITCH_HOUR = 14; // game switches from gathering to cooking at this hour
 
 export default class InGameClock extends Entity {
     constructor(engine) {
@@ -75,6 +75,7 @@ export default class InGameClock extends Entity {
         } else if (this.dayCount == 7) {
             this.engine.addUIEntity(new DialogueBox(this.engine, "Congrats! You didn't go bankrupt! You can keep playing and try to get as much money as you can!"))
         }
+        this.engine.getLevel().teleport(3, 30, 14);
     }
 
     skipToCookingMode() {
@@ -113,6 +114,18 @@ export default class InGameClock extends Entity {
 
     handleModeSwitch(engine) {
         if (this.isCookingMode) { return;}
+        // handle saving the entities placed during the outdoor section
+        const save = engine.getSaveObject();
+        engine.entities.forEach(function (entitylist) { // call the save but don't sync data just yet.
+            const entityLine = entitylist;
+            if (entityLine) {
+                entityLine.forEach(function (entity) {
+                    if (entity.save) {
+                        entity.save(save);
+                    }
+                })
+            }
+        });
         this.isDisplayingWarning = false;
         this.isCookingMode = true;
         engine.getLevel().teleport(3, 40, 14);

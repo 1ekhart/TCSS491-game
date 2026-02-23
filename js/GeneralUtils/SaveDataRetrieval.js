@@ -27,6 +27,7 @@ export const getStorage = () => {
 
 /**
  * BE CAREFUL WITH THIS METHOD: after retrieving the save data and editing, pass the save to this method to save the changes.
+ * It's much easier to just call a method from the save data object.
  * @param {*} saveData this is the parsed version of getSave() that the caller calls and edits, then passes 
  */
 export const appendSaveData = (saveData) => {
@@ -44,7 +45,7 @@ export const appendSaveData = (saveData) => {
 export const wipeSave = () => {
     const data = {
         dayCount: 1,
-        money: 0,
+        money: 500,
         hasViewedTutorial: false,
         entities: {},
         inventory: {},
@@ -115,11 +116,13 @@ export default class SaveDataRetrieval {
     }
 
     /**
-     * Adds all of the entities of a level to the upcoming entity data list, when adding an entity, it will go like "level1: {EntityList: {EntityData}}" 
-     * The entities are refreshed every time there's a new upcoming data, so no need to check if an entity is already in the data
+     * Adds all of the entities of a level to the upcoming entity data list, when adding an entity, it will contain the "type" or class, and the level it belongs to.
      * @param {*} EntityData 
      */
-    setEntities(EntityData) {
+    setEntity(EntityData) {
+        const entityList = this.upcomingData.entities
+        const entityKey = Object.keys(entityList).length + 1; // we'll have the key be the amount of entities saved + 1
+        entityList[entityKey] = EntityData;
     }
 
     

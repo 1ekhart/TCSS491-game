@@ -19,7 +19,7 @@ export default class MarketPlaceUI extends Entity {
         this.buttonHeight = (this.height * 3 / 4) / rowSize;
         // this.columns = []; // create a column of sale buttons
         
-        this.items = [2, 3, 4, 6, 7, 8, 5];
+        this.items = [2, 3, 4, 7, 8];
         // function to destroy object;
         const that = this;
         const close = () => {
@@ -39,6 +39,7 @@ export default class MarketPlaceUI extends Entity {
         let x = this.x + (this.buttonHeight / 2);
         for (let i = 0; i < columnSize; i++) {
             for (let j = 0; j < rowSize; j++) {
+                if (buttonCount >= this.items.length) {break;}
                 this.itemSale(x, j, this.items[buttonCount]);
                 buttonCount += 1;
             }

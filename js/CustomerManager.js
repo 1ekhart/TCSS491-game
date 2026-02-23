@@ -75,10 +75,10 @@ export default class CustomerManager {
 
     setActive(isActive) {
         this.active = isActive;
-        /*
+    
         if (!isActive) {
             this.reset();
-        }*/
+        }
         
     }
 

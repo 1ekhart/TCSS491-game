@@ -13,7 +13,7 @@ const Pot = {
     width: 32,
     height: 32,
     scale: 1,
-    sellPrice: 200,
+    sellPrice: 70,
     assetName: "/Assets/WorldItems/grey-pot.png"
 }
 
@@ -23,7 +23,7 @@ const Potato = {
     width: 32,
     height: 32,
     scale: 1,
-    sellPrice: 50,
+    sellPrice: 70,
     assetName: "/Assets/Icons/PotatoIcon.png"
 }
 
@@ -33,7 +33,7 @@ const Rice = {
     width: 32,
     height: 32,
     scale: 1,
-    sellPrice: 20,
+    sellPrice: 5,
     assetName: "/Assets/Icons/Rice.png"
 }
 
@@ -53,7 +53,7 @@ const Cabbage = {
     width: 32,
     height: 32,
     scale: 1,
-    sellPrice: 50,
+    sellPrice: 30,
     assetName: "/Assets/Icons/CabbageIcon.png"
 }
 
@@ -63,7 +63,7 @@ const Flour = {
     width: 32,
     height: 32,
     scale: 1,
-    sellPrice: 20,
+    sellPrice: 5,
     assetName: "/Assets/Icons/Flour.png"
 }
 

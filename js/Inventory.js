@@ -148,10 +148,11 @@ export default class Inventory {
         console.log("Using " + slot.itemID);
 
         if(slot.itemID === 2) { // pot
-            engine.addEntity(new PottedPlant(
+            const newPlant = new PottedPlant(
                 engine, player.x, player.y + 15.25, 32, 32,
-                false, engine.getClock().dayCount
-            ));
+                false, engine.getClock().dayCount);
+            engine.getLevel().sceneEntities.push(newPlant);
+            engine.addEntity(newPlant);
         } else {
             return; // don't remove items that have no use action
         }
