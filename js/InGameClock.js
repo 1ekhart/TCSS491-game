@@ -99,8 +99,8 @@ export default class InGameClock extends Entity {
 
             if (this.dayTime >= DAY_LENGTH) { // handle the end of the day
                 this.dayTime = HOUR_LENGTH * STARTING_HOUR;
-                this.handleEndOfDay(engine)
                 this.dayCount += 1;
+                this.handleEndOfDay(engine)
             }  else if (compareFloat(this.dayTime / HOUR_LENGTH, MODE_SWITCH_HOUR, CONSTANTS.TICK_TIME) === 0) { // handle switching to cooking mode
                 this.handleModeSwitch(engine);
             } else if (this.dayCount <= 1 && !this.isDisplayingWarning && compareFloat(this.dayTime / HOUR_LENGTH, MODE_SWITCH_HOUR - 1, CONSTANTS.TICK_TIME) === 0) { // give a warning when close to mode switch
