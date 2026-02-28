@@ -1,6 +1,7 @@
 /** @import GameEngine from "/js/GameEngine.js" */
 import WorldEntity from "/js/AbstractClasses/WorldEntity.js";
 import Animator from "/js/GeneralUtils/Animator.js";
+import DialogueBox from "/js/GeneralUtils/DialogueBox.js";
 import HitBox from "/js/GeneralUtils/Hitbox.js";
 import Inventory from "/js/Inventory.js";
 import MovingEntity from "/js/MovingEntity.js";
@@ -13,7 +14,8 @@ const ACCELERATION = 1;
 const JUMPING_STRENGTH = -9.5;
 const GRAVITY = 0.6;
 const ATTACK_COOLDOWN = 0.3;
-
+const MAX_HEALTH = 100;
+const InvincibilityDuration = 1.2
 export default class Player extends WorldEntity {
     constructor(x, y) {
         super();
@@ -24,6 +26,8 @@ export default class Player extends WorldEntity {
 
         // mapping from item name to # of that item the player has
         this.inventory = new Inventory();
+        this.health = MAX_HEALTH;
+        this.maxHealth = MAX_HEALTH;
 
         //stuff for animations
         this.animations = [];
@@ -32,6 +36,7 @@ export default class Player extends WorldEntity {
         this.isRight = true;
         this.haltMovement = false;
         this.attackTimer = ATTACK_COOLDOWN;
+        this.invincibilityFrame
     }
 
     save(saveObject) { // saves the inventory list for now
@@ -56,8 +61,14 @@ export default class Player extends WorldEntity {
 
     /** @param {GameEngine} engine */
     update(engine) {
+        if (this.health <= 0) {
+            this.inventory.money -= this.inventory.money * 0.05 // lose 5% of your money on death;
+            this.health = MAX_HEALTH;
+            engine.getClock().skipToNextDay();
+            engine.addUIEntity(new DialogueBox(engine, "Ouch! You had passed out and a passing fairy brought you back home, but they stole a little money in return!"));
+        }
         this.move(engine);
-
+        this.invincibilityFrame -= CONSTANTS.TICK_TIME;
         // harvesting crops, etc.
         if (engine.input.interact) {
             if (!engine.entities[3]) return;
@@ -101,6 +112,13 @@ export default class Player extends WorldEntity {
                 engine.addEntity(new BladeHitbox(this.x - 10, this.y, 48, 48, ATTACK_COOLDOWN, false))
             }
         }
+    }
+
+    reduceHealth(amt) {
+        if (this.invincibilityFrame > 0) {return;}
+        this.invincibilityFrame = InvincibilityDuration;
+        this.health -= amt;
+        console.log("Health is now " + this.health)
     }
 
     /** @param {GameEngine} engine */

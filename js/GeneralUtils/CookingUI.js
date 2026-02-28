@@ -357,6 +357,7 @@ export default class CookingStationUI extends Entity {
                 entity.removeFromWorld = true;
             })
             parent.displaying = false;
+            that.engine.getClock().resumeTime();
 
             that.engine.entities[7].forEach(function (entity) {
                 if (entity instanceof InventoryUI) {

@@ -242,7 +242,9 @@ export default class LevelManager {
             if (that.engine.getClock().dayCount <= 1) {
                 that.engine.addUIEntity(new DialogueBox(that.engine, "You have to make $3000 by next week! Go to the front door and press 'E' to visit the marketplace to buy supplies for next week or gather ingredients outside to cook meals!"));
             }
+            // COMMENT OUT THE REST OF THE LEVELS EXCEPT WHAT YOU WANT TO TELEPORT TO AT THE START
             that.teleport(3, 30, 14);
+            // that.teleport(1, 2, 2); 
         }
 
         const levelSelect = () => { // selets what save you want to pick, new or old

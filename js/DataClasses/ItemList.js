@@ -3,15 +3,19 @@ const Coin = {
     name: "Coin",
     width: 16,
     height: 16,
+    spriteX: 16,
+    spriteY: 0,
     scale: 1.4,
     sellPrice: 50,
-    assetName: "/Assets/Icons/Coin.png"
+    assetName: "/Assets/Icons/CoinHeart.png"
 }
 const Pot = {
     itemID: 2,
     name: "Pot",
     width: 32,
     height: 32,
+    spriteX: 0,
+    spriteY: 0,
     scale: 1,
     sellPrice: 70,
     assetName: "/Assets/WorldItems/grey-pot.png"
@@ -22,6 +26,8 @@ const Potato = {
     name: "Potato",
     width: 32,
     height: 32,
+    spriteX: 0,
+    spriteY: 0,
     scale: 1,
     sellPrice: 70,
     assetName: "/Assets/Icons/PotatoIcon.png"
@@ -32,6 +38,8 @@ const Rice = {
     name: "Rice",
     width: 32,
     height: 32,
+    spriteX: 0,
+    spriteY: 0,
     scale: 1,
     sellPrice: 5,
     assetName: "/Assets/Icons/Rice.png"
@@ -42,6 +50,8 @@ const RiceBowl = {
     name: "Rice Bowl",
     width: 32,
     height: 32,
+    spriteX: 0,
+    spriteY: 0,
     scale: 1,
     sellPrice: 150,
     assetName: "/Assets/Icons/RiceBowl.png"
@@ -52,6 +62,8 @@ const Cabbage = {
     name: "Cabbage",
     width: 32,
     height: 32,
+    spriteX: 0,
+    spriteY: 0,
     scale: 1,
     sellPrice: 30,
     assetName: "/Assets/Icons/CabbageIcon.png"
@@ -62,6 +74,8 @@ const Flour = {
     name: "Flour",
     width: 32,
     height: 32,
+    spriteX: 0,
+    spriteY: 0,
     scale: 1,
     sellPrice: 5,
     assetName: "/Assets/Icons/Flour.png"
@@ -72,6 +86,8 @@ const BoarMeat = {
     name: "Chicken Meat",
     width: 32,
     height: 32,
+    spriteX: 0,
+    spriteY: 0,
     scale: 1,
     sellPrice: 100,
     assetName: "/Assets/Icons/BoarMeat.png"
@@ -82,9 +98,23 @@ const Burger = {
     name: "Burger Plate",
     width: 32,
     height: 32,
+    spriteX: 0,
+    spriteY: 0,
     scale: 1,
     sellPrice: 150,
     assetName: "/Assets/Icons/BurgerPlate.png"
+}
+
+const HeartContainer = {
+    itemID: 10,
+    name: "Heart",
+    width: 16,
+    height: 16,
+    spriteX: 0,
+    spriteY: 0,
+    scale: 1.7,
+    sellPrice: 0,
+    assetName: "/Assets/Icons/CoinHeart.png"
 }
 
 const itemList = {
@@ -97,6 +127,7 @@ const itemList = {
     7: Flour,
     8: BoarMeat,
     9: Burger,
+    10: HeartContainer
 }
 
 const grains = [Rice, Flour]

@@ -2,6 +2,8 @@
 /** @import Player from "/js/Player.js" */
 import WorldEntity from "/js/AbstractClasses/WorldEntity.js";
 import Animator from "/js/GeneralUtils/Animator.js";
+import HitBox from "/js/GeneralUtils/Hitbox.js";
+import Player from "/js/Player.js";
 import Item from "/js/Item.js";
 import { CONSTANTS, randomInt } from "/js/Util.js";
 
@@ -91,7 +93,7 @@ export default class MovingEntity extends WorldEntity {
 
 const GRAVITY = 0.6;
 const basanAttackLength = 1; // 1 second attack length
-const basanAttackCooldown = 3; // attack every 3 seconds
+const basanAttackCooldown = 2; // attack every 2 seconds
 export class Basan extends MovingEntity { // entity that should spawn a hitbox every once in a while
     constructor(engine, x, y) {
         super(engine, x, y);
@@ -99,12 +101,14 @@ export class Basan extends MovingEntity { // entity that should spawn a hitbox e
         this.width = 40;
         this.height = 48;
 
+        this.distanceThreshold = 200
+
         this.isRight = false;
         this.movementTimer = 100;
         this.animations = []
         this.animationState = "Idle"
         this.loadAnimation();
-        this.moveTimerMax = 300
+        this.moveTimerMax = 200
         this.isStopped = false;
     }
 
@@ -118,8 +122,13 @@ export class Basan extends MovingEntity { // entity that should spawn a hitbox e
         this.animationState = state;
     }
 
-
-
+    isClose(engine) {
+        const player = engine.getPlayer();
+        if (Math.abs(player.x - this.x) < this.distanceThreshold && Math.abs(player.y - this.y) < this.distanceThreshold) {
+            return true;
+        }
+        return false;
+    }
 
     /** @param {GameEngine} engine */
     update(engine) {
@@ -137,6 +146,19 @@ export class Basan extends MovingEntity { // entity that should spawn a hitbox e
 
         // randomly flip directions every once in a while
         if(this.movementTimer <= 0) {
+            if (this.isClose(engine)) { // attack if player close
+                const player = engine.getPlayer();
+                if (player.x - this.x > 0) { // if player to the right
+                    this.isRight = false;
+                    engine.addEntity(new FireHitbox(this.x + this.width, this.y - 16, 64, this.height, basanAttackLength, true));
+                } else {
+                    this.isRight = true;
+                    engine.addEntity(new FireHitbox(this.x, this.y - 16, 64, this.height, basanAttackLength, false));
+                }
+                this.xVelocity = 0;
+                this.isStopped = true;
+                this.movementTimer = random(basanAttackLength * 1.2 * 60, basanAttackCooldown * 60);
+            } else
             if (randomInt(2) == 1 && !this.isStopped) { // random chance to stay still
                 this.xVelocity = 0;
                 this.movementTimer = random(100, this.moveTimerMax);
@@ -177,4 +199,42 @@ export class Basan extends MovingEntity { // entity that should spawn a hitbox e
 
         }
     }
+}
+
+class FireHitbox extends HitBox {
+    constructor(x, y, width, height, timer, isFacingRight) {
+        super(x, y, width, height, timer)
+        this.isFacingRight = isFacingRight;
+        this.facingLeftOffset = 0;
+        if (!isFacingRight) {
+            this.x -= width;
+            this.facingLeftOffset = this.width / 2
+        }
+        this.animation = new Animator(ASSET_MANAGER.getAsset("/Assets/Player/BladeEffect-Sheet.png"), 0, 0, 32, 32, 7, this.timer / 4, 0, false, false);
+    }
+
+    update(engine) {
+        this.decrementTimer();
+        if (this.timer <= 0) {
+            this.removeFromWorld = true;
+        }
+
+        for(const entity of engine.entities[4]) {
+            if (entity instanceof Player && this.isCollidingWith(entity)) {
+                entity.reduceHealth(20);
+            }
+        }
+    }
+
+    draw(ctx, engine) {
+        // this.animation.drawFrame(CONSTANTS.TICK_TIME, ctx,
+            // this.x - engine.camera.x - this.facingLeftOffset, this.y - engine.camera.y - 20, !this.isFacingRight, 2);
+
+        // if (CONSTANTS.DEBUG == true) {
+            ctx.strokeStyle = "#aa0000";
+            ctx.strokeRect(Math.floor(this.x) - engine.camera.x, this.y - engine.camera.y, this.width, this.height);
+        // }
+    }
+
+
 }

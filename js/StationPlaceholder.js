@@ -45,6 +45,7 @@ export default class StationPlaceholder extends EntityInteractable {
         this.prompt.hideText();
         const cookingUI = new CookingStationUI(this.engine, this);
         this.displaying = true;
+        this.engine.getClock().stopTime();
         this.engine.addEntity(cookingUI, 4);
     }
     

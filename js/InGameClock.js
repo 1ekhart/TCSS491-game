@@ -17,7 +17,7 @@ const MODE_SWITCH_HOUR = 14; // game switches from gathering to cooking at this 
 export default class InGameClock extends Entity {
     constructor(engine) {
         super();
-        this.x = 100;
+        this.x = 200;
         this.engine = engine;
         // this.y = (CONSTANTS.CANVAS_HEIGHT / CONSTANTS.SCALE) - 20
         this.y = 12;

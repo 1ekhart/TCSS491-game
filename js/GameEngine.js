@@ -283,7 +283,9 @@ export default class GameEngine {
         }
 
         this.draw(deltaTime);
-        this.ctx.fillStyle = "black";
-        this.ctx.fillText(`fps: ${(1 / deltaTime).toFixed(2)}`, 0, 12);
+        if (CONSTANTS.DEBUG) {
+            this.ctx.fillStyle = "black";
+            this.ctx.fillText(`fps: ${(1 / deltaTime).toFixed(2)}`, 0, 12);
+        }
     }
 }
