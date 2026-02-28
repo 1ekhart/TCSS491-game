@@ -31,8 +31,8 @@ const HORIZONTAL_FORGIVENESS = 1 * CONSTANTS.TILESIZE;
 const VERTICAL_FORGIVENESS = 1 * CONSTANTS.TILESIZE;
 
 // offset the camera by this much to center the player
-const CAMERA_OFFSET_X = CONSTANTS.CANVAS_WIDTH / (2 * CONSTANTS.SCALE);
-const CAMERA_OFFSET_Y = CONSTANTS.CANVAS_HEIGHT / (1.75 * CONSTANTS.SCALE);  // edit the number to change the vertical position of the camera
+const CAMERA_CENTER_X = CONSTANTS.CANVAS_WIDTH / (2 * CONSTANTS.SCALE);
+const CAMERA_CENTER_Y = CONSTANTS.CANVAS_HEIGHT / (1.75 * CONSTANTS.SCALE);  // edit the number to change the vertical position of the camera
 
 const tileColors = [
     "#000000",
@@ -136,9 +136,10 @@ const level3 = [
 	[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 	[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 	[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-	[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 	[1, 0, 6, 0, 0, 0, 6, 0, 0, 0, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 	[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
 	[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4]
 ]
 
@@ -188,6 +189,7 @@ const centerX = CONSTANTS.CANVAS_WIDTH / (2 * CONSTANTS.SCALE)
 const centerY = CONSTANTS.CANVAS_HEIGHT / (2 * CONSTANTS.SCALE);
 const INTERACTABLE_OBJECT_LAYER = 3;
 export default class LevelManager {
+    /** @param {GameEngine} engine */
     constructor(engine) {
         this.toggleCooldown = 1;
         engine.camera = this;
@@ -467,7 +469,7 @@ export default class LevelManager {
         }
 
         if (this.engine.getClock().dayCount <= 1) {
-            this.engine.addUIEntity(new DialogueBox(this.engine, "If you have a pot, click on the pot icon in your inventory, then click again to" + 
+            this.engine.addUIEntity(new DialogueBox(this.engine, "If you have a pot, click on the pot icon in your inventory, then click again to" +
                 "place it on the ground! Then take your plantable vegetable and press 'E' to place it on the pot, then just wait until it grows!"
             ));
         }
@@ -544,28 +546,8 @@ export default class LevelManager {
 
     //Handling level transitions and player movement
     update(engine) {
-        // update the camera to fit player coordinates and stay centered.
         if (this.menu) {
             return;
-        }
-        let relPlayerX = this.player.x + this.player.width / (2 * CONSTANTS.SCALE) - CAMERA_OFFSET_X;
-        let relplayerY = this.player.y + this.player.height / (2 * CONSTANTS.SCALE) - CAMERA_OFFSET_Y;
-
-        let leftOffsetX = relPlayerX - HORIZONTAL_FORGIVENESS;
-        let rightOffsetX = relPlayerX + HORIZONTAL_FORGIVENESS;
-        let topOffsetY = relplayerY - VERTICAL_FORGIVENESS;
-        let lowOffsetY = relplayerY + VERTICAL_FORGIVENESS;
-
-        if (this.x < leftOffsetX) {
-            this.x = leftOffsetX;
-        } else if (this.x > rightOffsetX) {
-            this.x = rightOffsetX;
-        }
-
-        if (this.y < topOffsetY) {
-            this.y = topOffsetY;
-        } else if (this.y > lowOffsetY) {
-            this.y = lowOffsetY;
         }
 
         this.customerManager.update();
@@ -600,20 +582,46 @@ export default class LevelManager {
     draw(ctx, engine) {
         const data = this.data;
         const dataLength = data.length;
+        if(!this.data[0]) return;
 
         if (CONSTANTS.DEBUG) {
-        ctx.strokeStyle = "#706ccd";
-        ctx.strokeRect((CAMERA_OFFSET_X - HORIZONTAL_FORGIVENESS),
-        (CAMERA_OFFSET_Y - VERTICAL_FORGIVENESS),
-        HORIZONTAL_FORGIVENESS * 2, VERTICAL_FORGIVENESS * 2)
+            ctx.strokeStyle = "#706ccd";
+            ctx.strokeRect(
+                (CAMERA_CENTER_X - HORIZONTAL_FORGIVENESS), (CAMERA_CENTER_Y - VERTICAL_FORGIVENESS),
+                HORIZONTAL_FORGIVENESS * 2, VERTICAL_FORGIVENESS * 2)
+            ctx.fillText(`${this.x} ${this.y}`, 0, 32)
         }
 
+        // --- camera ---
+        const worldCenterX = this.player.x + this.player.width / 2 - CAMERA_CENTER_X
+        const worldCenterY = this.player.y + this.player.height / 2 - CAMERA_CENTER_Y
+        const levelWidth = this.data[0].length * CONSTANTS.TILESIZE
+        const levelHeight = (this.data.length - 12) * CONSTANTS.TILESIZE
+
+        // scroll right
+        if(this.x < worldCenterX - HORIZONTAL_FORGIVENESS) {
+            this.x = Math.min(worldCenterX - HORIZONTAL_FORGIVENESS, levelWidth)
+        }
+        // scroll left
+        if(this.x > worldCenterX + HORIZONTAL_FORGIVENESS) {
+            this.x = Math.max(worldCenterX + HORIZONTAL_FORGIVENESS, 0)
+        }
+        // scroll down
+        if(this.y < worldCenterY - VERTICAL_FORGIVENESS) {
+            this.y = Math.min(worldCenterY - VERTICAL_FORGIVENESS, levelHeight)
+        }
+        // scroll up
+        if(this.y > worldCenterY + VERTICAL_FORGIVENESS) {
+            this.y = Math.max(worldCenterY + VERTICAL_FORGIVENESS, 0)
+        }
+
+        // --- draw tiles ---
 
         for (let row = 0; row < dataLength; row++) {
             const rowData = data[row];
             const rowDataLength = rowData.length;
 
-            for (let column = Math.floor(this.player.x / TILE_SIZE) - 9; column < Math.ceil(this.player.x / TILE_SIZE) + 10; column++) {
+            for (let column = Math.floor(this.player.x / TILE_SIZE) - 9; column < Math.ceil(this.player.x / TILE_SIZE) + 15; column++) {
                 const tile = rowData[column];
                 if (tile > 0) {
                     const asset = ASSET_MANAGER.getAsset(tileTextures[tile]);
