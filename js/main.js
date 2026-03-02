@@ -25,6 +25,8 @@ ASSET_MANAGER.queueDownload("/Assets/Entities/Door-Sheet.png")
 //download from world items folder
 ASSET_MANAGER.queueDownload("/Assets/WorldItems/grey-pot.png")
 ASSET_MANAGER.queueDownload("/Assets/WorldItems/PotatoPlant-Sheet.png")
+ASSET_MANAGER.queueDownload("/Assets/WorldItems/CabbagePlant-Sheet.png")
+ASSET_MANAGER.queueDownload("/Assets/WorldItems/RicePlant-Sheet.png")
 
 //download from world tiles folder
 ASSET_MANAGER.queueDownload("/Assets/WorldTiles/Wood_(placed).webp")
