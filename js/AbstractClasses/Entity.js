@@ -11,6 +11,14 @@ export default class Entity {
         this.removeFromWorld = true;
     }
 
+    pause() {
+        this.doNotUpdate = true;
+    }
+
+    resume() {
+        this.doNotUpdate = false;
+    }
+
     /** @param {GameEngine} engine */
     update(engine) { }
 

@@ -18,6 +18,13 @@ export default class DialogueBox extends Entity {
         if (extended) {
             this.height *= 2;
         }
+        // check if other dialogue boxes are there and destroy them
+
+        for (const entity of engine.entities[engine.entities.length - 1]) {
+            if (entity instanceof DialogueBox) {
+                entity.remove();
+            }
+        }
 
         const that = this;
         // function to destroy object;
@@ -26,6 +33,7 @@ export default class DialogueBox extends Entity {
             if (that.closeButton) {
                 that.closeButton.removeFromWorld = true;
             }
+            that.engine.getClock().resumeTime();
         }
 
         if (!noClose == true) {
@@ -33,6 +41,7 @@ export default class DialogueBox extends Entity {
             this.closeButton = new Button(this.x + this.width - (this.width / (4)), this.y + this.height - (this.height / (4)), 
                 (this.width / (4)) - 10, (this.height / (4)) - 5, close, "Close?", "#9093a1c3", "#1a1a1abf", "#9093a18d");
             this.engine.addUIEntity(this.closeButton);
+            engine.getClock().stopTime();
         }
 
 
@@ -63,7 +72,7 @@ export default class DialogueBox extends Entity {
         ctx.save();
         ctx.beginPath();
         ctx.roundRect(this.x, this.y, this.width, this.height, (2 * CONSTANTS.SCALE));
-        ctx.fillStyle = "#3e71ff67";
+        ctx.fillStyle = "#3e71ff9a";
         ctx.fill();
 
         ctx.strokeStyle = "#000000c0"

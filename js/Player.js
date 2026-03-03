@@ -36,7 +36,7 @@ export default class Player extends WorldEntity {
         this.isRight = true;
         this.haltMovement = false;
         this.attackTimer = ATTACK_COOLDOWN;
-        this.invincibilityFrame
+        this.invincibilityFrame = 0;
     }
 
     save(saveObject) { // saves the inventory list for now
@@ -128,17 +128,17 @@ export default class Player extends WorldEntity {
 
         if (this.haltMovement == false) {
             if (engine.input.left && this.xVelocity > -WALKING_SPEED) {
-            this.xVelocity -= ACCELERATION;
+                this.xVelocity -= ACCELERATION;
             } else if (engine.input.right && this.xVelocity < WALKING_SPEED) {
                 this.xVelocity += ACCELERATION;
             } else {
-                this.xVelocity = decreaseToZero(this.xVelocity, GRAVITY / 2); // deceleration with no inputs held
+                this.xVelocity = decreaseToZero(this.xVelocity, ACCELERATION/2.4); // deceleration with no inputs held
             }
             if (this.onGround && engine.input.jump) {
                 this.yVelocity = JUMPING_STRENGTH;
             }
         } else {
-            this.xVelocity = decreaseToZero(this.xVelocity, GRAVITY / 2); // deceleration with no inputs held
+            this.xVelocity = decreaseToZero(this.xVelocity, ACCELERATION); // deceleration with no inputs held
         }
 
         if (this.haltMovement == false) {
@@ -174,6 +174,7 @@ export default class Player extends WorldEntity {
      */
     draw(ctx, engine) {
         if (this.haltMovement === true && this.animations[this.animationState].isDone()) {this.goDefaultState();}
+        if (this.doNotUpdate) {this.goDefaultState()}
 
         this.animations[this.animationState].drawFrame(CONSTANTS.TICK_TIME, ctx,
             (this.x - (20)) - engine.camera.x, floor(this.y) - (this.height) + (32) - floor(engine.camera.y),
