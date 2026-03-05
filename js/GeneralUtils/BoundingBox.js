@@ -24,8 +24,8 @@ export default class HitBox extends Entity{
      * @param {WorldEntity} otherEntity */
     isCollidingWith(otherEntity) {
         return !( // - 1 is so width/height are actual width in pixels (not off by 1)
-            (this.right - 1 < otherEntity.x) || (otherEntity.x + otherEntity.width - 1 < this.x) || // this LEFT of other OR this RIGHT of other OR
-            (this.bottom - 1 < otherEntity.y) || (otherEntity.y + otherEntity.height - 1 < this.y)  // this ABOVE other OR this BELOW other
+            (this.x + this.width - 1 < otherEntity.x) || (otherEntity.x + otherEntity.width - 1 < this.x) || // this LEFT of other OR this RIGHT of other OR
+            (this.y + this.height - 1 < otherEntity.y) || (otherEntity.y + otherEntity.height - 1 < this.y)  // this ABOVE other OR this BELOW other
         );
     }
 

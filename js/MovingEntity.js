@@ -2,7 +2,7 @@
 /** @import Player from "/js/Player.js" */
 import WorldEntity from "/js/AbstractClasses/WorldEntity.js";
 import Animator from "/js/GeneralUtils/Animator.js";
-import HitBox from "/js/GeneralUtils/Hitbox.js";
+import HitBox from "./GeneralUtils/BoundingBox.js";
 import Player from "/js/Player.js";
 import Item from "/js/Item.js";
 import { CONSTANTS, randomInt } from "/js/Util.js";
@@ -14,7 +14,7 @@ function random(min, max) {
 const MOVEMENT_TIMER_MAX = 600; // ticks (10 seconds)
 const REGEN_COOLDOWN_DELAY = 300; // 5 seconds before regen starts
 const REGEN_COOLDOWN_REGENERATING = 30; // 0.5 seconds between HP increase
-const INVINCIBILITY_PERIOD = 0.3;
+const INVINCIBILITY_PERIOD = 0.6;
 
 export default class MovingEntity extends WorldEntity {
     constructor(engine, x, y) {
