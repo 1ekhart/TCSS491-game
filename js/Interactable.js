@@ -5,6 +5,7 @@ import Player from '/js/Player.js';
 import Item from '/js/Item.js';
 import { randomIntRange, CONSTANTS } from '/js/Util.js';
 import Animator from '/js/GeneralUtils/Animator.js';
+import MarketPlaceUI from '/js/MarketplaceUI.js';
 
 export default class Interactable extends EntityInteractable {
     constructor(x, y, width, height, engine) {
@@ -209,7 +210,12 @@ export class HouseDoor extends EntityInteractable {
          /** @param {Player} player */
         interact(player) {
             if (this.displaying == true) {return;}
-            if (this.engine.getClock().isCookingMode) {return;}
+            if (this.engine.getClock().isCookingMode) {
+                this.prompt.hideText();
+                this.displaying = true;
+                this.engine.addUIEntity(new MarketPlaceUI(this.engine, this));
+                return;
+            }
             this.prompt.hideText();
             this.engine.getLevel().doorPrompt(this, this.isOutside);
             this.displaying = true;

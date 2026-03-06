@@ -212,7 +212,7 @@ export default class Player extends WorldEntity {
         this.moveColliding(engine);
 
         if (this.onGround && isOnAirBeforeCollision) { // when landing on the ground, handle landing
-            this.squatTimer = SQUAT_FRAMES;
+            this.squatTimer = SQUAT_FRAMES / 2;
             this.setAnimationState("Squat")
             this.attackTimer = 0;
             this.haltMovement = true;
