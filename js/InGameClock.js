@@ -2,6 +2,7 @@
 import Entity from "/js/AbstractClasses/Entity.js";
 import DialogueBox from "/js/GeneralUtils/DialogueBox.js";
 import { appendSaveData, getSave } from "/js/GeneralUtils/SaveDataRetrieval.js";
+import LevelManager from "/js/Level.js";
 import { compareFloat, CONSTANTS } from "/js/Util.js";
 
 // how many seconds each day will last. Each day is 24 hours, so the hour length will be DAY_LENGTH / 24 and minutes  will be 60/hour length
@@ -17,7 +18,7 @@ const MODE_SWITCH_HOUR = 14; // game switches from gathering to cooking at this 
 export default class InGameClock extends Entity {
     constructor(engine) {
         super();
-        this.x = 100;
+        this.x = 200;
         this.engine = engine;
         // this.y = (CONSTANTS.CANVAS_HEIGHT / CONSTANTS.SCALE) - 20
         this.y = 12;
@@ -37,12 +38,31 @@ export default class InGameClock extends Entity {
         }
     }
 
-    stopTime() {
+    stopTime() { // stops time updates and halts all entities that aaren't UI or foreground.
         this.halted = true;
+        for (let i = 0; i < 6; i++) {
+            const entityLayer = this.engine.entities[i];
+            if (!entityLayer) {continue;}
+
+            let entityColumns = entityLayer.length;
+            for (let j = 0; j < entityColumns; j++) {
+                if (entityLayer[j] instanceof LevelManager) {continue;}
+                entityLayer[j].doNotUpdate = true;
+            }
+        }
     }
 
     resumeTime() {
         this.halted = false;
+        for (let i = 0; i < this.engine.entities.length; i++) {
+            const entityLayer = this.engine.entities[i];
+            if (!entityLayer) {continue;}
+
+            let entityColumns = entityLayer.length;
+            for (let j = 0; j < entityColumns; j++) {
+                entityLayer[j].doNotUpdate = false;
+            }
+        }
     }
 
     getGameHour() {
@@ -75,7 +95,7 @@ export default class InGameClock extends Entity {
         } else if (this.dayCount == 7) {
             this.engine.addUIEntity(new DialogueBox(this.engine, "Congrats! You didn't go bankrupt! You can keep playing and try to get as much money as you can!"))
         }
-        this.engine.getLevel().teleport(3, 30, 14);
+        this.engine.getLevel().teleport(3, 30, 15.5);
     }
 
     skipToCookingMode() {
@@ -128,7 +148,7 @@ export default class InGameClock extends Entity {
         });
         this.isDisplayingWarning = false;
         this.isCookingMode = true;
-        engine.getLevel().teleport(3, 40, 14);
+        engine.getLevel().teleport(3, 40, 15.5);
     }
     
 
@@ -139,8 +159,7 @@ export default class InGameClock extends Entity {
     draw(ctx, engine) {
         ctx.fillStyle = "#000000";
         ctx.fillText(
-            `Day ${this.dayCount} at (${this.getGameHour()} : ${this.getGameMinute()})
-            Game Time: ${Math.round(this.dayTime*100) / 100}
+            `Day ${this.dayCount} at (${this.getGameHour()} : ${this.getGameMinute()})     Game Time: ${Math.round(this.dayTime*100) / 100}
             `, this.x, this.y);
     }
 }

@@ -6,6 +6,8 @@ import { CONSTANTS } from "/js/Util.js";
 const SLOT_SIZE = 32;
 const PADDING = 5;
 const DRAG_THRESHOLD = 5;
+const CoinIconWidth = 24;
+const HealthBarHeight = 18;
 
 export default class InventoryUI {
     constructor(player, ctx) {
@@ -15,7 +17,8 @@ export default class InventoryUI {
         this.slotSize = SLOT_SIZE;
         this.padding = PADDING;
         this.hotbarY = (ctx.canvas.height / CONSTANTS.SCALE) - this.slotSize - 10;
-        this.coinInfoY = (ctx.canvas.height / CONSTANTS.SCALE) / 4
+        this.coinInfoY = (ctx.canvas.height / CONSTANTS.SCALE) / 8
+        this.healthInfoY = (ctx.canvas.height / CONSTANTS.SCALE) / 15
 
         this.backpackButtonX = 8;
         this.backpackButtonY = this.hotbarY - 2;
@@ -33,7 +36,12 @@ export default class InventoryUI {
         this.isDragging = false;
         this.isVisible = true;
 
+        const coinData = getItemData(1);
         this.backpackSprite = ASSET_MANAGER.getAsset("/Assets/Icons/backpack.png");
+        this.moneySprite = new Animator(ASSET_MANAGER.getAsset("/Assets/Icons/CoinHeart.png"), coinData.spriteX, coinData.spriteY, coinData.width, coinData.height, 1, 1, 0, false, false);
+        const heartData = getItemData(10);
+        this.heartSprite = new Animator(ASSET_MANAGER.getAsset("/Assets/Icons/CoinHeart.png"), heartData.spriteX, heartData.spriteY, heartData.width, heartData.height, 1, 1, 0, false, false);
+        this.maxHealthRect = (CONSTANTS.CANVAS_WIDTH / CONSTANTS.SCALE) / 4 // ttake up 1/4 of the screen
     }
 
     update(engine) {
@@ -195,13 +203,21 @@ export default class InventoryUI {
 
 
         // draw money count:
+        this.moneySprite.drawFramePlain(this.ctx, this.backpackButtonX/2, this.coinInfoY - 16, 1.5);
         this.ctx.save();
         this.ctx.font = "15px monospace";
         this.ctx.strokeStyle = "#00000049"
         this.ctx.fillStyle = "rgb(74, 40, 2)";
-        this.ctx.strokeText("Money: $" + this.player.inventory.money, this.backpackButtonX, this.coinInfoY)
-        this.ctx.fillText("Money: $" + this.player.inventory.money, this.backpackButtonX, this.coinInfoY)
+        this.ctx.strokeText(": $" + this.player.inventory.money, this.backpackButtonX/2 + CoinIconWidth, this.coinInfoY)
+        this.ctx.fillText(": $" + this.player.inventory.money, this.backpackButtonX/2 + CoinIconWidth, this.coinInfoY)
         this.ctx.restore();
+
+        // draw health:
+        this.heartSprite.drawFramePlain(this.ctx, this.backpackButtonX/2, this.healthInfoY - 20, 1.5);
+        this.ctx.fillStyle = "rgba(56, 1, 1, 0.51)"
+        this.ctx.fillRect(this.backpackButtonX/2 + CoinIconWidth + 5, this.healthInfoY-HealthBarHeight, this.maxHealthRect, HealthBarHeight);
+        this.ctx.fillStyle = "rgb(228, 78, 95)"
+        this.ctx.fillRect(this.backpackButtonX/2 + CoinIconWidth + 5, this.healthInfoY-HealthBarHeight, this.maxHealthRect * (this.player.health / this.player.maxHealth), HealthBarHeight);
         
         
         // backpack
@@ -233,11 +249,13 @@ export default class InventoryUI {
                 if (!slot.itemData) {
                     slot.itemData = getItemData(slot.itemID);
                     if (slot.itemData) {
-                    slot.sprite = new Animator(ASSET_MANAGER.getAsset(slot.itemData.assetName), 0, 0, slot.itemData.width, slot.itemData.height, 1, 1, 0);
+                    slot.sprite = new Animator(ASSET_MANAGER.getAsset(slot.itemData.assetName), 
+                    slot.itemData.spriteX, slot.itemData.spriteY, slot.itemData.width, slot.itemData.height, 1, 1, 0);
                     }
                 }
                 if (slot.itemData) {
-                    if (!slot.sprite.drawFramePlain) {slot.sprite = new Animator(ASSET_MANAGER.getAsset(slot.itemData.assetName), 0, 0, slot.itemData.width, slot.itemData.height, 1, 1, 0);}
+                    if (!slot.sprite.drawFramePlain) {slot.sprite = new Animator(ASSET_MANAGER.getAsset(slot.itemData.assetName), 
+                        slot.itemData.spriteX, slot.itemData.spriteY, slot.itemData.width, slot.itemData.height, 1, 1, 0);}
                     slot.sprite.drawFramePlain(this.ctx, x, y, slot.itemData.scale * (this.slotSize / slot.itemData.width));
                 } else {
                     this.ctx.fillStyle = "#0f0";
@@ -274,11 +292,13 @@ export default class InventoryUI {
                 if (!slot.itemData) {
                     slot.itemData = getItemData(slot.itemID);
                     if (slot.itemData) {
-                        slot.sprite = new Animator(ASSET_MANAGER.getAsset(slot.itemData.assetName), 0, 0, slot.itemData.width, slot.itemData.height, 1, 1, 0);
+                        slot.sprite = new Animator(ASSET_MANAGER.getAsset(slot.itemData.assetName), 
+                        slot.itemData.spriteX, slot.itemData.spriteY, slot.itemData.width, slot.itemData.height, 1, 1, 0);
                     }
                 }
                 if (slot.itemData) {
-                    if (!slot.sprite.drawFramePlain) {slot.sprite = new Animator(ASSET_MANAGER.getAsset(slot.itemData.assetName), 0, 0, slot.itemData.width, slot.itemData.height, 1, 1, 0);}
+                    if (!slot.sprite.drawFramePlain) {slot.sprite = new Animator(ASSET_MANAGER.getAsset(slot.itemData.assetName), 
+                        slot.itemData.spriteX, slot.itemData.spriteY, slot.itemData.width, slot.itemData.height, 1, 1, 0);}
                     slot.sprite.drawFramePlain(this.ctx, x, y, slot.itemData.scale * (this.slotSize / slot.itemData.width));
                 } else {
                     this.ctx.fillStyle = "#0f0";

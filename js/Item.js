@@ -41,7 +41,7 @@ export default class Item extends WorldEntity {
         // Initialize the sprite and other item data.
         this.itemData = getItemData(itemID);
         if (this.itemData) {
-            this.sprite = new Animator(ASSET_MANAGER.getAsset(this.itemData.assetName), 0, 0, 32, 32, 1, 1, 0);
+            this.sprite = new Animator(ASSET_MANAGER.getAsset(this.itemData.assetName), this.itemData.spriteX, this.itemData.spriteY, this.itemData.width, this.itemData.height, 1, 1, 0);
         }
     }
 

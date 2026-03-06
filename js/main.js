@@ -33,6 +33,7 @@ ASSET_MANAGER.queueDownload("/Assets/WorldTiles/BWoodSheet.png")
 ASSET_MANAGER.queueDownload("/Assets/WorldTiles/StoneSheet.png")
 ASSET_MANAGER.queueDownload("/Assets/WorldTiles/GrassSheet.png")
 ASSET_MANAGER.queueDownload("/Assets/WorldTiles/Stool.png")
+ASSET_MANAGER.queueDownload("/Assets/WorldTiles/Backgrounds.png")
 
 //download from icons folder
 ASSET_MANAGER.queueDownload("/Assets/Icons/BurgerPlate.png")
@@ -42,7 +43,7 @@ ASSET_MANAGER.queueDownload("/Assets/Icons/RiceBowl.png")
 ASSET_MANAGER.queueDownload("/Assets/Icons/CabbageIcon.png")
 ASSET_MANAGER.queueDownload("/Assets/Icons/Flour.png")
 ASSET_MANAGER.queueDownload("/Assets/Icons/BoarMeat.png")
-ASSET_MANAGER.queueDownload("/Assets/Icons/Coin.png")
+ASSET_MANAGER.queueDownload("/Assets/Icons/CoinHeart.png")
 ASSET_MANAGER.queueDownload("/Assets/Icons/backpack.png");
 ASSET_MANAGER.queueDownload("/Assets/Icons/OrderBubble.png")
 ASSET_MANAGER.queueDownload("/Assets/Icons/PendingOrder.png")

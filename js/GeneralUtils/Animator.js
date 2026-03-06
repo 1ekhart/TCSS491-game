@@ -45,7 +45,7 @@ export default class Animator {
         }
     };
 
-    drawFramePlain(ctx, x, y, scale, frame) {
+    drawFramePlain(ctx, x, y, scale, frame, isFlipped) {
         let theScale;
         if (!scale) {
             theScale = CONSTANTS.SCALE;
@@ -58,11 +58,22 @@ export default class Animator {
         } else {
             theFrame = frame;
         }
-        ctx.drawImage(this.spritesheet,
-        this.xStart + theFrame * (this.width + this.framePadding), this.yStart,
-        this.width, this.height,
-        x, y,
-        Math.floor(this.width*theScale), Math.floor(this.height * theScale));
+        if (isFlipped) {
+            ctx.save();
+            ctx.scale(-1, 1);
+            ctx.drawImage(this.spritesheet,
+                this.xStart + theFrame * (this.width + this.framePadding), this.yStart,
+                this.width, this.height,
+                -x - this.width * scale, y,
+                this.width*theScale, this.height * theScale);
+            ctx.restore();
+        } else {
+            ctx.drawImage(this.spritesheet,
+                this.xStart + theFrame * (this.width + this.framePadding), this.yStart,
+                this.width, this.height,
+                x, y,
+                this.width*theScale, this.height * theScale);
+        }
     }
 
     currentFrame() {
