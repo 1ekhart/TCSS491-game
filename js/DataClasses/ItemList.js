@@ -117,6 +117,43 @@ const HeartContainer = {
     assetName: "/Assets/Icons/CoinHeart.png"
 }
 
+const Croquettes = {
+    itemID: 11,
+    name: "Meat Croquettes",
+    width: 32,
+    height: 32,
+    spriteX: 0,
+    spriteY: 0,
+    scale: 1,
+    sellPrice: 100,
+    assetName: "/Assets/Icons/Croquettes.png"
+}
+
+const Pumpkin = {
+    itemID: 12,
+    name: "Pumpkin",
+    width: 32,
+    height: 32,
+    spriteX: 0,
+    spriteY: 0,
+    scale: 1,
+    sellPrice: 90,
+    assetName: "/Assets/Icons/PumpkinIcon.png"
+}
+
+const FriedPumpkin = {
+    itemID: 13,
+    name: "Fried Pumpkin",
+    width: 32,
+    height: 32,
+    spriteX: 0,
+    spriteY: 0,
+    scale: 1,
+    sellPrice: 50,
+    assetName: "/Assets/Icons/FriedPumpkin.png"
+}
+
+
 const itemList = {
     1: Coin,
     2: Pot,
@@ -127,11 +164,14 @@ const itemList = {
     7: Flour,
     8: BoarMeat,
     9: Burger,
-    10: HeartContainer
+    10: HeartContainer,
+    11: Croquettes,
+    12: Pumpkin,
+    13: FriedPumpkin,
 }
 
 const grains = [Rice, Flour]
-const vegetables = [Cabbage, Potato]
+const vegetables = [Cabbage, Potato, Pumpkin]
 const meats = [BoarMeat]
 
 const itemListNames = {
