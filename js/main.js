@@ -21,6 +21,7 @@ ASSET_MANAGER.queueDownload("/Assets/Player/BladeEffect-Sheet.png")
 ASSET_MANAGER.queueDownload("/Assets/Entities/Basan-Sheet.png")
 ASSET_MANAGER.queueDownload("/Assets/Entities/Oven.png")
 ASSET_MANAGER.queueDownload("/Assets/Entities/Door-Sheet.png")
+ASSET_MANAGER.queueDownload("/Assets/Entities/Customers.png")
 
 //download from world items folder
 ASSET_MANAGER.queueDownload("/Assets/WorldItems/grey-pot.png")

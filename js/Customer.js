@@ -49,6 +49,9 @@ export default class Customer extends EntityInteractable {
 
         // sprite dish
         this.dishSprite = new Animator(ASSET_MANAGER.getAsset(getItemData(this.recipeItemID).assetName), 0, 0, getItemData(this.recipeItemID).width, getItemData(this.recipeItemID).height, 1, 1, 0);
+
+        this.customerFrame = Math.floor(Math.random() * 4);
+        this.customerSprite = new Animator(ASSET_MANAGER.getAsset("/Assets/Entities/Customers.png"), 0, 0, 32, 32, 1, 1, 0, false, false);
     }
 
     interact(player) {
@@ -200,8 +203,9 @@ export default class Customer extends EntityInteractable {
 
     draw(ctx, engine) {
         if (engine.getLevel().currentLevel !== 3) return;
-        ctx.fillStyle = "#000000";
-        ctx.fillRect(this.x - engine.camera.x, this.y - engine.camera.y, this.width, this.height);
+        //ctx.fillStyle = "#000000";
+        //ctx.fillRect(this.x - engine.camera.x, this.y - engine.camera.y, this.width, this.height);
+        this.customerSprite.drawFramePlain(ctx, this.x - engine.camera.x - 10, this.y - engine.camera.y - 8, 2, this.customerFrame);
 
         // chat bubble
         const bubbleX = this.x + this.width / 2 - 16 - engine.camera.x;
