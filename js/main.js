@@ -48,6 +48,7 @@ ASSET_MANAGER.queueDownload("/Assets/Icons/OrderBubble.png")
 ASSET_MANAGER.queueDownload("/Assets/Icons/PendingOrder.png")
 ASSET_MANAGER.queueDownload("/Assets/Icons/AngryOrder.png")
 ASSET_MANAGER.queueDownload("/Assets/Icons/CompleteOrder.png")
+ASSET_MANAGER.queueDownload("/Assets/Icons/StationArrow.png")
 
 
 

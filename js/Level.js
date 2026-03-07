@@ -22,6 +22,8 @@ import CustomerManager from '/js/CustomerManager.js';
 import Item from "/js/Item.js";
 import MarketPlaceUI from '/js/MarketplaceUI.js';
 import { getRecipeData } from '/js/DataClasses/RecipeList.js';
+import StationIndicator from '/js/StationIndicator.js';
+import { STEP_TYPE } from '/js/Constants/cookingStationStates.js';
 
 // size of a tile in screen pixels
 const TILE_SIZE = 32;
@@ -509,11 +511,29 @@ export default class LevelManager {
 
         this.sceneEntities = [];
         //this.sceneEntities.push(new StationPlaceholder(this.engine, 25 * TILE_SIZE, 16*TILE_SIZE, TILE_SIZE,TILE_SIZE));
-
-        this.sceneEntities.push(new PrepStation(22 * TILE_SIZE, 16 * TILE_SIZE, TILE_SIZE, TILE_SIZE, stationManager.getStationById("1"), this.engine));
-        this.sceneEntities.push(new Oven(23.5 * TILE_SIZE - .5 * TILE_SIZE, 16 * TILE_SIZE - .5 * TILE_SIZE, 64, 64, stationManager.getStationById("1"),this.engine));
-        this.sceneEntities.push(new ChoppingStation(25 * TILE_SIZE - .5 * TILE_SIZE, 16 * TILE_SIZE - .5 * TILE_SIZE, 64, 64, stationManager.getStationById("1"),this.engine));
-        this.sceneEntities.push(new MixingStation(26.5 * TILE_SIZE - .5 * TILE_SIZE, 16 * TILE_SIZE - .5 * TILE_SIZE, 64, 64, stationManager.getStationById("1"),this.engine));
+        const prepStation = new PrepStation(22 * TILE_SIZE, 16 * TILE_SIZE, TILE_SIZE, TILE_SIZE, stationManager.getStationById("1"), this.engine);
+        const oven = new Oven(23.5 * TILE_SIZE - .5 * TILE_SIZE, 16 * TILE_SIZE - .5 * TILE_SIZE, 64, 64, stationManager.getStationById("1"),this.engine);
+        const choppingStation = new ChoppingStation(25 * TILE_SIZE - .5 * TILE_SIZE, 16 * TILE_SIZE - .5 * TILE_SIZE, 64, 64, stationManager.getStationById("1"),this.engine);
+        const mixingStation = new MixingStation(26.5 * TILE_SIZE - .5 * TILE_SIZE, 16 * TILE_SIZE - .5 * TILE_SIZE, 64, 64, stationManager.getStationById("1"),this.engine);
+        
+        const stationMap = {
+            [STEP_TYPE.INGREDIENTS]: prepStation,
+            [STEP_TYPE.COOK]: oven,
+            [STEP_TYPE.CHOP]: choppingStation,
+            [STEP_TYPE.MIX]: mixingStation,
+            [STEP_TYPE.ASSEMBLE]: prepStation,
+        };
+        const indicator = new StationIndicator(stationManager.getStationById("1"), stationMap, this.engine);
+        this.sceneEntities.push(prepStation);
+        this.sceneEntities.push(oven);
+        this.sceneEntities.push(choppingStation);
+        this.sceneEntities.push(mixingStation);
+        this.sceneEntities.push(indicator);
+        
+        //this.sceneEntities.push(new PrepStation(22 * TILE_SIZE, 16 * TILE_SIZE, TILE_SIZE, TILE_SIZE, stationManager.getStationById("1"), this.engine));
+        //this.sceneEntities.push(new Oven(23.5 * TILE_SIZE - .5 * TILE_SIZE, 16 * TILE_SIZE - .5 * TILE_SIZE, 64, 64, stationManager.getStationById("1"),this.engine));
+        //this.sceneEntities.push(new ChoppingStation(25 * TILE_SIZE - .5 * TILE_SIZE, 16 * TILE_SIZE - .5 * TILE_SIZE, 64, 64, stationManager.getStationById("1"),this.engine));
+        //this.sceneEntities.push(new MixingStation(26.5 * TILE_SIZE - .5 * TILE_SIZE, 16 * TILE_SIZE - .5 * TILE_SIZE, 64, 64, stationManager.getStationById("1"),this.engine));
 
         //this.sceneEntities.push(new Customer(40 * TILE_SIZE, 16 * TILE_SIZE, TILE_SIZE / 2, TILE_SIZE, testOrder, this.engine));
 
