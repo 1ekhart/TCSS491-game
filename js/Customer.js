@@ -34,7 +34,7 @@ export default class Customer extends EntityInteractable {
         console.log(this.text);
         this.prompt = new OnScreenTextSystem(this, x + width/2, y - 2, `${this.text}`, false);
 
-        this.waitTime = 20; // testing
+        this.waitTime = 25; // testing
         this.remainingTime = this.waitTime;
         this.timerDisplay = new OnScreenTextSystem(this, x + width / 2 + 10, y - 22, this.formatTime(this.remainingTime), false);
         
@@ -193,6 +193,9 @@ export default class Customer extends EntityInteractable {
                 this.removeFromWorld = true;
                 this.prompt.removeFromWorld = true;
                 this.timerDisplay.removeFromWorld = true;
+                if(this.availableStation != null) {
+                    this.availableStation.reset();
+                }
                 if (this.onComplete) {
                     this.onComplete();
                 }
