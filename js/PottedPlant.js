@@ -140,7 +140,7 @@ export default class PottedPlant extends EntityInteractable {
         var plantStage;
         if (timePassed >= 1) {
             plantStage = 2;
-        } else if (timePassed >= 0.3) {
+        } else if (timePassed >= 0.35) {
             plantStage = 1;
         } else {
             plantStage = 0;

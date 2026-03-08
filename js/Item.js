@@ -3,11 +3,11 @@ import WorldEntity from '/js/AbstractClasses/WorldEntity.js';
 import { getItemData } from '/js/DataClasses/ItemList.js';
 import Animator from '/js/GeneralUtils/Animator.js';
 import Player from '/js/Player.js';
-import { CONSTANTS } from '/js/Util.js';
+import { CONSTANTS, secondsToTicks } from '/js/Util.js';
 
 const HITBOX_WIDTH = 16;
 const HITBOX_HEIGHT = 16;
-const PICKUP_COOLDOWN = 1; // the item can't be picked up for this amount of time;
+const PICKUP_COOLDOWN = secondsToTicks(1); // the item can't be picked up for this amount of time;
 const DRAG = 1;
 const GRAVITY = 1;
 
@@ -20,7 +20,7 @@ export default class Item extends WorldEntity {
         this.height = HITBOX_HEIGHT;
         this.itemID = itemID;
         this.pickable = false;
-        this.elapsedTime = 0;
+        this.elapsedTicks = 0;
 
         if (!initVelocityX) {
             this.xVelocity = 0;
@@ -41,7 +41,7 @@ export default class Item extends WorldEntity {
         // Initialize the sprite and other item data.
         this.itemData = getItemData(itemID);
         if (this.itemData) {
-            this.sprite = new Animator(ASSET_MANAGER.getAsset(this.itemData.assetName), 0, 0, 32, 32, 1, 1, 0);
+            this.sprite = new Animator(ASSET_MANAGER.getAsset(this.itemData.assetName), this.itemData.spriteX, this.itemData.spriteY, this.itemData.width, this.itemData.height, 1, 1, 0);
         }
     }
 
@@ -64,8 +64,8 @@ export default class Item extends WorldEntity {
 
         // do the timer for when the item's able to be picked up.
         if (this.pickable == false) {
-            this.elapsedTime += CONSTANTS.TICK_TIME;
-            if (this.elapsedTime >= PICKUP_COOLDOWN) {
+            this.elapsedTicks += 1;
+            if (this.elapsedTicks >= PICKUP_COOLDOWN) {
                 this.pickable = true;
             }
         }
@@ -108,8 +108,8 @@ export default class Item extends WorldEntity {
             ctx.strokeRect(this.x - engine.camera.x, this.y - engine.camera.y, HITBOX_WIDTH, HITBOX_HEIGHT);
         }
         if (this.itemData) { // if a valid item draw the sprite, otherwise give a plain rectangle
-            this.sprite.drawFramePlain(ctx, this.x - (this.itemData.width / 4) - engine.camera.x, 
-            this.y - (this.itemData.height / 4) - engine.camera.y, 
+            this.sprite.drawFramePlain(ctx, this.x - (this.itemData.width / 4) - engine.camera.x,
+            this.y - (this.itemData.height / 4) - engine.camera.y,
             this.itemData.scale, 0);
         } else {
             ctx.fillRect(this.x - engine.camera.x, this.y - engine.camera.y, HITBOX_WIDTH, HITBOX_HEIGHT);

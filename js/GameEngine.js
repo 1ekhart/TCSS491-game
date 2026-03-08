@@ -16,16 +16,22 @@ const INPUT_MAP = {
     "KeyD": "right",
     "Space": "jump",
     "KeyE": "interact",
+    "KeyF": "refuse",
+    // also primary mouse button for "click" (attack and click in UI)
+    "Escape": "escape",
     // alternate platformer style controls (like hollow knight, celeste, etc. can change if necessary)
     "ArrowUp": "up",
     "ArrowDown": "down",
     "ArrowLeft": "left",
     "ArrowRight": "right",
     "KeyC": "jump",
+    "KeyZ": "interact",
+    "KeyX": "click", // attack
 };
 
-// the amount of time per engine tick
-const TICK_TIME = CONSTANTS.TICK_TIME;
+// the amount of time per engine tick. do not rely on this value; entities should count # of ticks for their timers, not irl seconds
+// this is only for internal engine update loop stuff
+const TICK_TIME = 1 / 60;
 
 // the amount of layers in the entity array
 const ENTITY_LAYER_COUNT = 8;
@@ -89,14 +95,13 @@ export default class GameEngine {
         });
 
         this.ctx.canvas.addEventListener("mousedown", e => {
-            const pos = getXandY(e);
-            this.click = pos;
-            this.mouseDown = pos;
+            this.mouseDown = getXandY(e);
+            this.input.click = true;
         });
 
         this.ctx.canvas.addEventListener("mouseup", e => {
             this.mouseUp = getXandY(e);
-            this.click = null;
+            this.input.click = false;
         });
 
         this.ctx.canvas.addEventListener("mousemove", e => {
@@ -216,7 +221,8 @@ export default class GameEngine {
         return this.clock;
     }
 
-    draw() {
+    /** @param {number} deltaTime */
+    draw(deltaTime) {
         // Clear the whole canvas with transparent color (rgba(0, 0, 0, 0))
         this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
 
@@ -226,7 +232,7 @@ export default class GameEngine {
             }
 
             for (const entity of entityLayer) {
-                entity.draw(this.ctx, this);
+                entity.draw(this.ctx, this, deltaTime);
             }
         }
     };
@@ -248,16 +254,18 @@ export default class GameEngine {
             for (let j = 0; j < entityColumns; j++) {
                 let entity = entityLayer[j];
 
-                if (!entity.removeFromWorld) {
+                if (!entity.removeFromWorld && !entity.doNotUpdate) {
                     entity.update(this);
-                } else { // small change to remove elements without re-iterating through the entity list
+                } else if (entity.removeFromWorld) {// small change to remove elements without re-iterating through the entity list
                     if (CONSTANTS.DEBUG) {
-                        console.log("Just destroyed " + entity.constructor.name)
+                        // console.log("Just destroyed " + entity.constructor.name)
                     }
-                
+
                     entityLayer.splice(j, 1);
                     j--;
                     entityColumns--;
+                } else {
+                    continue;
                 }
             }
         }
@@ -283,7 +291,9 @@ export default class GameEngine {
         }
 
         this.draw(deltaTime);
-        this.ctx.fillStyle = "black";
-        this.ctx.fillText(`fps: ${(1 / deltaTime).toFixed(2)}`, 0, 12);
+        if (CONSTANTS.DEBUG) {
+            this.ctx.fillStyle = "black";
+            this.ctx.fillText(`fps: ${(1 / deltaTime).toFixed(2)}`, 0, 12);
+        }
     }
 }

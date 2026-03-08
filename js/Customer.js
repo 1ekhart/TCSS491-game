@@ -5,9 +5,12 @@ import { getRecipeData } from "/js/DataClasses/RecipeList.js";
 import DialogueBox from "/js/GeneralUtils/DialogueBox.js";
 import OnScreenTextSystem from "/js/GeneralUtils/OnScreenText.js";
 import Player from "/js/Player.js";
-import { CONSTANTS } from "/js/Util.js";
+import { CONSTANTS, secondsToTicks } from "/js/Util.js";
 
-const interactionCooldown = 0.5;
+const INTERACTION_COOLDOWN = secondsToTicks(0.5);
+const WAIT_TIME = secondsToTicks(18);
+const ANGRY_DURATION = secondsToTicks(1);
+
 export default class Customer extends EntityInteractable {
     constructor(x, y, width, height, order, engine) {
         super();
@@ -32,6 +35,7 @@ export default class Customer extends EntityInteractable {
         this.text = `Press E to take order: ${this.recipeName} with ${this.ingredientNames}`;
         this.interactionCooldown = interactionCooldown;
         console.log(this.text);
+        //this.interactionCooldown = INTERACTION_COOLDOWN;
         this.prompt = new OnScreenTextSystem(this, x + width/2, y - 2, `${this.text}`, false);
 
         this.waitTime = 25; // testing
@@ -64,7 +68,7 @@ export default class Customer extends EntityInteractable {
     interact(player) {
         if(this.orderCompleted) return;
         if (this.interactionCooldown > 0) return;
-        this.interactionCooldown = interactionCooldown;
+        this.interactionCooldown = INTERACTION_COOLDOWN;
         // if order not taken yet -> take it
         if (!this.orderTaken) {
             //const availableStation = this.engine.stationManager.getAvailableStation();
@@ -79,7 +83,7 @@ export default class Customer extends EntityInteractable {
             this.prompt.showText();
 
             this.timerDisplay.showText();
-            this.timerDisplay.changeText(this.formatTime(this.remainingTime));
+            this.timerDisplay.changeText(this.formatTime(this.remainingTicks));
 
             // console.log(`Order taken! Order assigned to station ${availableStation.id}`);
             return;
@@ -128,9 +132,15 @@ export default class Customer extends EntityInteractable {
         }
     }
 
-    formatTime(seconds) {
-        if (typeof seconds !== "number" || isNaN(seconds) || seconds < 0) seconds = 0;
-       return Math.ceil(seconds) + "s"
+    refuseOrder(player) {
+        // if (this.orderTaken) {return;}
+        this.removeFromWorld = true;
+        if (this.onComplete) this.onComplete();
+    }
+
+    formatTime(ticks) {
+        if (typeof ticks !== "number" || isNaN(ticks) || ticks < 0) ticks = 0;
+       return Math.ceil(ticks / CONSTANTS.TICKS_PER_SECOND) + "s"
     }
 
     calculateMoney(player, equippedIndex) {
@@ -145,30 +155,7 @@ export default class Customer extends EntityInteractable {
     }
 
     update(engine) {
-        this.interactionCooldown -= CONSTANTS.TICK_TIME;
-        /**if (this.orderTaken) return;
-
-        if (this.orderCompleted && this.prompt) {
-            this.prompt.removeFromWorld = true;
-            this.prompt = null;
-        }
-
-        for (const layer of engine.entities) {
-            for (const entity of layer) {
-                if (entity instanceof Player && this.isCollidingWith(entity)) {
-                    this.prompt.showText();
-                    return;
-                }
-            }
-        }
-        this.prompt.hideText();**/
-
-
-        // if (this.orderTaken) {
-        //     this.prompt.changeText(`Order taken! Bring: ${this.order.id}`);
-        // } else {
-        //     this.prompt.changeText(`Press E to take order: ${this.recipeName} with ${this.ingredientName}`);
-        // }
+        if(this.interactionCooldown > 0) this.interactionCooldown -= 1;
 
         let playerNearby = false;
         for (const layer of engine.entities) {
@@ -203,16 +190,16 @@ export default class Customer extends EntityInteractable {
         }
 
         if (this.orderTaken && !this.orderCompleted) {
-            this.remainingTime -= CONSTANTS.TICK_TIME;
-            if (this.remainingTime <= 0 && !this.isAngry) {
+            this.remainingTicks -= 1;
+            if (this.remainingTicks <= 0 && !this.isAngry) {
                 this.isAngry = true;
-                this.angryTimer = this.angryDuration;
+                this.angryTicks = ANGRY_DURATION;
                 this.timerDisplay.removeFromWorld = true;
-                this.remainingTime = 0;
-            } 
+                this.remainingTicks = 0;
+            }
             if (this.isAngry) {
-                this.angryTimer -= CONSTANTS.TICK_TIME;
-                if (this.angryTimer <= 0) {
+                this.angryTicks -= 1;
+                if (this.angryTicks <= 0) {
                     this.removeFromWorld = true;
                     this.timerDisplay.removeFromWorld = true;
                     // reset station when customer leaves
@@ -224,7 +211,7 @@ export default class Customer extends EntityInteractable {
                     console.log("Customer left due to timeout!");
                 }
             } else {
-                this.timerDisplay.changeText(this.formatTime(this.remainingTime));
+                this.timerDisplay.changeText(this.formatTime(this.remainingTicks));
             }
         }
     }
@@ -249,8 +236,9 @@ export default class Customer extends EntityInteractable {
             bubbleToDraw = this.chatBubbleSprite;
         }
         bubbleToDraw.drawFramePlain(ctx, bubbleX, bubbleY, 1);
-        
+
         // dish
+        const dishScale = 20 / getItemData(this.recipeItemID).width;
         const dishScale = 20 / getItemData(this.recipeItemID).width;
         const dishX = bubbleX + (32 - 20) / 2;
         const dishY = bubbleY + (32 - 20) / 2;

@@ -9,7 +9,7 @@ const backgroundColor = "rgb(162, 118, 81)"
 const backgroundColorTransparent = "rgba(162, 117, 81, 0.25)"
 const padding = 32;
 const iconScale = 1;
-export default class RecipeButton { // like button but with some added features 
+export default class RecipeButton { // like button but with some added features
     constructor(parent, width, height, recipeID) {
         this.parent = parent;
         this.x = parent.x;
@@ -41,7 +41,7 @@ export default class RecipeButton { // like button but with some added features
                 //     this.ingredientListString += getItemData(ingredient.eligibleIngredients[ingredient.eligibleIngredients.length-1]).name + "], ";
                 this.ingredientListString += getItemData(ingredient.eligibleIngredients[0]).name + ", "
                 const specificIngredient = getItemData(ingredient.eligibleIngredients[0]);
-                that.ingredientIcons.push(new Animator(ASSET_MANAGER.getAsset(specificIngredient.assetName), 0, 0, 
+                that.ingredientIcons.push(new Animator(ASSET_MANAGER.getAsset(specificIngredient.assetName), 0, 0,
                                                 specificIngredient.width, specificIngredient.height, 1, 1, 0));
             } else {
                 // check which category and set it to a specific ingredient for each category
@@ -90,7 +90,7 @@ export default class RecipeButton { // like button but with some added features
         if (ingredientArray.length !== this.ingredientIcons.length) {
             this.isOpaque = false;
             return;
-        } 
+        }
         for (const data in this.ingredientList) {
             const item = this.ingredientList[data];
             if (item.hasSpecificIngredient == true) { // handle if specific ingredients
@@ -144,7 +144,7 @@ export default class RecipeButton { // like button but with some added features
                     isIngredientListValid = false;
                     break;
                 } else {console.log("invalid item category!" + item.category)}
-            } 
+            }
         }
 
         if (isIngredientListValid == true) {
@@ -187,7 +187,7 @@ export default class RecipeButton { // like button but with some added features
     }
 
     handleMouseDetection(engine) {
-        const x = engine.mouse.x / CONSTANTS.SCALE; 
+        const x = engine.mouse.x / CONSTANTS.SCALE;
         const y = engine.mouse.y / CONSTANTS.SCALE;
         if (x >= this.x && x <= this.x + this.width &&
             y >= this.y && y <= this.y + this.height) {
@@ -200,12 +200,12 @@ export default class RecipeButton { // like button but with some added features
                 this.parent.setSelectedElement(this.dishName);
                 this.parent.setSelectedIngredients(this.ingredientListString);
             }
-            if (engine.click && this.isOpaque) {
+            if (engine.input.click && this.isOpaque) {
                 console.log("JUST CLICKED")
                 this.addRecipeToPlayer(engine);
                 engine.setMouseSignal(0);
                 engine.getCursor().hideText();
-                engine.click = null;
+                engine.input.click = false;
             }
         } else if (this.hovered) {
             this.hovered = false;
@@ -240,8 +240,8 @@ export default class RecipeButton { // like button but with some added features
         }
         /*
         inventory.addItem({
-            itemID: this.recipeItemData.itemID, 
-            quantity: 1, 
+            itemID: this.recipeItemData.itemID,
+            quantity: 1,
             isDish: true,
             ingredients: this.requestedIngredients.slice()
         });*/
@@ -254,7 +254,7 @@ export default class RecipeButton { // like button but with some added features
             that.parent.parent.closeUI();
         }
     }
-        
+
 
     draw(ctx, engine) {
         if (this.isVisible == true) {
@@ -271,8 +271,8 @@ export default class RecipeButton { // like button but with some added features
             ctx.strokeRect(this.x, this.y, padding, this.height);
             const scale = this.iconScale;
             for (let i = 0; i < this.ingredientIcons.length; i++) {
-                this.ingredientIcons[i].drawFramePlain(ctx, 
-                    40 + this.x + (padding * i * scale), this.y + (this.height/2) - (padding * scale / 2), 
+                this.ingredientIcons[i].drawFramePlain(ctx,
+                    40 + this.x + (padding * i * scale), this.y + (this.height/2) - (padding * scale / 2),
                     scale);
             }
 

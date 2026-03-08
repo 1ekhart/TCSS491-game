@@ -1,3 +1,4 @@
+
 const PotatoStew = {
     recipeID: 1,
     requirementIDs: [3], // necessary items for recipe
@@ -85,9 +86,41 @@ const Burger = {
     ]
 }
 
+const Croquettes = {
+    recipeID: 3,
+    itemID: 11,
+    ingredients: {
+        1: {
+            hasSpecificIngredient: true,
+            eligibleIngredients: [3]
+        },
+        2: {
+            hasSpecificIngredient: false,
+            category: "Meat"
+        }
+    }
+}
+
+const FriedPumpkin = {
+    recipeID: 4,
+    itemID: 13,
+    ingredients: {
+        1: {
+            hasSpecificIngredient: true,
+            eligibleIngredients: [12]
+        },
+        2: {
+            hasSpecificIngredient: true,
+            eligibleIngredients: [7]
+        }
+    }
+}
+
 export const recipeList = {
     1: RiceBowl,
-    2: Burger
+    2: Burger,
+    3: Croquettes,
+    4: FriedPumpkin
 }
 
 export const getRecipeData = (recipeID) => {

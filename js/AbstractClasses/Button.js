@@ -68,22 +68,22 @@ export default class Button {
                 this.hovered = true;
                 engine.setMouseSignal(1);
             }
-            if (engine.click) {
+            if (engine.input.click) {
                 this.callbackFunction();
                 engine.setMouseSignal(0);
-                engine.click = null;
+                engine.input.click = false;
             }
         } else if (this.hovered) {
             this.hovered = false;
             engine.setMouseSignal(0);
         }
-    }        
-    
+    }
+
 
     draw(ctx, engine) {
         ctx.fillStyle = this.color;
         ctx.fillRect(this.x, this.y, this.width, this.height)
-        
+
         ctx.strokeStyle = this.strokeColor;
         ctx.strokeRect(this.x, this.y, this.width, this.height);
 

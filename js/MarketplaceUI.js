@@ -13,13 +13,14 @@ export default class MarketPlaceUI extends Entity {
         this.y = (CONSTANTS.CANVAS_WIDTH / CONSTANTS.SCALE) / (16) // take up from the top 1/8 to 6/8
         this.width = this.x * (4);
         this.height = this.y * (10);
+        this.columnPadding = 5;
         this.text = "Marketplace";
         // we probably want to have 24 things to buy at most so we'll have 24 buttons
         this.buttonWidth = (this.width * 5/6)  / columnSize;
         this.buttonHeight = (this.height * 3 / 4) / rowSize;
         // this.columns = []; // create a column of sale buttons
         
-        this.items = [2, 3, 4, 7, 8];
+        this.items = [2, 3, 12, 4, 7, 8];
         // function to destroy object;
         const that = this;
         const close = () => {
@@ -28,7 +29,9 @@ export default class MarketPlaceUI extends Entity {
                 entity.removeFromWorld = true;
             })
             parent.displaying = false;
+            this.engine.getClock().resumeTime()
         }
+        this.engine.getClock().stopTime();
 
         
         this.closeButton = new Button(this.x + this.width - (this.width / (4)), this.y + this.height - (this.height / (12) + 4), 
@@ -38,7 +41,7 @@ export default class MarketPlaceUI extends Entity {
         let buttonCount = 0;
         let x = this.x + (this.buttonHeight / 2);
         for (let i = 0; i < columnSize; i++) {
-            for (let j = 0; j < rowSize; j++) {
+            for (let j = 0; j < rowSize - 1; j++) {
                 if (buttonCount >= this.items.length) {break;}
                 this.itemSale(x, j, this.items[buttonCount]);
                 buttonCount += 1;
@@ -56,6 +59,9 @@ export default class MarketPlaceUI extends Entity {
 
     load() {
 
+    }
+    update() {
+        if (!this.engine.getClock().halted) {this.engine.getClock().stopTime()}
     }
 
     itemSale(x, columnIndex, itemid) { // creates a button for buying an item and pushes it vertically into column
@@ -78,7 +84,7 @@ export default class MarketPlaceUI extends Entity {
                         player.inventory.addItem(item);
                     }
                 }
-                const newButton = new Button(x, this.y + this.buttonHeight + (columnIndex * this.buttonHeight), 
+                const newButton = new Button(x, this.y + this.buttonHeight + (columnIndex * this.buttonHeight) + (columnIndex * this.columnPadding), 
                 this.buttonWidth, this.buttonHeight, addToInventory, txt, "#9093a1f2", "#1a1a1aec", "#9093a18d");
                 this.buttons.push(newButton);
                 return;

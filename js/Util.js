@@ -4,12 +4,22 @@ export const CONSTANTS = {
     SCALE: 2,
     BITWIDTH: 16,
     TILESIZE: 32,
-    TICK_TIME: 1 / 60,  // the amount of time per engine tick
+    TICKS_PER_SECOND: 60, // the number of engine ticks per second
     EPSILON: 0.005,
     CANVAS_WIDTH: 1024,
     CANVAS_HEIGHT: 768,
     CONTEXT: document.getElementById("gameWorld").getContext("2d")
 };
+
+/**
+ * Convenience function for converting seconds to engine ticks
+ * (effectively just seconds * CONSTANTS.SECONDS_PER_TICK)
+ * @param {number} seconds
+ * @returns {integer} ticks
+ */
+export const secondsToTicks = (seconds) => {
+    return Math.floor(seconds * CONSTANTS.TICKS_PER_SECOND);
+}
 
 /**
  * @param {Number} num1 The first value we want to compare
