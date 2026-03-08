@@ -233,9 +233,10 @@ export class Basan extends MovingEntity { // entity that should spawn a hitbox e
     /**
      * @param {CanvasRenderingContext2D} ctx
      * @param {GameEngine} engine
+     * @param {number} deltaTime
      */
-    draw(ctx, engine) {
-        this.animations[this.animationState].drawFrame(CONSTANTS.TICK_TIME, ctx,
+    draw(ctx, engine, deltaTime) {
+        this.animations[this.animationState].drawFrame(deltaTime, ctx,
             this.x - engine.camera.x - 10, this.y - engine.camera.y - 16, !this.isRight, 2
         )
         ctx.fillStyle = "rgb(0, 0, 0)"

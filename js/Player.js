@@ -103,7 +103,7 @@ export default class Player extends WorldEntity {
                         if (entity.refuseOrder) {
                             entity.refuseOrder(this);
                         }
-                    } 
+                    }
                 }
             }
         }
@@ -205,7 +205,7 @@ export default class Player extends WorldEntity {
                 this.isRight = true;
             } else if (this.onGround) {
                 this.setAnimationState("Idle");
-            } 
+            }
         }
 
         // gravity
@@ -237,8 +237,9 @@ export default class Player extends WorldEntity {
     /**
      * @param {CanvasRenderingContext2D} ctx
      * @param {GameEngine} engine
+     * @param {number} deltaTime
      */
-    draw(ctx, engine) {
+    draw(ctx, engine, deltaTime) {
         if (this.haltMovement === true && this.animations[this.animationState].isDone()) {this.goDefaultState();}
         if (this.doNotUpdate) {this.goDefaultState()}
         if (CONSTANTS.DEBUG == true) {
@@ -248,16 +249,16 @@ export default class Player extends WorldEntity {
 
         if (!this.onGround) {
             if (this.attack) {
-                this.animations[this.animationState].drawFrame(CONSTANTS.TICK_TIME, ctx,
+                this.animations[this.animationState].drawFrame(deltaTime, ctx,
                 (this.x - (20)) - engine.camera.x, floor(this.y) - (this.height) + (32) - floor(engine.camera.y),
                 !this.isRight, 2)
                 return;
             }
-            this.jump.drawFramePlain(ctx, 
-                (this.x - (20)) - engine.camera.x, floor(this.y) - (this.height) + (32) - floor(engine.camera.y), 
+            this.jump.drawFramePlain(ctx,
+                (this.x - (20)) - engine.camera.x, floor(this.y) - (this.height) + (32) - floor(engine.camera.y),
                 2, this.getJumpFrame(), !this.isRight);
         } else {
-            this.animations[this.animationState].drawFrame(CONSTANTS.TICK_TIME, ctx,
+            this.animations[this.animationState].drawFrame(deltaTime, ctx,
             (this.x - (20)) - engine.camera.x, floor(this.y) - (this.height) + (32) - floor(engine.camera.y),
              !this.isRight, 2)
         }
@@ -265,7 +266,7 @@ export default class Player extends WorldEntity {
 
     getJumpFrame() { // returns the frame of the jump animation according to the y velocity
         if (this.yVelocity <= 0) { // if going up then...
-            return Math.abs(this.yVelocity) <= Math.abs(JUMPING_STRENGTH / 2)? 1 : 0; // if the y velocity is very high, then do the launch frame; 
+            return Math.abs(this.yVelocity) <= Math.abs(JUMPING_STRENGTH / 2)? 1 : 0; // if the y velocity is very high, then do the launch frame;
         } else {
             return Math.abs(this.yVelocity) <= Math.abs(JUMPING_STRENGTH * 3/4)? 2 : 3; // if the y velocity is high, then  do the freefall frame;
         }
@@ -305,8 +306,8 @@ class BladeHitbox extends HitBox {
         }
     }
 
-    draw(ctx, engine) {
-        this.animation.drawFrame(CONSTANTS.TICK_TIME, ctx,
+    draw(ctx, engine, deltaTime) {
+        this.animation.drawFrame(deltaTime, ctx,
             this.x - engine.camera.x - this.facingLeftOffset, this.y - engine.camera.y - 5, !this.isFacingRight, 2);
 
         if (CONSTANTS.DEBUG == true) {
@@ -322,8 +323,8 @@ class AerialBladeHitbox extends BladeHitbox  {
         this.animation = new Animator(ASSET_MANAGER.getAsset("/Assets/Player/BladeEffect-Sheet.png"), 0, 32, 32, 32, 7, this.timer / 4, 0, false, false);
     }
 
-    draw(ctx, engine) {
-        this.animation.drawFrame(CONSTANTS.TICK_TIME, ctx,
+    draw(ctx, engine, deltaTime) {
+        this.animation.drawFrame(deltaTime, ctx,
             this.x - engine.camera.x - this.facingLeftOffset, this.y - engine.camera.y - 20, !this.isFacingRight, 2);
 
         if (CONSTANTS.DEBUG == true) {

@@ -218,7 +218,8 @@ export default class GameEngine {
         return this.clock;
     }
 
-    draw() {
+    /** @param {number} deltaTime */
+    draw(deltaTime) {
         // Clear the whole canvas with transparent color (rgba(0, 0, 0, 0))
         this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
 
@@ -228,7 +229,7 @@ export default class GameEngine {
             }
 
             for (const entity of entityLayer) {
-                entity.draw(this.ctx, this);
+                entity.draw(this.ctx, this, deltaTime);
             }
         }
     };
@@ -256,7 +257,7 @@ export default class GameEngine {
                     if (CONSTANTS.DEBUG) {
                         // console.log("Just destroyed " + entity.constructor.name)
                     }
-                
+
                     entityLayer.splice(j, 1);
                     j--;
                     entityColumns--;

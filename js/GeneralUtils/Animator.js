@@ -7,7 +7,7 @@ export default class Animator {
         this.totalTime = frameCount * frameDuration;
     };
 
-    // draws the frame, pass the ctx, deltaTime (just CONSTANTS.TICK_TIME), the position and if it's flipped horizontally
+    // draws the frame, pass the ctx, deltaTime (3rd parameter of draw()), the position and if it's flipped horizontally
     drawFrame(tick, ctx, x, y, isFlipped, scale) {
         this.elapsedTime += tick;
 
