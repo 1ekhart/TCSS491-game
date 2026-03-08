@@ -503,6 +503,7 @@ export default class LevelManager {
             this.customerManager.setActive(true);
         } else {
             this.customerManager.setActive(false);
+            stationManager.resetAllStations();
         }
 
         this.sceneEntities.forEach(function (entity) {
