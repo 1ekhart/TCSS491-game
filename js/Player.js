@@ -103,12 +103,12 @@ export default class Player extends WorldEntity {
             }
         }
 
-        if (this.haltMovement == false && engine.click && this.attackCooldown <= 0) {
+        if (this.haltMovement == false && engine.input.click && this.attackCooldown <= 0) {
             // attempt to use an item first instead of attacking
             if(this.inventory.getEquippedSlot() !== null && this.onGround) {
                 this.inventory.useItem(this.inventory.getEquippedSlot(), this, engine)
                 // consume click and don't do anything else if an item was attempted to be used
-                engine.click = null;
+                engine.input.click = false;
                 return;
             }
             this.tryAttack();
@@ -128,7 +128,7 @@ export default class Player extends WorldEntity {
     }
 
     tryAttack() {
-        if (engine.click && this.attackCooldown <= 0) {
+        if (engine.input.click && this.attackCooldown <= 0) {
             if (this.onGround) {
                 this.setAnimationState("IdleAttack")
             } else {
@@ -188,7 +188,7 @@ export default class Player extends WorldEntity {
         }
 
         if (this.haltMovement == false) {
-            if (engine.click && this.inventory.getEquippedSlot() === null) {
+            if (engine.input.click && this.inventory.getEquippedSlot() === null) {
                 this.tryAttack();
             } else if (engine.input.left) {
                 if (this.onGround) this.setAnimationState("Run");

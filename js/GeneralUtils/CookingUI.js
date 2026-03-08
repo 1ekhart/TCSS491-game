@@ -63,7 +63,7 @@ export class RecipePanel extends Entity{ // the recipe panel section of the UI
 
     setSelectedIngredients(ingredientString) {
         this.parent.displayIngredientList(ingredientString);
-    } 
+    }
 
     scrollUp() {
         if (startIndex <= 0) {return;}
@@ -122,7 +122,7 @@ export class RecipePanel extends Entity{ // the recipe panel section of the UI
     update(engine) {
         if (engine.wheel) {
             if (engine.wheel.deltaY > 0) { // handle scrolling down
-                
+
             } else {
 
             }
@@ -161,7 +161,7 @@ export class inventorySelection extends Entity {
 
     update(engine) {
         this.inventorySize = this.playerInventory.backpackSize + this.playerInventory.hotbarSize;
-        
+
         if (engine.mouse) {
             const x = engine.mouse.x / CONSTANTS.SCALE;
             const y = engine.mouse.y / CONSTANTS.SCALE;
@@ -181,21 +181,21 @@ export class inventorySelection extends Entity {
                     this.isHovered = true;
                     engine.setMouseSignal(1);
                     engine.getCursor().showText(this.getSlotName(slotIndex));
-                } 
+                }
             } else if (this.isHovered) {
                 this.isHovered = false;
                 engine.setMouseSignal(0);
                 engine.getCursor().hideText();
             }
 
-            if (engine.click) {
+            if (engine.input.click) {
                 console.log(this.isHovered);
                     const slotIX = this.getSlotIndex(x, y);
                     // console.log(slotIX);
                     if (slotIX !== null && this.playerInventory.slots[slotIX]) {
                         // console.log(this.playerInventory.slots[slotIX].itemID)
                         this.parent.appendIngredients(this.playerInventory.slots[slotIX].itemID);
-                        engine.click = null;
+                        engine.input.click = false;
                     }
                 }
         }
@@ -207,7 +207,7 @@ export class inventorySelection extends Entity {
         if (slotData.isDish) {
             let ingredientList = slotData.itemData.name + " (";
             for (let i = 0; i < slotData.ingredients.length - 1; i++) {
-                ingredientList += getItemData(slotData.ingredients[i]).name + ", " 
+                ingredientList += getItemData(slotData.ingredients[i]).name + ", "
             }
             ingredientList += getItemData(slotData.ingredients[slotData.ingredients.length - 1]).name + ")"
             return ingredientList;
@@ -226,7 +226,7 @@ export class inventorySelection extends Entity {
             if (xClick >= x && xClick <= x + slotSize && yClick >= y && yClick <= y + slotSize) {
                 // console.log("Clicked on " + i + ", ButtonX = " + x + ", ButtonY = " + y + ", and MouseX = " + xClick + " and MouseY = " + yClick)
                 return i;
-            } 
+            }
         }
     }
 
@@ -238,7 +238,7 @@ export class inventorySelection extends Entity {
             const col = (i % (this.maxElementsPerRow));
             const x = this.x + this.paddingX + col * (slotSize + this.paddingX);
             const y = this.y + this.paddingY + row * (slotSize + this.paddingY);
-            
+
 
             ctx.fillStyle = "#22222265";
             ctx.fillRect(x, y, slotSize, slotSize);
@@ -247,13 +247,13 @@ export class inventorySelection extends Entity {
             if (!slot) { continue;}
             // const col = i % this.maxElementsPerRow;
             // const row = Math.floor(i / this.maxElementsPerColumn);
-            
+
 
             // ctx.fillStyle = "#222";
             // ctx.fillRect(x, y, slotSize, slotSize);
 
             if (slot) {
-                slot.itemData = getItemData(slot.itemID); 
+                slot.itemData = getItemData(slot.itemID);
                 if (slot.itemData) {
                     slot.sprite = new Animator(ASSET_MANAGER.getAsset(slot.itemData.assetName), 0, 0, slot.itemData.width, slot.itemData.height, 1, 1, 0);
                 }
@@ -380,24 +380,24 @@ export default class CookingStationUI extends Entity {
         this.nestedElements = [] // our list of elements in the item;
 
 
-        this.closeButton = new Button(this.x + 5, this.y + 5, 
+        this.closeButton = new Button(this.x + 5, this.y + 5,
             (this.width / (4)) - 15, (this.height / (12)) - 5, close, "Close?", "#9093a1c3", "#1a1a1abf", "#9093a145");
         this.nestedElements.push(this.closeButton);
         this.nestedElements.push(new Button(
-            this.x + this.width - (this.width / 3) - (this.width / 3) - 5, this.y + 5, (this.width / (3)) - 5, 
+            this.x + this.width - (this.width / 3) - (this.width / 3) - 5, this.y + 5, (this.width / (3)) - 5,
             (this.height / (12)) - 5, clear, "Clear Selected", "#9093a1c3", "#1a1a1abf", "#9093a145"))
 
 
         // set up recipe list bar
         this.initializeRecipes();
 
-        //  
-        this.nestedElements.push(new inventorySelection(this, this.engine, 
-            this.x, this.y + (this.height/ 2), 
-            this.width - this.recipeBar.width, this.height / 2, 
+        //
+        this.nestedElements.push(new inventorySelection(this, this.engine,
+            this.x, this.y + (this.height/ 2),
+            this.width - this.recipeBar.width, this.height / 2,
             "rgba(114, 78, 36, 0.36)"));
 
-        this.ingredientSelection = new SelectedIngredientsArray(this.engine, 
+        this.ingredientSelection = new SelectedIngredientsArray(this.engine,
             this.x + (this.width / 4) - (MAX_INGREDIENTS * slotSize / 2) + 24, this.y + (this.height / 4) + 32, MAX_INGREDIENTS)
         this.nestedElements.push(this.ingredientSelection);
 
@@ -417,7 +417,7 @@ export default class CookingStationUI extends Entity {
                 this.ingredientSelection.removeIngredient(i);
                 arrayLength--;
                 i--;
-            } 
+            }
         }
         this.recipeBar.checkIngredients(this.ingredientSelection.getIngredientArray());
     }
@@ -425,7 +425,7 @@ export default class CookingStationUI extends Entity {
 
 
     initializeRecipes() { // recipe panel should take up the right 1/3 of the UI menu
-        const recipeBarWidth = this.width / 3; // take up 1/3 
+        const recipeBarWidth = this.width / 3; // take up 1/3
         this.recipeBar = new RecipePanel(this, this.engine, this.x + this.width - recipeBarWidth, this.y, recipeBarWidth,this.height,  "rgba(114, 78, 36, 0.91)")
         for (const recipe in recipeList) {
             this.recipeBar.addRecipe(recipeList[recipe].recipeID);

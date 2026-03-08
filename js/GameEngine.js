@@ -17,6 +17,7 @@ const INPUT_MAP = {
     "Space": "jump",
     "KeyE": "interact",
     "KeyF": "refuse",
+    // also primary mouse button for "click" (attack and click in UI)
     "Escape": "escape",
     // alternate platformer style controls (like hollow knight, celeste, etc. can change if necessary)
     "ArrowUp": "up",
@@ -24,6 +25,8 @@ const INPUT_MAP = {
     "ArrowLeft": "left",
     "ArrowRight": "right",
     "KeyC": "jump",
+    "KeyZ": "interact",
+    "KeyX": "click", // attack
 };
 
 // the amount of time per engine tick. do not rely on this value; entities should count # of ticks for their timers, not irl seconds
@@ -92,14 +95,13 @@ export default class GameEngine {
         });
 
         this.ctx.canvas.addEventListener("mousedown", e => {
-            const pos = getXandY(e);
-            this.click = pos;
-            this.mouseDown = pos;
+            this.mouseDown = getXandY(e);
+            this.input.click = true;
         });
 
         this.ctx.canvas.addEventListener("mouseup", e => {
             this.mouseUp = getXandY(e);
-            this.click = null;
+            this.input.click = false;
         });
 
         this.ctx.canvas.addEventListener("mousemove", e => {
