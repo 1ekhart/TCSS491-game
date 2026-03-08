@@ -107,8 +107,9 @@ export default class Player extends WorldEntity {
             // attempt to use an item first instead of attacking
             if(this.inventory.getEquippedSlot() !== null && this.onGround) {
                 this.inventory.useItem(this.inventory.getEquippedSlot(), this, engine)
-                // engine.click = null;
-                // return;
+                // consume click and don't do anything else if an item was attempted to be used
+                engine.click = null;
+                return;
             }
             this.tryAttack();
         }
