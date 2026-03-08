@@ -44,7 +44,7 @@ export default class PrepStation extends EntityInteractable {
         this.currentIngredientIndex = 0;
         this.elapsedTime = 0;
 
-        this.assemblyTime = order.assembleTime || 240;
+        this.assemblyTime = order.assembleTime || 60;
         this.station.startAssembly(this.ingredients.length);
     }
 

@@ -33,3 +33,14 @@ export default class StationIndicator {
         this.sprite.drawFramePlain(ctx, drawX, drawY, 1);
     }
 }
+
+// helper for station indicator
+export function createStationMap(prep, oven, chop, mix) {
+    return {
+        [STEP_TYPE.INGREDIENTS]: prep,
+        [STEP_TYPE.COOK]: oven,
+        [STEP_TYPE.CHOP]: chop,
+        [STEP_TYPE.MIX]: mix,
+        [STEP_TYPE.ASSEMBLE]: prep
+    };
+}

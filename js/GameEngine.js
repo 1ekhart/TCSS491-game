@@ -60,7 +60,7 @@ export default class GameEngine {
 
         this.stationManager = new CookingStationManager();
         this.stationManager.createStation("1");
-        //this.stationManager.createStation("2");
+        this.stationManager.createStation("2");
 
         this.customerManager = null;
     };
