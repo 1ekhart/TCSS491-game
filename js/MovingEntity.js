@@ -171,7 +171,6 @@ export class Basan extends MovingEntity { // entity that should spawn a hitbox e
         const wasMovingRight = this.xVelocity > 0;
         
         if (level4[Math.floor(this.y/32) + 2][Math.floor(this.x/32)] == 0 && !wasMovingRight || level4[Math.floor(this.y/32) + 2][Math.ceil(this.x/32)] == 0 && wasMovingRight || level4[Math.floor(this.y/32) + 2][Math.floor(this.x/32)] == 3 && !wasMovingRight || level4[Math.floor(this.y/32) + 2][Math.ceil(this.x/32)] == 3 && wasMovingRight ) { // random chance to stay still
-            console.log("ppfejf")    
             this.xVelocity = wasMovingRight ? -2 : 2;
             this.isRight = wasMovingRight;
         }
