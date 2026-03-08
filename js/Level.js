@@ -3,17 +3,13 @@ import Interactable, { BedroomDoor, HouseDoor } from './Interactable.js';
 import InGameClock from '/js/InGameClock.js';
 import PottedPlant from '/js/PottedPlant.js';
 import Teleporter from '/js/Teleporter.js';
-import Oven from "/js/Oven.js";
-import PrepStation from "/js/PrepStation.js";
-import { CONSTANTS } from '/js/Util.js';
-import Customer from '/js/Customer.js';
-import { RECIPES } from '/js/Data/Recipes.js';
+import { CONSTANTS, secondsToTicks } from '/js/Util.js';
 import Button from '/js/AbstractClasses/Button.js';
 import InventoryUI from '/js/InventoryUI.js';
 import DialogueBox from '/js/GeneralUtils/DialogueBox.js';
 import { getSave, wipeSave } from '/js/GeneralUtils/SaveDataRetrieval.js';
 import MarketPlace from '/js/MarketPlace.js';
-import MovingEntity, { Basan } from '/js/MovingEntity.js';
+import { Basan } from '/js/MovingEntity.js';
 import Player from './Player.js';
 import StationPlaceholder from '/js/StationPlaceholder.js';
 import CustomerManager from '/js/CustomerManager.js';
@@ -23,9 +19,6 @@ import Cursor from '/js/GeneralUtils/Cursor.js';
 
 // size of a tile in screen pixels
 const TILE_SIZE = 32;
-
-// sets the game to this hour (15:00)
-const ResetHour = 15;
 
 // don't move the camera horizontally/vertically if the player hasn't moved this far from the middle.
 const HORIZONTAL_FORGIVENESS = 1 * CONSTANTS.TILESIZE;
@@ -53,12 +46,14 @@ const tileTextures = [
     "nothing"
 ];
 
-const skyBoxTextures = [
-"/Assets/WorldTiles/MorningBG.png",
-"/Assets/WorldTiles/AfternoonBG.png",
-"/Assets/WorldTiles/SunsetBG.png",
-"/Assets/WorldTiles/NightBG.png",
-]
+const BACKGROUND_ASSET_MORNING = "/Assets/WorldTiles/MorningBG.png"
+const BACKGROUND_ASSET_AFTERNOON = "/Assets/WorldTiles/AfternoonBG.png"
+const BACKGROUND_ASSET_SUNSET = "/Assets/WorldTiles/SunsetBG.png"
+const BACKGROUND_ASSET_NIGHT = "/Assets/WorldTiles/NightBG.png"
+
+const BACKGROUND_TIME_MORNING = secondsToTicks(82.5);
+const BACKGROUND_TIME_AFTERNOON = secondsToTicks(135);
+const BACKGROUND_TIME_SUNSET = secondsToTicks(150);
 
 const validTiles = [
     [80, 34],
@@ -704,29 +699,29 @@ export default class LevelManager {
         // --- background ---
         const timeOfDay = engine.getClock();
         if(this.currentLevel > 1){
-            if(timeOfDay.dayTime < 82.5 ) {
+            if(timeOfDay.dayTimeTicks < BACKGROUND_TIME_MORNING) {
                 if(this.currentLevel == 3)
-                     ctx.drawImage(ASSET_MANAGER.getAsset(skyBoxTextures[0]), 0, 0, 896, 288 - 8, 0 - this.x, 0 - this.y, 896 * 2, (288 - 8) * 2 );
+                     ctx.drawImage(ASSET_MANAGER.getAsset(BACKGROUND_ASSET_MORNING), 0, 0, 896, 288 - 8, 0 - this.x, 0 - this.y, 896 * 2, (288 - 8) * 2 );
                 else if(this.currentLevel == 2)
-                    ctx.drawImage(ASSET_MANAGER.getAsset(skyBoxTextures[0]), 0, 288, 1520, 576 - 8, 0 - this.x, 0 - this.y, 1520 * 2, (576 - 8) * 2 );
+                    ctx.drawImage(ASSET_MANAGER.getAsset(BACKGROUND_ASSET_MORNING), 0, 288, 1520, 576 - 8, 0 - this.x, 0 - this.y, 1520 * 2, (576 - 8) * 2 );
                 }
-            else if(timeOfDay.dayTime < 135 ) {
+            else if(timeOfDay.dayTimeTicks < BACKGROUND_TIME_AFTERNOON) {
                 if(this.currentLevel == 3)
-                     ctx.drawImage(ASSET_MANAGER.getAsset(skyBoxTextures[1]), 0, 0, 896, 288 - 8, 0 - this.x, 0 - this.y, 896 * 2, (288 - 8) * 2 );
+                     ctx.drawImage(ASSET_MANAGER.getAsset(BACKGROUND_ASSET_AFTERNOON), 0, 0, 896, 288 - 8, 0 - this.x, 0 - this.y, 896 * 2, (288 - 8) * 2 );
                 else if(this.currentLevel == 2)
-                    ctx.drawImage(ASSET_MANAGER.getAsset(skyBoxTextures[1]), 0, 288, 1520, 576 - 8, 0 - this.x, 0 - this.y, 1520 * 2, (576 - 8) * 2 );
+                    ctx.drawImage(ASSET_MANAGER.getAsset(BACKGROUND_ASSET_AFTERNOON), 0, 288, 1520, 576 - 8, 0 - this.x, 0 - this.y, 1520 * 2, (576 - 8) * 2 );
                 }
-            else if(timeOfDay.dayTime < 150 ) {
+            else if(timeOfDay.dayTimeTicks < BACKGROUND_TIME_SUNSET) {
                 if(this.currentLevel == 3)
-                     ctx.drawImage(ASSET_MANAGER.getAsset(skyBoxTextures[2]), 0, 0, 896, 288 - 8, 0 - this.x, 0 - this.y, 896 * 2, (288 - 8) * 2 );
+                     ctx.drawImage(ASSET_MANAGER.getAsset(BACKGROUND_ASSET_SUNSET), 0, 0, 896, 288 - 8, 0 - this.x, 0 - this.y, 896 * 2, (288 - 8) * 2 );
                 else if(this.currentLevel == 2)
-                    ctx.drawImage(ASSET_MANAGER.getAsset(skyBoxTextures[2]), 0, 288, 1520, 576 - 8, 0 - this.x, 0 - this.y, 1520 * 2, (576 - 8) * 2 );
+                    ctx.drawImage(ASSET_MANAGER.getAsset(BACKGROUND_ASSET_SUNSET), 0, 288, 1520, 576 - 8, 0 - this.x, 0 - this.y, 1520 * 2, (576 - 8) * 2 );
                 }
             else {
                 if(this.currentLevel == 3)
-                     ctx.drawImage(ASSET_MANAGER.getAsset(skyBoxTextures[3]), 0, 0, 896, 288 - 8, 0 - this.x, 0 - this.y, 896 * 2, (288 - 8) * 2 );
+                     ctx.drawImage(ASSET_MANAGER.getAsset(BACKGROUND_ASSET_NIGHT), 0, 0, 896, 288 - 8, 0 - this.x, 0 - this.y, 896 * 2, (288 - 8) * 2 );
                 else if(this.currentLevel == 2)
-                    ctx.drawImage(ASSET_MANAGER.getAsset(skyBoxTextures[3]), 0, 288, 1520, 576 - 8, 0 - this.x, 0 - this.y, 1520 * 2, (576 - 8) * 2 );
+                    ctx.drawImage(ASSET_MANAGER.getAsset(BACKGROUND_ASSET_NIGHT), 0, 288, 1520, 576 - 8, 0 - this.x, 0 - this.y, 1520 * 2, (576 - 8) * 2 );
                 }
 
             }

@@ -1,15 +1,25 @@
 import { CONSTANTS } from "/js/Util.js";
 export default class Animator {
+    /**
+     * @param {integer} frameCount the number of frames in this animation
+     * @param {number} frameDuration the duration in seconds that this animation will play for
+     * @param {boolean} loop
+     */
     constructor(spritesheet, xStart, yStart, width, height, frameCount, frameDuration, framePadding, reverse, loop) {
-        Object.assign(this, {spritesheet, xStart, yStart, width, height, frameCount, frameDuration, framePadding, reverse, loop});
+        Object.assign(this, {spritesheet, xStart, yStart, width, height, framePadding, reverse});
 
         this.elapsedTime = 0;
+
+        this.frameCount = frameCount;
+        this.frameDuration = frameDuration;
         this.totalTime = frameCount * frameDuration;
+
+        this.loop = loop;
     };
 
     // draws the frame, pass the ctx, deltaTime (3rd parameter of draw()), the position and if it's flipped horizontally
-    drawFrame(tick, ctx, x, y, isFlipped, scale) {
-        this.elapsedTime += tick;
+    drawFrame(deltaTime, ctx, x, y, isFlipped, scale) {
+        this.elapsedTime += deltaTime;
 
         const theScale = scale;
         if (!scale) {
@@ -77,8 +87,8 @@ export default class Animator {
     }
 
     currentFrame() {
-        return Math.floor(this.elapsedTime / this.frameDuration)
-    };
+        return Math.min(Math.floor(this.elapsedTime / this.frameDuration), this.frameCount)
+    }
 
     isDone() {
         return (this.elapsedTime >= this.totalTime);

@@ -26,8 +26,9 @@ const INPUT_MAP = {
     "KeyC": "jump",
 };
 
-// the amount of time per engine tick
-const TICK_TIME = CONSTANTS.TICK_TIME;
+// the amount of time per engine tick. do not rely on this value; entities should count # of ticks for their timers, not irl seconds
+// this is only for internal engine update loop stuff
+const TICK_TIME = 1 / 60;
 
 // the amount of layers in the entity array
 const ENTITY_LAYER_COUNT = 8;

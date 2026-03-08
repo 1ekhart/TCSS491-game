@@ -1,5 +1,4 @@
 import Entity from "/js/AbstractClasses/Entity.js";
-import { CONSTANTS } from "/js/Util.js";
 
 export default class HitBox extends Entity{
     constructor(x, y, width, height, timer) {
@@ -43,7 +42,7 @@ export default class HitBox extends Entity{
     };
 
     decrementTimer() {
-        this.timer -= CONSTANTS.TICK_TIME;
+        this.timer -= 1;
     }
 
     update(engine) {}

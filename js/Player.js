@@ -5,7 +5,7 @@ import DialogueBox from "/js/GeneralUtils/DialogueBox.js";
 import HitBox from "./GeneralUtils/BoundingBox.js";
 import Inventory from "/js/Inventory.js";
 import MovingEntity from "/js/MovingEntity.js";
-import { CONSTANTS, decreaseToZero } from "/js/Util.js";
+import { CONSTANTS, decreaseToZero, secondsToTicks } from "/js/Util.js";
 import Customer from "/js/Customer.js";
 
 const floor = Math.floor;
@@ -14,10 +14,11 @@ const WALKING_SPEED = 6;
 const ACCELERATION = 1;
 const JUMPING_STRENGTH = -9.5;
 const GRAVITY = 0.6;
-const ATTACK_COOLDOWN = 0.3;
+const ATTACK_COOLDOWN = secondsToTicks(0.3);
 const MAX_HEALTH = 100;
-const InvincibilityDuration = 1.2
+const INVINCIBILITY_DURATION = secondsToTicks(1.2);
 const SQUAT_FRAMES = 3;
+
 export default class Player extends WorldEntity {
     constructor(x, y) {
         super();
@@ -37,8 +38,8 @@ export default class Player extends WorldEntity {
         this.animationState = "Idle"
         this.isRight = true;
         this.haltMovement = false;
-        this.attackTimer = ATTACK_COOLDOWN;
-        this.invincibilityFrame = 0;
+        this.attackCooldown = ATTACK_COOLDOWN;
+        this.invincibilityTicks = 0;
         this.attack = null;
         this.squatTimer = 0;
         this.bufferedJump = false;
@@ -50,23 +51,17 @@ export default class Player extends WorldEntity {
 
     loadAnimations() {
         this.animations = [];
-        this.idle = new Animator(ASSET_MANAGER.getAsset("/Assets/Player/IdleRun-Sheet.png"), 0, 0, 32, 32, 2, 1, 0, false, true);
-        this.animations["Idle"] = this.idle;
+        this.animations["Idle"] = new Animator(ASSET_MANAGER.getAsset("/Assets/Player/IdleRun-Sheet.png"), 0, 0, 32, 32, 2, 1, 0, false, true);
 
-        this.run = new Animator(ASSET_MANAGER.getAsset("/Assets/Player/IdleRun-Sheet.png"), 0, 32, 32, 32, 6, .25, 0, false, true);
-        this.animations["Run"] = this.run;
+        this.animations["Run"] = new Animator(ASSET_MANAGER.getAsset("/Assets/Player/IdleRun-Sheet.png"), 0, 32, 32, 32, 6, .25, 0, false, true);
 
-        this.idleAttack = new Animator(ASSET_MANAGER.getAsset("/Assets/Player/IdleRun-Sheet.png"), 0, 64, 32, 32, 6, .2, 0, false, false);
-        this.animations["IdleAttack"] = this.idleAttack;
+        this.animations["IdleAttack"] = new Animator(ASSET_MANAGER.getAsset("/Assets/Player/IdleRun-Sheet.png"), 0, 64, 32, 32, 6, .1, 0, false, false);
 
-        this.squat = new Animator(ASSET_MANAGER.getAsset("/Assets/Player/IdleRun-Sheet.png"), 0, 96, 32, 32, 1, 1, 0, false, true);
-        this.animations["Squat"] = this.squat;
+        this.animations["Squat"] = new Animator(ASSET_MANAGER.getAsset("/Assets/Player/IdleRun-Sheet.png"), 0, 96, 32, 32, 1, 1, 0, false, true);
 
-        this.jump = new Animator(ASSET_MANAGER.getAsset("/Assets/Player/IdleRun-Sheet.png"), 0, 128, 32, 32, 4, .25, 0, false, true);
-        this.animations["Jump"] = this.jump;
+        this.animations["Jump"] = new Animator(ASSET_MANAGER.getAsset("/Assets/Player/IdleRun-Sheet.png"), 0, 128, 32, 32, 4, .25, 0, false, true);
 
-        this.jumpAttack = new Animator(ASSET_MANAGER.getAsset("/Assets/Player/IdleRun-Sheet.png"), 0, 160, 32, 32, 6, .1, 0, false, false);
-        this.animations["AirAttack"] = this.jumpAttack;
+        this.animations["AirAttack"] = new Animator(ASSET_MANAGER.getAsset("/Assets/Player/IdleRun-Sheet.png"), 0, 160, 32, 32, 6, .1, 0, false, false);
     }
 
     setAnimationState(state) {
@@ -82,7 +77,7 @@ export default class Player extends WorldEntity {
             engine.addUIEntity(new DialogueBox(engine, "Ouch! You had passed out and a passing fairy brought you back home, but they stole a little money in return!"));
         }
         this.move(engine);
-        this.invincibilityFrame -= CONSTANTS.TICK_TIME;
+        this.invincibilityTicks -= 1;
         // harvesting crops, etc.
         if (engine.input.interact) {
             if (engine.entities[3]) {
@@ -108,7 +103,7 @@ export default class Player extends WorldEntity {
             }
         }
 
-        if (this.haltMovement == false && engine.click && this.attackTimer <= 0) {
+        if (this.haltMovement == false && engine.click && this.attackCooldown <= 0) {
             // attempt to use an item first instead of attacking
             if(this.inventory.getEquippedSlot() !== null && this.onGround) {
                 this.inventory.useItem(this.inventory.getEquippedSlot(), this, engine)
@@ -128,11 +123,11 @@ export default class Player extends WorldEntity {
 
         }
 
-        this.attackTimer -= CONSTANTS.TICK_TIME;
+        if(this.attackCooldown > 0) this.attackCooldown -= 1;
     }
 
     tryAttack() {
-        if (engine.click && this.attackTimer <= 0) {
+        if (engine.click && this.attackCooldown <= 0) {
             if (this.onGround) {
                 this.setAnimationState("IdleAttack")
             } else {
@@ -140,23 +135,20 @@ export default class Player extends WorldEntity {
             }
             this.haltMovement = true;
             this.squat = null;
-            this.attackTimer = ATTACK_COOLDOWN;
+            this.attackCooldown = ATTACK_COOLDOWN;
             if (this.onGround) { // spawn it with respect to width and height if facing right
                 this.attack = new BladeHitbox(this.isRight? this.x + this.width + 10 : this.x - 10, this.y - 10, 58, 58, ATTACK_COOLDOWN, this.isRight);
-                this.attackTimer = ATTACK_COOLDOWN;
             } else {
                 this.attack = new AerialBladeHitbox(this.isRight? this.x + this.width + 10: this.x - 10, this.y / this.height, 58, 32, ATTACK_COOLDOWN, this.isRight);
-                this.attackTimer = ATTACK_COOLDOWN * 3;
             }
             engine.addEntity(this.attack);
         }
     }
 
     reduceHealth(amt) {
-        if (this.invincibilityFrame > 0) {return;}
-        this.invincibilityFrame = InvincibilityDuration;
+        if (this.invincibilityTicks > 0) {return;}
+        this.invincibilityTicks = INVINCIBILITY_DURATION;
         this.health -= amt;
-        console.log("Health is now " + this.health)
     }
 
     /** @param {GameEngine} engine */
@@ -227,7 +219,7 @@ export default class Player extends WorldEntity {
         if (this.onGround && isOnAirBeforeCollision) { // when landing on the ground, handle landing
             this.squatTimer = SQUAT_FRAMES / 2;
             this.setAnimationState("Squat")
-            this.attackTimer = 0;
+            this.attackCooldown = 0;
             this.haltMovement = true;
             this.squat = true;
             if (engine.input.jump) {this.bufferedJump = true}
@@ -254,7 +246,7 @@ export default class Player extends WorldEntity {
                 !this.isRight, 2)
                 return;
             }
-            this.jump.drawFramePlain(ctx,
+            this.animations["Jump"].drawFramePlain(ctx,
                 (this.x - (20)) - engine.camera.x, floor(this.y) - (this.height) + (32) - floor(engine.camera.y),
                 2, this.getJumpFrame(), !this.isRight);
         } else {
@@ -270,7 +262,6 @@ export default class Player extends WorldEntity {
         } else {
             return Math.abs(this.yVelocity) <= Math.abs(JUMPING_STRENGTH * 3/4)? 2 : 3; // if the y velocity is high, then  do the freefall frame;
         }
-        return 2;
     }
 
     goDefaultState() {
@@ -289,7 +280,8 @@ class BladeHitbox extends HitBox {
             this.x -= width;
             this.facingLeftOffset = 5
         }
-        this.animation = new Animator(ASSET_MANAGER.getAsset("/Assets/Player/BladeEffect-Sheet.png"), 0, 0, 32, 32, 7, this.timer / 4, 0, false, false);
+        const animationTime = (this.timer / 4) / CONSTANTS.TICKS_PER_SECOND;
+        this.animation = new Animator(ASSET_MANAGER.getAsset("/Assets/Player/BladeEffect-Sheet.png"), 0, 0, 32, 32, 7, animationTime, 0, false, false);
     }
 
     update(engine) {
@@ -320,7 +312,8 @@ class BladeHitbox extends HitBox {
 class AerialBladeHitbox extends BladeHitbox  {
     constructor(x, y, width, height, timer, isFacingRight) {
         super(x, y, width, height, timer, isFacingRight);
-        this.animation = new Animator(ASSET_MANAGER.getAsset("/Assets/Player/BladeEffect-Sheet.png"), 0, 32, 32, 32, 7, this.timer / 4, 0, false, false);
+        const animationTime = (this.timer / 4) / CONSTANTS.TICKS_PER_SECOND;
+        this.animation = new Animator(ASSET_MANAGER.getAsset("/Assets/Player/BladeEffect-Sheet.png"), 0, 32, 32, 32, 7, animationTime, 0, false, false);
     }
 
     draw(ctx, engine, deltaTime) {
