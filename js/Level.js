@@ -478,7 +478,7 @@ export default class LevelManager {
         }
 
 
-        const monsterTile = 2;
+        const monsterTile = Math.floor(Math.random() * 4);
         this.sceneEntities.push(new Basan(this.engine, monsterTiles[monsterTile][0] * TILE_SIZE, monsterTiles[monsterTile][1] * TILE_SIZE));
         // this.sceneEntities.push(new Teleporter(this.engine, 16*TILE_SIZE, 16*TILE_SIZE, TILE_SIZE, TILE_SIZE, 1));
         this.sceneEntities.push(new HouseDoor(this.engine, 7*TILE_SIZE, 16*TILE_SIZE, true));
