@@ -131,7 +131,7 @@ export default class MovingEntity extends WorldEntity {
     }
 }
 
-const BASAN_ATTACK_LENGTH = secondsToTicks(1); // 1 second attack length
+const BASAN_ATTACK_LENGTH = secondsToTicks(0.6); // 1 second attack length
 const BASAN_ATTACK_COOLDOWN = secondsToTicks(2); // attack every 2 seconds
 const BASAN_MOVEMENT_TIMER_MAX = 200; // 3.33 seconds
 
@@ -149,17 +149,21 @@ export class Basan extends MovingEntity { // entity that should spawn a hitbox e
         this.animations = []
         this.animationState = "Idle"
         this.loadAnimation();
+        this.setAnimationState("Walk")
         this.isStopped = false;
     }
 
     loadAnimation() {
         this.animations = [];
-        this.idle = new Animator(ASSET_MANAGER.getAsset("/Assets/Entities/Basan-Sheet.png"), 0, 0, 32, 32, 6, .25, 0, false, true)
+        this.idle = new Animator(ASSET_MANAGER.getAsset("/Assets/Entities/Basan-Sheet.png"), 0, 0, 32, 32, 6, .12, 0, false, true)
         this.animations["Idle"] = this.idle;
+        this.walk = new Animator(ASSET_MANAGER.getAsset("/Assets/Entities/Basan-Sheet.png"), 0, 32, 32, 32, 6, .12, 0, false, true)
+        this.animations["Walk"] = this.walk;
     }
 
     setAnimationState(state) {
         this.animationState = state;
+        console.log("set state to " + state);
     }
 
     isClose(engine) {
@@ -182,12 +186,14 @@ export class Basan extends MovingEntity { // entity that should spawn a hitbox e
         if (level4[Math.floor(this.y/32) + 2][Math.floor(this.x/32)] == 0 && !wasMovingRight || level4[Math.floor(this.y/32) + 2][Math.ceil(this.x/32)] == 0 && wasMovingRight || level4[Math.floor(this.y/32) + 2][Math.floor(this.x/32)] == 3 && !wasMovingRight || level4[Math.floor(this.y/32) + 2][Math.ceil(this.x/32)] == 3 && wasMovingRight ) { // random chance to stay still
             this.xVelocity = wasMovingRight ? -2 : 2;
             this.isRight = wasMovingRight;
+            this.setAnimationState("Walk")
         }
 
         this.moveColliding(engine);
         if (this.xVelocity === 0 && !this.isStopped) {
             this.xVelocity = wasMovingRight ? -2 : 2;
             this.isRight = wasMovingRight;
+            this.setAnimationState("Walk")
             this.movementTimer = random(30, BASAN_MOVEMENT_TIMER_MAX);
         }
 
@@ -205,16 +211,19 @@ export class Basan extends MovingEntity { // entity that should spawn a hitbox e
                 this.xVelocity = 0;
                 this.isStopped = true;
                 this.movementTimer = random(BASAN_ATTACK_LENGTH * 1.2, BASAN_ATTACK_COOLDOWN);
+                this.setAnimationState("Idle")
             } else
             if (randomInt(2) == 1 && !this.isStopped) { // random chance to stay still
                 this.xVelocity = 0;
                 this.movementTimer = random(100, BASAN_MOVEMENT_TIMER_MAX);
                 this.isStopped = true;
+                this.setAnimationState("Idle")
             } else {
                 this.isStopped = false;
                 this.xVelocity = !this.isRight ? -2 : 2;
                 this.isRight = !this.isRight;
                 this.movementTimer = random(30, BASAN_MOVEMENT_TIMER_MAX);
+                this.setAnimationState("Walk")
             }
 
         }
