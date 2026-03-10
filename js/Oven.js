@@ -4,7 +4,8 @@ import OnScreenTextSystem from '/js/GeneralUtils/OnScreenText.js';
 import Player from '/js/Player.js';
 import Item from '/js/Item.js';
 import { randomIntRange, CONSTANTS } from '/js/Util.js';
-import { STATION_STATE } from '/js/Constants/cookingStationStates.js';
+import { STATION_STATE, STEP_TYPE } from '/js/Constants/cookingStationStates.js';
+import Animator from "/js/GeneralUtils/Animator.js";
 
 const idleColor = "#7393B3";
 const cookColor = "#36454F";
@@ -15,6 +16,7 @@ export default class Oven extends EntityInteractable {
         super();
         this.x = x;
         this.y = y;
+
         this.height = height;
         this.width = width;
         this.color = idleColor;
@@ -36,6 +38,9 @@ export default class Oven extends EntityInteractable {
         this.timer = new OnScreenTextSystem(this,this.x + (width / 2), this.y - (height / 4), "0:0" + Math.ceil((this.cookingTime - this.elapsedCook.toString(10) / 60), false));
         engine.addEntity(this.prompt);
         engine.addEntity(this.timer);
+
+        this.displayingUI = false;
+        this.sprite = new Animator(ASSET_MANAGER.getAsset("/Assets/Entities/Oven.png"), 0, 0, 16, 32, 1, 1, 0, false, false);
     }
 
     /** @param {GameEngine} engine */
@@ -75,7 +80,7 @@ export default class Oven extends EntityInteractable {
                 this.toggleState = false;
                 this.toggleable = true;
 
-                this.station.finishCooking();
+                this.station.completeStep();
                 this.color = doneColor;
 
                 console.log("Cooking finished, ready to assemble");
@@ -89,35 +94,20 @@ export default class Oven extends EntityInteractable {
 
     /** @param {Player} player */
     interact(player) {
-        /*
-        if (this.toggleable == true && this.isCooking == false) {
-            this.toggleable = false;
-            if (this.toggleState == true) {
-                this.unToggleEntity();
-        //when we have active slots we'll *try* and remove the active item. For now the stove is eating whatever is in slot one
-            } else if(player.inventory.removeItem(0) == true) {
-                this.toggleEntity(player);
+        if (!this.toggleable) return;
+        if (this.station.canHandleStep(STEP_TYPE.COOK)) {
+                this.toggleable = false;
+                this.toggleState = true;
                 this.isCooking = true;
-            }
-            else {
-                console.log("You can't cook air!");
-            }
-        }*/
-       if (!this.toggleable) return;
+                this.elapsedCook = 0;
 
-       if (this.station.canStartCooking()) {
-            this.toggleable = false;
-            this.toggleState = true;
-            this.isCooking = true;
-            this.elapsedCook = 0;
+                this.cookingTime = this.station.getCurrentStepDuration(300);
 
-            this.cookingTime = this.station.currentOrder.cookTime || 300;
+                this.station.beginStep(STEP_TYPE.COOK);
+                this.color = cookColor;
 
-            this.station.startCooking();
-            this.color = cookColor;
-
-            console.log("Oven started cooking", this.station.currentOrder.id);
-       }
+                console.log("Oven started cooking", this.station.currentOrder.id);
+        }
     }
 
     toggleEntity() {
@@ -146,7 +136,7 @@ export default class Oven extends EntityInteractable {
 
     /**
      * @param {CanvasRenderingContext2D} ctx
-     * @param {GameEngine} enginea
+     * @param {GameEngine} engine
      */
     draw(ctx, engine) {
         // draw *something* if a subclass doesn't correctly draw anything

@@ -33,6 +33,32 @@ export default class CustomerManager {
         }
     }
 
+    buildIngredientArray(recipeID) {
+        const recipe = getRecipeData(recipeID).ingredients;
+        const finalIngredients = [];
+
+        for (const key in recipe) {
+            const ingredientSlot = recipe[key];
+
+            if (ingredientSlot.hasSpecificIngredient) {
+                const eligible = ingredientSlot.eligibleIngredients
+                finalIngredients.push(eligible[randomIntRange(eligible.length, 0)]);
+            } else {
+                if (ingredientSlot.category === "Vegetable") {
+                    const category = getCategoryVegetables();
+                    finalIngredients.push(category[randomIntRange(category.length, 0)].itemID);
+                } else if (ingredientSlot.category === "Meat") {
+                    const category = getCategoryMeats();
+                    finalIngredients.push(category[randomIntRange(category.length, 0)].itemID);
+                } else if (ingredientSlot.category === "Grain") {
+                    const category = getCategoryGrains();
+                    finalIngredients.push(category[randomIntRange(category.length, 0)].itemID);
+                }
+            }
+        }
+        return finalIngredients;
+    }
+
     spawnCustomer(spotIndex) {
         
         const exisitng = this.activeCustomers.get(spotIndex);
@@ -42,15 +68,18 @@ export default class CustomerManager {
         }
 
         const spot = this.spots[spotIndex];
-        // const order = RECIPES.Burger; // update later to handle different orders
         let recipeID = this.selectRandomDish();
+        /**
         const randomOrder = {
             recipeID: recipeID,
             specificIngredient: this.generateRandomRecipe(recipeID)
-        }
-        if (CONSTANTS.DEBUG) {
-            console.log(randomOrder);
-        }
+        }*/
+        const ingredientArray = this.buildIngredientArray(recipeID);
+        const randomOrder = {
+            recipeID: recipeID,
+            ingredients: ingredientArray
+        };
+        console.log(randomOrder);
 
         const customer = new Customer (spot.x, spot.y, 16, 32, randomOrder, this.engine);
 

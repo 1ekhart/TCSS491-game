@@ -341,9 +341,11 @@ export class SelectedIngredientsArray extends Entity {
 const cookingStationBGColor = "#ae885a98";
 const maximumSelectedIngredients = 6;
 export default class CookingStationUI extends Entity {
-    constructor(engine, parent) {
+    constructor(engine, parent, station) {
         super();
         this.engine = engine;
+        this.parent = parent;
+        this.station = station;
         this.x = (CONSTANTS.CANVAS_WIDTH / CONSTANTS.SCALE) / (12) // take up 2/3 of the screen;
         this.y = (CONSTANTS.CANVAS_WIDTH / CONSTANTS.SCALE) / (16) // take up take up 7/8 of the screen height;
         this.width = this.x * (10);
@@ -356,7 +358,8 @@ export default class CookingStationUI extends Entity {
             this.nestedElements.forEach(function (entity) {
                 entity.removeFromWorld = true;
             })
-            parent.displaying = false;
+            this.parent.displayingUI = false;
+            //parent.displaying = false;
             that.engine.getClock().resumeTime();
 
             that.engine.entities[7].forEach(function (entity) {
@@ -422,8 +425,6 @@ export default class CookingStationUI extends Entity {
         this.recipeBar.checkIngredients(this.ingredientSelection.getIngredientArray());
     }
 
-
-
     initializeRecipes() { // recipe panel should take up the right 1/3 of the UI menu
         const recipeBarWidth = this.width / 3; // take up 1/3
         this.recipeBar = new RecipePanel(this, this.engine, this.x + this.width - recipeBarWidth, this.y, recipeBarWidth,this.height,  "rgba(114, 78, 36, 0.91)")
@@ -447,6 +448,18 @@ export default class CookingStationUI extends Entity {
         if (ingredientList) {
             this.ingredientList = ingredientList;
         }
+    }
+
+    closeUI() {
+        this.removeFromWorld = true;
+        if (this.recipeBar) this.recipeBar.destroy();
+        this.nestedElements.forEach(entity => entity.removeFromWorld = true);
+        //this.displayingUI = false;
+        this.parent.displayingUI = false;
+
+        this.engine.entities[7].forEach(entity => {
+            if (entity instanceof InventoryUI) entity.setVisibility(true);
+        });
     }
 
     update() {

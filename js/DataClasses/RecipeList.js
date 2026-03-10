@@ -21,7 +21,13 @@ const RiceBowl = {
             hasSpecificIngredient: false,
             category: "Meat"
         }
-    }
+    },
+    steps: [
+        { type: "ingredients"},
+        { type: "chop", duration: 60},
+        { type: "cook", duration: 120},
+        { type: "assemble", duration: 60}
+    ]
 }
 
 const Flour = { // joke/prototype item do not add!!
@@ -71,7 +77,13 @@ const Burger = {
             hasSpecificIngredient: false,
             category: "Vegetable"
         }
-    }
+    },
+    steps: [
+        { type: "ingredients"},
+        { type: "cook", duration: 120},
+        { type: "chop", duration: 120},
+        { type: "assemble", duration: 60}
+    ]
 }
 
 const Croquettes = {
@@ -86,7 +98,14 @@ const Croquettes = {
             hasSpecificIngredient: false,
             category: "Meat"
         }
-    }
+    },
+    steps: [
+        { type: "ingredients"},
+        { type: "chop", duration: 120},
+        { type: "mix", duration: 60},
+        { type: "cook", duration: 120},
+        { type: "assemble", duration: 60}
+    ]
 }
 
 const FriedPumpkin = {
@@ -101,7 +120,13 @@ const FriedPumpkin = {
             hasSpecificIngredient: true,
             eligibleIngredients: [7]
         }
-    }
+    },
+    steps: [
+        { type: "ingredients"},
+        { type: "mix", duration: 60},
+        { type: "cook", duration: 120},
+        { type: "assemble", duration: 60}
+    ]
 }
 
 export const recipeList = {

@@ -25,6 +25,7 @@ ASSET_MANAGER.queueDownload("/Assets/Entities/BasanFireAttack-Sheet.png")
 ASSET_MANAGER.queueDownload("/Assets/Entities/Oven.png")
 ASSET_MANAGER.queueDownload("/Assets/Entities/Fryer.png")
 ASSET_MANAGER.queueDownload("/Assets/Entities/Door-Sheet.png")
+ASSET_MANAGER.queueDownload("/Assets/Entities/Customers.png")
 
 //download from world items folder
 ASSET_MANAGER.queueDownload("/Assets/WorldItems/grey-pot.png")
@@ -65,6 +66,7 @@ ASSET_MANAGER.queueDownload("/Assets/Icons/PumpkinIcon.png")
 
 
 
+ASSET_MANAGER.queueDownload("/Assets/Icons/StationArrow.png")
 
 
 

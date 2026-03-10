@@ -1,8 +1,10 @@
 import EntityInteractable from "/js/AbstractClasses/EntityInteractable.js";
 import OnScreenTextSystem from "/js/GeneralUtils/OnScreenText.js";
 import Player from "/js/Player.js";
-import { CONSTANTS } from "/js/Util.js";
-import { STATION_STATE } from "/js/Constants/cookingStationStates.js";
+import { STATION_STATE, STEP_TYPE } from "/js/Constants/cookingStationStates.js";
+import { getItemData } from "/js/DataClasses/ItemList.js";
+import { getRecipeData } from "/js/DataClasses/RecipeList.js";
+import CookingStationUI from '/js/GeneralUtils/CookingUI.js';
 
 const idleColor = "#7D7F7C";
 const assemblingColor = "#FFA500";
@@ -29,6 +31,7 @@ export default class PrepStation extends EntityInteractable {
 
         this.ingredients = [];
         this.currentIngredientIndex = 0;
+        this.assemblyStepsCompleted = 0;
         this.elapsedTime = 0;
 
         engine.addEntity(this.prompt);
@@ -37,11 +40,11 @@ export default class PrepStation extends EntityInteractable {
     }
 
     startAssemblyForOrder(order) {
-        this.ingredients = order.ingredients;
+        this.ingredients = order.ingredients || [];
         this.currentIngredientIndex = 0;
         this.elapsedTime = 0;
 
-        this.assemblyTime = order.assembleTime || 240;
+        this.assemblyTime = order.assembleTime || 60;
         this.station.startAssembly(this.ingredients.length);
     }
 
@@ -64,9 +67,11 @@ export default class PrepStation extends EntityInteractable {
             this.prompt.hideText();
             this.timer.showText();
 
-            const currentIngredient = this.ingredients[this.currentIngredientIndex];
+            const currentIngredientID = this.ingredients[this.currentIngredientIndex];
+            const currentIngredientData = getItemData(currentIngredientID);
+            const currentIngredientName = currentIngredientData ? currentIngredientData.name : "Unknown";
             this.ingredientText.showText();
-            this.ingredientText.changeText(currentIngredient);
+            this.ingredientText.changeText(currentIngredientName);
 
             this.elapsedTime++;
             let remaining = Math.max(0, this.assemblyTime - this.elapsedTime);
@@ -74,10 +79,12 @@ export default class PrepStation extends EntityInteractable {
 
             if (this.elapsedTime >= this.assemblyTime) {
                 this.elapsedTime = 0;
-                this.station.completeAssemblyStep();
+                //this.station.completeAssemblyStep();
+                this.assemblyStepsCompleted++;
                 this.currentIngredientIndex++;
 
-               if (this.station.isComplete()) {
+               if (this.assemblyStepsCompleted >= this.ingredients.length) {
+                this.station.completeStep();
                 this.toggleState = false;
                 this.toggleable = true;
                 this.color = doneColor;
@@ -89,8 +96,21 @@ export default class PrepStation extends EntityInteractable {
     }
 
     interact(player) {
+        if (this.station.canHandleStep(STEP_TYPE.INGREDIENTS)) {
+            // prevent multiple UI instances
+            if (!this.displayingUI) {
+                this.displayingUI = true;
+                this.cookingUI = new CookingStationUI(this.engine, this, this.station);
+                this.engine.addEntity(this.cookingUI, 4);
+            }
+            return;
+        }
+        
         if (this.station.isComplete()) {
-            const success = player.inventory.addItem({ itemID: this.station.currentOrder.id, quantity: 1});
+            const dishItemID = getRecipeData(this.station.currentOrder.recipeID).itemID;
+            //const dishIngredients = this.station.currentOrder.ingredients;
+            const dishIngredients = this.station.ingredients;
+            const success = player.inventory.addItem({ itemID: dishItemID, quantity: 1, isDish: true, ingredients: dishIngredients});
 
             if (!success) {
                 console.log("Inventory is full!");
@@ -105,15 +125,17 @@ export default class PrepStation extends EntityInteractable {
             this.prompt.changeText("Press E to Assemble");
             return;
         }
-        if (this.toggleable && this.station.canStartAssembly()) {
+        if (this.toggleable && this.station.canHandleStep(STEP_TYPE.ASSEMBLE)) {
             this.toggleState = true;
             this.color = assemblingColor;
 
-            this.ingredients = this.station.ingredients;
+            this.ingredients = this.station.ingredients || [];
             this.currentIngredientIndex = 0;
-            this.station.startAssembly(this.ingredients.length);
+            this.assemblyStepsCompleted = 0;
+            this.assemblyTime = this.station.getCurrentStepDuration(240);
+            this.station.beginStep(STEP_TYPE.ASSEMBLE);
         }
-        if (!this.station.canStartAssembly() && this.station.state !== STATION_STATE.ASSEMBLING) {
+        if (!this.station.canHandleStep(STEP_TYPE.ASSEMBLE)) {
             console.log("Cannot start assembling yet!");
         }
     }

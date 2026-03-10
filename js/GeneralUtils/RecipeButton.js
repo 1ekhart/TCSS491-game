@@ -3,6 +3,7 @@ import { getRecipeData } from "../DataClasses/RecipeList.js";
 import Animator from "./Animator.js";
 import Entity from "/js/AbstractClasses/Entity.js";
 import { CONSTANTS } from "/js/Util.js";
+import { STATION_STATE } from "/js/Constants/cookingStationStates.js";
 
 const backgroundColor = "rgb(162, 118, 81)"
 const backgroundColorTransparent = "rgba(162, 117, 81, 0.25)"
@@ -216,6 +217,13 @@ export default class RecipeButton { // like button but with some added features
     }
 
     addRecipeToPlayer(engine) {
+        console.log("=== FINAL STATION CHECK ===");
+        console.log("Station expects:", this.parent.parent.station.currentOrder.ingredients);
+        console.log("Player selected:", this.requestedIngredients);
+        if (!this.parent.parent.station.hasExactIngredients(this.requestedIngredients)) {
+            console.log("Selected ingredients do not match the stations order!");
+            return;
+        }
         const inventory = engine.getPlayer().inventory;
         const that = this;
         for (const ingredientID in this.requestedIngredients) {
@@ -230,13 +238,21 @@ export default class RecipeButton { // like button but with some added features
                 return;
             }
         }
+        /*
         inventory.addItem({
             itemID: this.recipeItemData.itemID,
             quantity: 1,
             isDish: true,
             ingredients: this.requestedIngredients.slice()
-        });
+        });*/
+
+        this.parent.parent.station.supplyIngredients(this.requestedIngredients);
+
         that.parent.refreshIngredientData();
+
+        if (that.parent.parent) {
+            that.parent.parent.closeUI();
+        }
     }
 
 

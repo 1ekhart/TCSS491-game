@@ -19,4 +19,9 @@ export default class CookingStationManager {
     getStationById(id) {
         return this.stations.find(s => s.id === id);
     }
+
+    resetAllStations() {
+        this.stations.forEach(station => station.reset());
+        console.log("All cooking station have been reset.");
+    }
 }

@@ -3,6 +3,12 @@ import Interactable, { BedroomDoor, HouseDoor } from './Interactable.js';
 import InGameClock from '/js/InGameClock.js';
 import PottedPlant from '/js/PottedPlant.js';
 import Teleporter from '/js/Teleporter.js';
+import Oven from "/js/Oven.js";
+import PrepStation from "/js/PrepStation.js";
+import ChoppingStation from "/js/ChoppingStation.js";
+import MixingStation from '/js/MixingStation.js';
+import Customer from '/js/Customer.js';
+import { RECIPES } from '/js/Data/Recipes.js';
 import { CONSTANTS, secondsToTicks } from '/js/Util.js';
 import Button from '/js/AbstractClasses/Button.js';
 import InventoryUI from '/js/InventoryUI.js';
@@ -15,6 +21,10 @@ import StationPlaceholder from '/js/StationPlaceholder.js';
 import CustomerManager from '/js/CustomerManager.js';
 import Item from "/js/Item.js";
 import MarketPlaceUI from '/js/MarketplaceUI.js';
+import { getRecipeData } from '/js/DataClasses/RecipeList.js';
+import StationIndicator from '/js/StationIndicator.js';
+import { STEP_TYPE } from '/js/Constants/cookingStationStates.js';
+import { createStationMap } from '/js/StationIndicator.js';
 import Cursor from '/js/GeneralUtils/Cursor.js';
 
 // size of a tile in screen pixels
@@ -553,11 +563,16 @@ export default class LevelManager {
     loadLevelInside() {
         this.currentLevel = 3;
         this.customerManager.setActive(true);
+        const stationManager = this.engine.stationManager;
+
         if (this.engine.getClock().isCookingMode) {
+
             this.customerManager.reset();
+            stationManager.resetAllStations();
             this.customerManager.setActive(true);
         } else {
             this.customerManager.setActive(false);
+            stationManager.resetAllStations();
         }
 
         this.sceneEntities.forEach(function (entity) {
@@ -567,7 +582,36 @@ export default class LevelManager {
         this.y = 0; // force camera to stop at bottom of level
 
         this.sceneEntities = [];
-        this.sceneEntities.push(new StationPlaceholder(this.engine, 25 * TILE_SIZE, 16*TILE_SIZE, TILE_SIZE,TILE_SIZE));
+        //this.sceneEntities.push(new StationPlaceholder(this.engine, 25 * TILE_SIZE, 16*TILE_SIZE, TILE_SIZE,TILE_SIZE));
+
+        // cooking station 1
+        const prepStation1 = new PrepStation(22 * TILE_SIZE, 16 * TILE_SIZE, TILE_SIZE, TILE_SIZE, stationManager.getStationById("1"), this.engine);
+        const oven1 = new Oven(23.5 * TILE_SIZE - .5 * TILE_SIZE, 16 * TILE_SIZE - .5 * TILE_SIZE, 64, 64, stationManager.getStationById("1"),this.engine);
+        const choppingStation1 = new ChoppingStation(25 * TILE_SIZE - .5 * TILE_SIZE, 16 * TILE_SIZE - .5 * TILE_SIZE, 64, 64, stationManager.getStationById("1"),this.engine);
+        const mixingStation1 = new MixingStation(26.5 * TILE_SIZE - .5 * TILE_SIZE, 16 * TILE_SIZE - .5 * TILE_SIZE, 64, 64, stationManager.getStationById("1"),this.engine);
+
+        // cooking station 2
+        const prepStation2 = new PrepStation(33 * TILE_SIZE, 16 * TILE_SIZE, TILE_SIZE, TILE_SIZE, stationManager.getStationById("2"), this.engine);
+        const oven2 = new Oven(34.5 * TILE_SIZE - .5 * TILE_SIZE, 16 * TILE_SIZE - .5 * TILE_SIZE, 64, 64, stationManager.getStationById("2"),this.engine);
+        const choppingStation2 = new ChoppingStation(36 * TILE_SIZE - .5 * TILE_SIZE, 16 * TILE_SIZE - .5 * TILE_SIZE, 64, 64, stationManager.getStationById("2"),this.engine);
+        const mixingStation2 = new MixingStation(37.5 * TILE_SIZE - .5 * TILE_SIZE, 16 * TILE_SIZE - .5 * TILE_SIZE, 64, 64, stationManager.getStationById("2"),this.engine);
+        
+        const stationMap1 = createStationMap(prepStation1, oven1, choppingStation1, mixingStation1);
+        const stationMap2 = createStationMap(prepStation2, oven2, choppingStation2, mixingStation2);
+        const indicator1 = new StationIndicator(stationManager.getStationById("1"), stationMap1, this.engine);
+        const indicator2 = new StationIndicator(stationManager.getStationById("2"), stationMap2, this.engine);
+        this.sceneEntities.push(prepStation1);
+        this.sceneEntities.push(oven1);
+        this.sceneEntities.push(choppingStation1);
+        this.sceneEntities.push(mixingStation1);
+        this.sceneEntities.push(indicator1);
+
+        this.sceneEntities.push(prepStation2);
+        this.sceneEntities.push(oven2);
+        this.sceneEntities.push(choppingStation2);
+        this.sceneEntities.push(mixingStation2);
+        this.sceneEntities.push(indicator2);
+
         this.sceneEntities.push(new BedroomDoor(30 * TILE_SIZE, 16*TILE_SIZE, this.engine));
         this.sceneEntities.push(new HouseDoor(this.engine, 42*TILE_SIZE, 16*TILE_SIZE, false));
 
