@@ -204,10 +204,10 @@ export default class GameEngine {
         return this.cursor;
     }
 
-    // signals which mouse sprite to change to. 0 is a normal sprite, while 1 is a pointer sprite.
-    /** @param {Number} signal */
-    setMouseSignal(signal) {
-       this.cursor.setSprite(signal);
+    // signals which mouse sprite to change to.
+    /** @param {"pointer"|"default"} type */
+    setMouseSignal(type) {
+       this.ctx.canvas.className = type
     }
 
     // the in-game clock may also need to be accessed by many other entities who use logic that's virtually timed.

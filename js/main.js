@@ -2,9 +2,6 @@ import GameEngine from "/js/GameEngine.js";
 import AssetManager from "/js/AssetManager.js";
 import Level from "/js/Level.js";
 import Player from "/js/Player.js";
-import CollisionTester from "/js/CollisionTester.js";
-import InGameClock from "/js/InGameClock.js";
-import InventoryUI from "/js/InventoryUI.js";
 import { CONSTANTS } from "/js/Util.js";
 import Cursor from "/js/GeneralUtils/Cursor.js";
 
@@ -15,7 +12,6 @@ const ASSET_MANAGER = new AssetManager();
 //download from player folder
 ASSET_MANAGER.queueDownload("/Assets/Player/IdleRun-Sheet.png")
 ASSET_MANAGER.queueDownload("/Assets/Player/InGameClock-Sheet.png")
-ASSET_MANAGER.queueDownload("/Assets/Player/Cursor-Sheet.png")
 ASSET_MANAGER.queueDownload("/Assets/Player/BladeEffect-Sheet.png")
 
 //download from the entities folder
@@ -91,8 +87,6 @@ ASSET_MANAGER.downloadAll(() => {
 	ctx.imageSmoothingEnabled = false;
     ctx.font = "12px monospace";
     ctx.scale(CONSTANTS.SCALE, CONSTANTS.SCALE);
-    canvas.style.cursor = 'none';
-    canvas.style.backgroundColor = "rgb(116, 127, 142)"
     gameEngine.init(ctx);
 
     const player = new Player(48, 32);

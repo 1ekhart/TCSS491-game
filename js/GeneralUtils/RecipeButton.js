@@ -193,7 +193,7 @@ export default class RecipeButton { // like button but with some added features
             y >= this.y && y <= this.y + this.height) {
             if (!this.hovered && this.isOpaque) {
                 this.hovered = true;
-                engine.setMouseSignal(1);
+                engine.setMouseSignal("pointer");
                 this.parent.setSelectedElement(this.dishName);
                 this.parent.setSelectedIngredients(this.ingredientListString);
             } else if (!this.hovered){
@@ -203,14 +203,14 @@ export default class RecipeButton { // like button but with some added features
             if (engine.input.click && this.isOpaque) {
                 console.log("JUST CLICKED")
                 this.addRecipeToPlayer(engine);
-                engine.setMouseSignal(0);
+                engine.setMouseSignal("default");
                 engine.getCursor().hideText();
                 engine.input.click = false;
             }
         } else if (this.hovered) {
             this.hovered = false;
             engine.getCursor().hideText()
-            engine.setMouseSignal(0);
+            engine.setMouseSignal("default");
             this.parent.setSelectedElement("");
             this.parent.setSelectedIngredients("");
         }

@@ -66,16 +66,16 @@ export default class Button {
             y >= this.y && y <= this.y + this.height) {
             if (!this.hovered) {
                 this.hovered = true;
-                engine.setMouseSignal(1);
+                engine.setMouseSignal("pointer");
             }
             if (engine.input.click) {
                 this.callbackFunction();
-                engine.setMouseSignal(0);
+                engine.setMouseSignal("default");
                 engine.input.click = false;
             }
         } else if (this.hovered) {
             this.hovered = false;
-            engine.setMouseSignal(0);
+            engine.setMouseSignal("default");
         }
     }
 

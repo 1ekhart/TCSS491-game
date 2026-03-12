@@ -19,10 +19,21 @@
         align-items: center;
         color:rgb(220, 221, 237)
     }
+    #gameWorld {
+        background-color: rgb(116, 127, 142);
+        border: 1px solid black;
+        image-rendering: pixelated;
+    }
+    #gameWorld.default {
+        cursor: url("/Assets/Icons/CursorDefault.png"), auto;
+    }
+    #gameWorld.pointer {
+        cursor: url("/Assets/Icons/CursorPointer.png"), pointer;
+    }
 </style>
 <body>
     <div>
-        <canvas id="gameWorld" width="1024" height="768" style="background: white; border: 1px solid black; image-rendering: pixelated;" tabindex="0" autofocus></canvas>
+        <canvas id="gameWorld" class="default" width="1024" height="768" tabindex="0" autofocus></canvas>
     </div>
 </body>
 </html>

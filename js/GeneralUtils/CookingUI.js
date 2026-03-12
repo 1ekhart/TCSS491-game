@@ -169,22 +169,22 @@ export class inventorySelection extends Entity {
             // y >= this.y && y <= this.y + this.height) {
             //     if (!this.isHovered) {
             //         this.isHovered = true;
-            //         engine.setMouseSignal(1);
+            //         engine.setMouseSignal("pointer");
             //     }
             // } else if (this.isHovered){
             //     this.isHovered = false;
-            //     engine.setMouseSignal(0);
+            //     engine.setMouseSignal("default");
             // }
             const slotIndex = this.getSlotIndex(x, y);
             if (slotIndex !== null && this.playerInventory.slots[slotIndex] != null) {
                 if (!this.isHovered) {
                     this.isHovered = true;
-                    engine.setMouseSignal(1);
+                    engine.setMouseSignal("pointer");
                     engine.getCursor().showText(this.getSlotName(slotIndex));
                 }
             } else if (this.isHovered) {
                 this.isHovered = false;
-                engine.setMouseSignal(0);
+                engine.setMouseSignal("default");
                 engine.getCursor().hideText();
             }
 

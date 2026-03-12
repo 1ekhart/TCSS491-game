@@ -52,11 +52,11 @@ export default class InventoryUI {
             y >= this.backpackButtonY && y <= this.backpackButtonY + this.backpackButtonSize) {
                 if (!this.isHoveredBackpackButton) {
                     this.isHoveredBackpackButton = true;
-                    engine.setMouseSignal(1);
+                    engine.setMouseSignal("pointer");
                 }
             } else if (this.isHoveredBackpackButton) {
                 this.isHoveredBackpackButton = false;
-                engine.setMouseSignal(0);
+                engine.setMouseSignal("default");
             }
 
             if (engine.mouseDown) this.handleMouseDown(engine.mouseDown);
@@ -73,7 +73,7 @@ export default class InventoryUI {
         if (slotData.isDish) {
             let ingredientList = slotData.itemData.name + " (";
             for (let i = 0; i < slotData.ingredients.length - 1; i++) {
-                ingredientList += getItemData(slotData.ingredients[i]).name + ", " 
+                ingredientList += getItemData(slotData.ingredients[i]).name + ", "
             }
             ingredientList += getItemData(slotData.ingredients[slotData.ingredients.length - 1]).name + ")"
             return ingredientList;
@@ -156,12 +156,12 @@ export default class InventoryUI {
         if (slotIndex !== null) {
             if (!this.isHovered && this.player.inventory.slots[slotIndex] !== null) {
             this.isHovered = true;
-            engine.setMouseSignal(1);
+            engine.setMouseSignal("pointer");
             engine.getCursor().showText(this.getSlotName(slotIndex));
         }
         } else if (this.isHovered) {
             this.isHovered = false;
-            engine.setMouseSignal(0);
+            engine.setMouseSignal("default");
             engine.getCursor().hideText();
         }
         if (!this.mouseDownPos || this.draggedSlotIndex === null) return;
@@ -220,8 +220,8 @@ export default class InventoryUI {
         this.ctx.fillRect(this.backpackButtonX/2 + CoinIconWidth + 5, this.healthInfoY-HealthBarHeight, this.maxHealthRect, HealthBarHeight);
         this.ctx.fillStyle = "rgb(228, 78, 95)"
         this.ctx.fillRect(this.backpackButtonX/2 + CoinIconWidth + 5, this.healthInfoY-HealthBarHeight, this.maxHealthRect * (this.player.health / this.player.maxHealth), HealthBarHeight);
-        
-        
+
+
         // backpack
         if (this.player.inventory.backpackOpen) {
             const panelWidth = this.backpackCols * (this.slotSize + this.padding) + this.padding;
@@ -251,12 +251,12 @@ export default class InventoryUI {
                 if (!slot.itemData) {
                     slot.itemData = getItemData(slot.itemID);
                     if (slot.itemData) {
-                    slot.sprite = new Animator(ASSET_MANAGER.getAsset(slot.itemData.assetName), 
+                    slot.sprite = new Animator(ASSET_MANAGER.getAsset(slot.itemData.assetName),
                     slot.itemData.spriteX, slot.itemData.spriteY, slot.itemData.width, slot.itemData.height, 1, 1, 0);
                     }
                 }
                 if (slot.itemData) {
-                    if (!slot.sprite.drawFramePlain) {slot.sprite = new Animator(ASSET_MANAGER.getAsset(slot.itemData.assetName), 
+                    if (!slot.sprite.drawFramePlain) {slot.sprite = new Animator(ASSET_MANAGER.getAsset(slot.itemData.assetName),
                         slot.itemData.spriteX, slot.itemData.spriteY, slot.itemData.width, slot.itemData.height, 1, 1, 0);}
                     slot.sprite.drawFramePlain(this.ctx, x, y, slot.itemData.scale * (this.slotSize / slot.itemData.width));
                 } else {
@@ -294,12 +294,12 @@ export default class InventoryUI {
                 if (!slot.itemData) {
                     slot.itemData = getItemData(slot.itemID);
                     if (slot.itemData) {
-                        slot.sprite = new Animator(ASSET_MANAGER.getAsset(slot.itemData.assetName), 
+                        slot.sprite = new Animator(ASSET_MANAGER.getAsset(slot.itemData.assetName),
                         slot.itemData.spriteX, slot.itemData.spriteY, slot.itemData.width, slot.itemData.height, 1, 1, 0);
                     }
                 }
                 if (slot.itemData) {
-                    if (!slot.sprite.drawFramePlain) {slot.sprite = new Animator(ASSET_MANAGER.getAsset(slot.itemData.assetName), 
+                    if (!slot.sprite.drawFramePlain) {slot.sprite = new Animator(ASSET_MANAGER.getAsset(slot.itemData.assetName),
                         slot.itemData.spriteX, slot.itemData.spriteY, slot.itemData.width, slot.itemData.height, 1, 1, 0);}
                     slot.sprite.drawFramePlain(this.ctx, x, y, slot.itemData.scale * (this.slotSize / slot.itemData.width));
                 } else {
