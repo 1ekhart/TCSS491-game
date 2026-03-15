@@ -65,12 +65,12 @@ const BACKGROUND_ASSET_NIGHT = "/Assets/WorldTiles/NightBG.png"
 const BACKGROUND_TIME_MORNING = secondsToTicks(82.5);
 const BACKGROUND_TIME_AFTERNOON = secondsToTicks(135);
 const BACKGROUND_TIME_SUNSET = secondsToTicks(150);
-
+//24 tiles 0-8 are underground. 
 const validTiles = [
     [80, 34],
     [86, 34],
-    [80, 26],
-    [83, 26],
+    [82, 26],
+    [84, 26],
     [80, 20],
     [75, 20],
     [70, 25],
@@ -90,11 +90,10 @@ const validTiles = [
     [45, 5],
     [44, 5],
     [46, 16],
-    [46, 20]
+    [48, 16]
 ]
 
 const monsterTiles = [
-    [80, 33],
     [80, 1],
     [80, 10],
     [46, 4],
@@ -550,7 +549,7 @@ export default class LevelManager {
         }
 
 
-        const monsterTile = Math.floor(Math.random() * 4);
+        const monsterTile = Math.floor(Math.random() * 3);
         this.sceneEntities.push(new Basan(this.engine, monsterTiles[monsterTile][0] * TILE_SIZE, monsterTiles[monsterTile][1] * TILE_SIZE));
         // this.sceneEntities.push(new Teleporter(this.engine, 16*TILE_SIZE, 16*TILE_SIZE, TILE_SIZE, TILE_SIZE, 1));
         this.sceneEntities.push(new HouseDoor(this.engine, 7*TILE_SIZE, 16*TILE_SIZE, true));
