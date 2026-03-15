@@ -18,6 +18,8 @@ ASSET_MANAGER.queueDownload("/Assets/Player/BladeEffect-Sheet.png")
 ASSET_MANAGER.queueDownload("/Assets/Entities/Basan-Sheet.png")
 ASSET_MANAGER.queueDownload("/Assets/Entities/BasanFireAttack-Sheet.png")
 
+ASSET_MANAGER.queueDownload("/Assets/Entities/Dragon-Sheet.png")
+
 ASSET_MANAGER.queueDownload("/Assets/Entities/Oven.png")
 ASSET_MANAGER.queueDownload("/Assets/Entities/Fryer.png")
 ASSET_MANAGER.queueDownload("/Assets/Entities/Door-Sheet.png")

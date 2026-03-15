@@ -103,7 +103,7 @@ export default class InGameClock extends Entity {
         //restore player health
         const player = this.engine.getPlayer();
         player.health = player.maxHealth;
-        this.engine.getLevel().teleport(3, 30, 15.5);
+        this.engine.getLevel().teleport(3, 28, 15.5);
         this.isDisplayingWarning = false;
     }
 

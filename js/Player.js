@@ -79,10 +79,12 @@ export default class Player extends WorldEntity {
     /** @param {GameEngine} engine */
     update(engine) {
         if (this.health <= 0) {
-            this.inventory.money -= this.inventory.money * 0.05 // lose 5% of your money on death;
+            this.inventory.money -= Math.floor(this.inventory.money * 0.05) // lose 5% of your money on death;
             this.health = MAX_HEALTH;
             engine.getClock().skipToNextDay();
-            engine.addUIEntity(new DialogueBox(engine, "Ouch! You had passed out and a passing fairy brought you back home, but they stole a little money in return!"));
+            if (engine.getClock().dayCount !== 7) {
+                engine.addUIEntity(new DialogueBox(engine, "Ouch! You had passed out and a passing fairy brought you back home, but they stole a little money in return!"));
+            }
         }
         this.move(engine);
         this.invincibilityTicks -= 1;
