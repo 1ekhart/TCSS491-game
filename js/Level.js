@@ -66,12 +66,12 @@ const BACKGROUND_ASSET_NIGHT = "/Assets/WorldTiles/NightBG.png"
 const BACKGROUND_TIME_MORNING = secondsToTicks(82.5);
 const BACKGROUND_TIME_AFTERNOON = secondsToTicks(135);
 const BACKGROUND_TIME_SUNSET = secondsToTicks(150);
-
+//24 tiles 0-8 are underground. 
 const validTiles = [
     [80, 34],
     [86, 34],
-    [80, 26],
-    [83, 26],
+    [82, 26],
+    [84, 26],
     [80, 20],
     [75, 20],
     [70, 25],
@@ -91,7 +91,39 @@ const validTiles = [
     [45, 5],
     [44, 5],
     [46, 16],
-    [46, 20]
+    [48, 16]
+]
+
+const tree10Tiles = [
+    [28, 14],
+    [31, 14],
+    [45, 14],
+    [67, 14],
+    [80, 14],
+    [87, 14],
+    [70, 0]
+]
+
+const tree11Tiles = [
+    [34, 14],
+    [83, 14],
+    [94, 14],
+    [72, 1]
+]
+
+const tree12TilesOut = [
+    [10, 14],
+    [37, 14],
+    [49, 14],
+    [55, 14],
+    [78, 14],
+    [89, 14],
+    [92, 14],
+    [67, 1]
+]
+
+const tree12TilesIn = [
+    [45, 14]
 ]
 
 const bushTiles = [
@@ -105,7 +137,6 @@ const bushTiles = [
 ]
 
 const monsterTiles = [
-    [80, 33],
     [80, 1],
     [80, 10],
     [46, 4],
@@ -549,6 +580,18 @@ export default class LevelManager {
             this.sceneEntities.push(new Item(wildItems[randomIntRange(2, 4)], validTiles[destTile][0] * TILE_SIZE + TILE_SIZE / 4, validTiles[destTile][1] * TILE_SIZE, 0, -4, Math.ceil(Math.random() * 3)));
             occupiedTiles.push(destTile); 
         }
+
+        for(let i = 0; i < tree10Tiles.length; i++){
+            this.sceneEntities.push(new BedroomDoor(tree10Tiles[i][0] * TILE_SIZE, tree10Tiles[i][1]*TILE_SIZE, this.engine));
+        }
+
+        for(let i = 0; i < tree11Tiles.length; i++){
+            this.sceneEntities.push(new BedroomDoor(tree11Tiles[i][0] * TILE_SIZE, tree11Tiles[i][1]*TILE_SIZE, this.engine));
+        }
+
+        for(let i = 0; i < tree12TilesOut.length; i++){
+            this.sceneEntities.push(new BedroomDoor(tree12TilesOut[i][0] * TILE_SIZE, tree12TilesOut[i][1]*TILE_SIZE, this.engine));
+        }
         // get the save data and iterate through the entities, which are just pots for now.
         const save = getSave();
         const saveEntities = save.entities;
@@ -574,7 +617,7 @@ export default class LevelManager {
         }
 
 
-        const monsterTile = Math.floor(Math.random() * 4);
+        const monsterTile = Math.floor(Math.random() * 3);
         this.sceneEntities.push(new Basan(this.engine, monsterTiles[monsterTile][0] * TILE_SIZE, monsterTiles[monsterTile][1] * TILE_SIZE));
         // this.sceneEntities.push(new Teleporter(this.engine, 16*TILE_SIZE, 16*TILE_SIZE, TILE_SIZE, TILE_SIZE, 1));
         this.sceneEntities.push(new HouseDoor(this.engine, 7*TILE_SIZE, 16*TILE_SIZE, true));
@@ -653,6 +696,10 @@ export default class LevelManager {
 
         this.sceneEntities.push(new BedroomDoor(28 * TILE_SIZE, 16*TILE_SIZE, this.engine));
         this.sceneEntities.push(new HouseDoor(this.engine, 42*TILE_SIZE, 16*TILE_SIZE, false));
+
+        for(let i = 0; i < tree12TilesIn.length; i++){
+            this.sceneEntities.push(new BedroomDoor(tree12TilesIn[i][0] * TILE_SIZE, tree12TilesIn[i][1]*TILE_SIZE, this.engine));
+        }
 
         const engine = this.engine;
         this.sceneEntities.forEach(function (entity) {
