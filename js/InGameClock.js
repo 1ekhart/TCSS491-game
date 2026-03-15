@@ -5,6 +5,7 @@ import DialogueBox from "/js/GeneralUtils/DialogueBox.js";
 import { getSave } from "/js/GeneralUtils/SaveDataRetrieval.js";
 import LevelManager from "/js/Level.js";
 import { CONSTANTS, secondsToTicks } from "/js/Util.js";
+import TransitionScreen from "/js/TransitionScreen.js";
 
 // how many ticks each day will last. Each day is 24 hours, so the hour length will be DAY_LENGTH / 24 and minutes  will be HOUR_LENGTH / 60
 const DAY_LENGTH = secondsToTicks(180); // 200 day length means each minute will be rough 0.14 seconds
@@ -95,16 +96,26 @@ export default class InGameClock extends Entity {
         if (this.dayCount == 7 && this.engine.getPlayer().inventory.money < 3000) { // handle the end of the game
             save.money = 0;
             this.engine.getPlayer().inventory.money = 0;
-            this.engine.addUIEntity(new DialogueBox(this.engine, "Oh no! Rent was due and the landlord took all the money, you can still play though, or make a new save and try again"))
+            //this.engine.addUIEntity(new DialogueBox(this.engine, "Oh no! Rent was due and the landlord took all the money, you can still play though, or make a new save and try again"))
             save.syncData();
-        } else if (this.dayCount == 7) {
-            this.engine.addUIEntity(new DialogueBox(this.engine, "Congrats! You didn't go bankrupt! You can keep playing and try to get as much money as you can!"))
         }
+
         //restore player health
         const player = this.engine.getPlayer();
         player.health = player.maxHealth;
-        this.engine.getLevel().teleport(3, 30, 15.5);
         this.isDisplayingWarning = false;
+        const dayNum = this.dayCount - 1;
+
+        const transition = new TransitionScreen(engine, () => {
+            this.engine.getLevel().teleport(3, 30, 15.5);
+            if (this.dayCount == 7 && this.engine.getPlayer().inventory.money < 3000) {
+                this.engine.addUIEntity(new DialogueBox(this.engine, "Oh no! Rent was due and the landlord took all the money, you can still play though, or make a new save and try again"));
+            } else if (this.dayCount == 7) {
+                this.engine.addUIEntity(new DialogueBox(this.engine, "Congrats! You didn't go bankrupt! You can keep playing and try to get as much money as you can!"));
+            }
+        }, `Day ${dayNum} Complete`);
+        engine.addUIEntity(transition);
+
     }
 
     skipToCookingMode() {
@@ -166,7 +177,9 @@ export default class InGameClock extends Entity {
         });
         this.isDisplayingWarning = false;
         this.isCookingMode = true;
-        engine.getLevel().teleport(3, 40, 15.5);
+        //engine.getLevel().teleport(3, 40, 15.5);
+        const transiton = new TransitionScreen(engine, () => { engine.getLevel().teleport(3, 40, 15.5); }, "2:00 PM - Time to open the restaurant!");
+        engine.addUIEntity(transiton);
     }
 
 

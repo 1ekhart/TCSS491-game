@@ -8,7 +8,6 @@ import PrepStation, { EmptyStation } from "/js/PrepStation.js";
 import ChoppingStation from "/js/ChoppingStation.js";
 import MixingStation from '/js/MixingStation.js';
 import Customer from '/js/Customer.js';
-import { RECIPES } from '/js/Data/Recipes.js';
 import { CONSTANTS, secondsToTicks } from '/js/Util.js';
 import Button from '/js/AbstractClasses/Button.js';
 import InventoryUI from '/js/InventoryUI.js';
@@ -27,6 +26,7 @@ import { STEP_TYPE } from '/js/Constants/cookingStationStates.js';
 import { createStationMap } from '/js/StationIndicator.js';
 import Cursor from '/js/GeneralUtils/Cursor.js';
 import FlyingEnemy from '/js/FlyingEnemy.js';
+import TransitionScreen from '/js/TransitionScreen.js';
 
 // size of a tile in screen pixels
 const TILE_SIZE = 32;
@@ -402,7 +402,7 @@ export default class LevelManager {
         const fastForward = () => {
             that.discardMenuUI();
             that.engine.getClock().skipToNextDay();
-            that.engine.getClock().resumeTime();
+            //that.engine.getClock().resumeTime();
         }
         this.menuButtons = [];
         this.menuButtons.push(new DialogueBox(this.engine, "Sleep to the next day? (saves the game)", true));
@@ -430,15 +430,16 @@ export default class LevelManager {
         }
         const goInside = () => {
             that.discardMenuUI();
+            door.displaying = false;
             if (!that.engine.getClock().isCookingMode) {
-                that.engine.getClock().resumeTime();
+                //that.engine.getClock().resumeTime();
                 that.engine.getClock().skipToCookingMode();
             } else {
-                console.log("attempted to go inside when already cooking mode")
-                that.engine.getClock().resumeTime();
-                that.teleport(3, 40, 15.5);
+                //console.log("attempted to go inside when already cooking mode")
+                const transition = new TransitionScreen(that.engine, () => { hat.teleport(3, 40, 15.5); });
+                //that.engine.getClock().resumeTime();
+                that.engine.addUIEntity(transition);
             }
-            door.displaying = false;
         }
         const openMarket = () => {
             that.discardMenuUI();
