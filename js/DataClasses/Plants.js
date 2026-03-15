@@ -42,11 +42,23 @@ const Pumpkin = {
     assetName: "/Assets/WorldItems/PumpkinPlant-Sheet.png"
 }
 
+const SugarCane = {
+    itemID: 14,
+    name: "Sugar Cane",
+    width: 16,
+    height: 32,
+    regrows: false,
+    growTime: 2,
+    scale: 2,
+    assetName: "/Assets/WorldItems/SugarPlant-Sheet.png"
+}
+
 const plantList = {
     3: Potato,
     4: Rice,
     6: Cabbage,
-    12: Pumpkin
+    12: Pumpkin,
+    14: SugarCane,
 }
 
 export const getPlantData = (plantID) => {

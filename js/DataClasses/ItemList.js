@@ -153,6 +153,17 @@ const FriedPumpkin = {
     assetName: "/Assets/Icons/FriedPumpkin.png"
 }
 
+const SugarCane = {
+    itemID: 14,
+    name: "Sugar Cane",
+    width: 32,
+    height: 32,
+    spriteX: 0,
+    spriteY: 0,
+    scale: 1,
+    sellPrice: 60,
+    assetName: "/Assets/Icons/SugarCaneIcon.png"
+}
 
 const itemList = {
     1: Coin,
@@ -168,9 +179,10 @@ const itemList = {
     11: Croquettes,
     12: Pumpkin,
     13: FriedPumpkin,
+    14: SugarCane,
 }
 
-const grains = [Rice, Flour]
+const grains = [Rice, Flour, SugarCane]
 const vegetables = [Cabbage, Potato, Pumpkin]
 const meats = [BoarMeat]
 

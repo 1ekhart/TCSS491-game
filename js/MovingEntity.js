@@ -248,6 +248,13 @@ export class Basan extends MovingEntity { // entity that should spawn a hitbox e
         this.animations[this.animationState].drawFrame(deltaTime, ctx,
             this.x - engine.camera.x - 10, this.y - engine.camera.y - 16, !this.isRight, 2
         )
+
+        //draw health
+        ctx.fillStyle = "rgba(56, 1, 1, 0.51)"
+        ctx.fillRect(this.x - engine.camera.x, this.y - engine.camera.y - 18, this.width, 3 * CONSTANTS.SCALE);
+        ctx.fillStyle = "rgb(228, 78, 95)"
+        ctx.fillRect(this.x - engine.camera.x, this.y - engine.camera.y - 18, this.width * (this.health / this.maxHealth), 3 * CONSTANTS.SCALE);
+
         // ctx.fillStyle = "rgb(0, 0, 0)"
         // ctx.fillText(`HP: ${this.health}/${this.maxHealth}`, this.x - engine.camera.x - 15, this.y - 14 - engine.camera.y);
         if (CONSTANTS.DEBUG) {
