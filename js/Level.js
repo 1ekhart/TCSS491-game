@@ -976,10 +976,33 @@ export class BackgroundManager {
         // this.y = engine.camera.y
     }
     draw(ctx, engine) {
-        // --- background ---
-        const timeOfDay = engine.getClock();
+        // --- camera ---
         const level = engine.getLevel();
         if(!level.data[0]) return;
+        
+        const worldCenterX = level.player.x + level.player.width / 2 - CAMERA_CENTER_X
+        const worldCenterY = level.player.y + level.player.height / 2 - CAMERA_CENTER_Y
+        const levelWidth = (level.data[0].length - 16) * CONSTANTS.TILESIZE
+        const levelHeight = (level.data.length - 12) * CONSTANTS.TILESIZE
+
+        // scroll right
+        if(level.x < worldCenterX - HORIZONTAL_FORGIVENESS) {
+            level.x = Math.min(worldCenterX - HORIZONTAL_FORGIVENESS, levelWidth)
+        }
+        // scroll left
+        if(level.x > worldCenterX + HORIZONTAL_FORGIVENESS) {
+            level.x = Math.max(worldCenterX + HORIZONTAL_FORGIVENESS, 0)
+        }
+        // scroll down
+        if(level.y < worldCenterY - VERTICAL_FORGIVENESS) {
+            level.y = Math.min(worldCenterY - VERTICAL_FORGIVENESS, levelHeight)
+        }
+        // scroll up
+        if(level.y > worldCenterY + VERTICAL_FORGIVENESS) {
+            level.y = Math.max(worldCenterY + VERTICAL_FORGIVENESS, 0)
+        }
+        // --- background ---
+        const timeOfDay = engine.getClock();
         if(level.currentLevel > 1){
             if(timeOfDay.dayTimeTicks < BACKGROUND_TIME_MORNING) {
                 if(level.currentLevel == 3)
