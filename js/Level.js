@@ -8,7 +8,6 @@ import PrepStation, { EmptyStation } from "/js/PrepStation.js";
 import ChoppingStation from "/js/ChoppingStation.js";
 import MixingStation from '/js/MixingStation.js';
 import Customer from '/js/Customer.js';
-import { RECIPES } from '/js/Data/Recipes.js';
 import { CONSTANTS, randomIntRange, secondsToTicks } from '/js/Util.js';
 import Button from '/js/AbstractClasses/Button.js';
 import InventoryUI from '/js/InventoryUI.js';
