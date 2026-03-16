@@ -294,21 +294,21 @@ export class Tree extends Entity {
         super();
         this.x = x;
         this.y = y; 
-        if (treeType = 1) {
+        if (treeType == 1) {
             if (isForeground) {
                 this.sprite = new Animator(ASSET_MANAGER.getAsset("/Assets/WorldItems/Tree-Sheet.png"), 64, 0, 32, 48, 1, 1, 0, false, false);
             } else {
                 this.sprite = new Animator(ASSET_MANAGER.getAsset("/Assets/WorldItems/Tree-Sheet.png"), 0, 0, 32, 48, 1, 1, 0, false, false);
             }
         }
-        if (treeType = 2) {
+        if (treeType == 2) {
             if (isForeground) {
                 this.sprite = new Animator(ASSET_MANAGER.getAsset("/Assets/WorldItems/Tree-Sheet.png"), 96, 0, 32, 48, 1, 1, 0, false, false);
             } else {
                 this.sprite = new Animator(ASSET_MANAGER.getAsset("/Assets/WorldItems/Tree-Sheet.png"), 32, 0, 32, 48, 1, 1, 0, false, false);
             }
         }
-        if (treeType = 3) {
+        if (treeType == 3) {
             if (isForeground) {
                 this.sprite = new Animator(ASSET_MANAGER.getAsset("/Assets/WorldItems/Tree-Sheet.png"), 160, 0, 32, 48, 1, 1, 0, false, false);
             } else {
@@ -316,12 +316,15 @@ export class Tree extends Entity {
             }
         }
         if (treeType < 1 || treeType > 4) {
-            this.sprite = new Animator(ASSET_MANAGER.getAsset("/Assets/WorldItems/Tree-Sheet.png"), 48, 0, 32, 48, 1, 1, 0, false, false);
-        }
-        this.sprite = new Animator(ASSET_MANAGER.getAsset("/Assets/WorldItems/Tree-Sheet.png"), 48, 0, 32, 48, 1, 1, 0, false, false);
+            this.sprite = new Animator(ASSET_MANAGER.getAsset("/Assets/WorldItems/Tree-Sheet.png"), 0, 0, 32, 48, 1, 1, 0, false, false);
+        }    
+    }
+
+    update() {
+
     }
 
     draw(ctx, engine) {
-        this.sprite.drawFramePlain(ctx, this.x - engine.camera.x, this.y - engine.camera.y - 32, 2);
+        this.sprite.drawFramePlain(ctx, this.x - engine.camera.x, this.y - engine.camera.y - (24*4) + 7, 4);
     }
 }
